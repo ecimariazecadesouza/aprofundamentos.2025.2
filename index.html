@@ -461,9 +461,8 @@
       
       return DEFAULT_API;
     }
-
+    
     /* ================== Constantes de regra ================== */
-    // Definição dos aprofundamentos e suas capacidades
     const APROFUNDAMENTOS = {
       "ambiente": {
         nome: "Educação ambiental: Justiça socioambiental e cidadania",
@@ -567,8 +566,7 @@
         const it = data[key];
         const r = it.restantes || 0;
         const pill = document.createElement('span');
-        pill.className = `pill ${it.cor || ''} ${r === 0 ? 'soldout' : ''}`;
-        
+        pill.className = `pill ${it.cor || ''} ${r === 0 ? 'soldout' : ''}`;        
         const nameSpan = document.createElement('span');
         nameSpan.textContent = it.nome.length > 40 ? it.nome.substring(0, 40) + '…' : it.nome;
         
@@ -602,27 +600,53 @@
       try{
         btn.disabled = true; 
         clearStatus();
-        const res = await fetch(API_URL); 
-        const json = await res.json();
+        
+        console.log("Conectando com API:", API_URL);
+        const res = await fetch(API_URL, {
+          method: 'GET',
+          mode: 'cors'  // Corrigido de 'no-cors' para 'cors'
+        });
+        
+        if (!res.ok && res.type !== 'opaque') {
+          throw new Error(`Erro HTTP: ${res.status}`);
+        }
+        
+        const text = await res.text();
+        let json;
+        
+        try {
+          json = JSON.parse(text);
+        } catch (e) {
+          console.error("Resposta não é JSON válido:", text.substring(0, 100));
+          throw new Error("Resposta inválida do servidor");
+        }
         
         // Se a API retornar dados, use-os, senão use os valores padrão
         if (json && json.availability) {
-          availabilityCache = json.availability;
-        } else {
-          // Inicializa com valores padrão
           availabilityCache = {};
-          for (const key in APROFUNDAMENTOS) {
-            availabilityCache[key] = {
-              ...APROFUNDAMENTOS[key],
-              restantes: APROFUNDAMENTOS[key].vagas
-            };
-          }
+          
+          // Converter array para objeto com chaves
+          json.availability.forEach(item => {
+            const key = Object.keys(APROFUNDAMENTOS).find(k => 
+              APROFUNDAMENTOS[k].nome === item.aprofundamento
+            );
+            
+            if (key) {
+              availabilityCache[key] = {
+                ...APROFUNDAMENTOS[key],
+                restantes: item.restantes || 0
+              };
+            }
+          });
+        } else {
+          throw new Error('Resposta não contém availability');
         }
         
         renderOptions(availabilityCache); 
         renderChips(availabilityCache); 
         lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
       } catch(e) {
+        console.error('Erro ao carregar disponibilidade:', e);
         // Em caso de erro, use os valores padrão
         availabilityCache = {};
         for (const key in APROFUNDAMENTOS) {
@@ -648,7 +672,8 @@
 
       const nome = (inpNome.value || '').trim();
       const serie = currentSerie();
-      const aprof = selAprof.value;
+      const aprofKey = selAprof.value;
+      const aprof = APROFUNDAMENTOS[aprofKey]?.nome;
 
       if (!nome || !serie || !aprof) { 
         setStatus("⚠️ Por favor, preencha todos os campos obrigatórios.", "error"); 
@@ -656,8 +681,8 @@
       }
 
       // Verifica se a série pode escolher este aprofundamento
-      const aprofData = APROFUNDAMENTOS[aprof];
-      if (aprofData && !aprofData.series.includes(serie)) {
+      const aprofData = APROFUNDAMENTOS[aprofKey];
+      if (aprofData && aprofData.series.length > 0 && !aprofData.series.includes(serie)) {
         setStatus("Este aprofundamento não está disponível para sua série. Escolha outra opção.", "error");
         return;
       }
@@ -669,9 +694,17 @@
         const res = await fetch(API_URL, {
           method: "POST",
           headers: {"Content-Type": "text/plain;charset=utf-8"},
-          body: JSON.stringify({nome, serie, aprofundamento: APROFUNDAMENTOS[aprof].nome})
+          body: JSON.stringify({nome, serie, aprofundamento: aprof})
         });
-        const json = await res.json();
+        
+        const text = await res.text();
+        let json;
+        
+        try {
+          json = JSON.parse(text);
+        } catch (e) {
+          throw new Error("Resposta inválida do servidor");
+        }
 
         if (json.ok) { 
           setStatus("🎉 Inscrição registrada com sucesso! Sua vaga está garantida.", "success");
@@ -685,6 +718,7 @@
           setStatus("❌ Erro: " + (json.error || "não foi possível concluir a inscrição."), "error");
         }
       } catch(err) {
+        console.error("Erro no envio:", err);
         setStatus("🔌 Falha na conexão. Verifique sua internet e tente novamente.", "error");
       } finally {
         btn.disabled = false; 
@@ -727,12 +761,13 @@
     document.addEventListener('DOMContentLoaded', function() {
       const style = document.createElement('style');
       style.textContent = `
+
         .pill {
           transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
         }
         .pill:hover { 
           transform: translateY(-2px) scale(1.02); 
-          box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2); 
+          box-shadow: 0 4px 12px rgba(76,175,80,0.2); 
         }
       `;
       document.head.appendChild(style);
@@ -741,6 +776,7 @@
     /* ================== Boot ================== */
     (async function init(){
       API_URL = await resolveApi();
+      console.log("Usando API:", API_URL);
       await loadAvailability(); 
       setInterval(loadAvailability, 60000); // Atualiza a cada minuto
     })();
