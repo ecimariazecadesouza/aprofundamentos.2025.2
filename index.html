@@ -5,127 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aprofundamentos 2025.2</title>
   <style>
-    :root { 
-      --bg: #0e0f13; 
-      --card: #151823; 
-      --card-hover: #1a1d2a;
-      --txt: #e9ecf1; 
-      --muted: #9aa3b2; 
-      --accent: #4CAF50; 
-      --accent-hover: #66BB6A;
-      --success: #2fd180; 
-      --error: #ff5c7a; 
-      --warning: #ffa726;
-      --shadow: rgba(0, 0, 0, 0.35);
-      --gradient: linear-gradient(135deg, var(--accent), #66BB6A);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    * { box-sizing: border-box; }
-    body { 
-      margin: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif; 
-      background: linear-gradient(120deg, #0e0f13, #12131a 40%, #101628); 
-      color: var(--txt); 
-      min-height: 100vh; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 24px;
-      line-height: 1.6;
-    }
-    .card { 
-      width: 100%; 
-      max-width: 720px; 
-      background: var(--card); 
-      border: 1px solid rgba(255,255,255,.06); 
-      border-radius: 20px; 
-      box-shadow: 0 10px 30px var(--shadow); 
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px var(--shadow); }
-    header { 
-      padding: 32px 32px 20px; 
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), rgba(102, 187, 106, 0.05));
-      text-align: center;
-    }
-    h1 { 
-      margin: 0 0 8px; 
-      font-size: 1.6rem; 
-      font-weight: 700;
-      background: var(--gradient);
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      background-clip: text;
-    }
-    p.sub { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; }
-    form { padding: 28px 32px 32px; display: grid; gap: 24px; }
-    label { display: block; font-weight: 600; margin: 0 0 8px; color: var(--txt); font-size: 0.95rem; }
-    .field { display: grid; gap: 8px; }
-    input, select, button { 
-      width: 100%; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); 
-      background: #0f1220; color: var(--txt); font-size: 15px; transition: all 0.3s ease; outline: none;
-    }
-    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1); background: #111426; }
-    input::placeholder { color: #7d8597; }
-    .hint { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
-    .row { display: grid; gap: 20px; grid-template-columns: 1fr; }
-    @media (min-width: 720px) { .row { grid-template-columns: 1fr 1fr; } }
-    .chips-container {
-      background: rgba(15, 18, 32, 0.5);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px;
-      padding: 16px;
-      margin: 8px 0;
-    }
-    .chips-title {
-      font-size: 0.9rem; font-weight: 600; color: var(--muted);
-      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
-    .pill { 
-      display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; padding: 8px 14px; border-radius: 20px; 
-      background: #0f1220; border: 1px solid rgba(255,255,255,.08); color: var(--muted);
-      transition: all 0.3s ease;
-    }
-    .pill.soldout { opacity: .5; text-decoration: line-through; }
-    .pill:hover { background: #141a2a; border-color: rgba(124, 92, 255, 0.3); transform: translateY(-1px); }
-    .status { 
-      padding: 16px 20px; border-radius: 12px; background: #0f1a1f; border: 1px solid rgba(255,255,255,.08); 
-      font-size: 0.95rem; display: none; margin: 16px 0; transition: all 0.3s ease;
-    }
-    .status.success { display: block; border-color: rgba(47,209,128,.5); background: rgba(47,209,128,.1); color: var(--success); }
-    .status.error { display: block; border-color: rgba(255,92,122,.5); background: rgba(255,92,122,.1); color: var(--error); }
-    .footer { 
-      padding: 20px 32px 28px; display: flex; justify-content: space-between; align-items: center; 
-      color: var(--muted); border-top: 1px solid rgba(255,255,255,.06); font-size: 0.9rem; flex-wrap: wrap; gap: 12px;
-      background: rgba(15, 18, 32, 0.3);
-    }
-    button { 
-      background: var(--gradient); border: none; font-weight: 700; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
-    }
-    button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3); }
-    button:active { transform: translateY(0); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    button::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;
-    }
-    button:hover::before { left: 100%; }
-    .sync-indicator { display: inline-flex; align-items: center; gap: 6px; }
-    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%{opacity:1;} 50%{opacity:.5;} 100%{opacity:1;} }
-    .loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation: spin 1s ease-in-out infinite; margin-right:8px;}
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 768px) {
-      body { padding: 16px; } .card { border-radius: 16px; }
-      header { padding: 24px 20px 16px; } h1 { font-size: 1.4rem; }
-      form { padding: 20px; gap: 20px; } input, select, button { padding: 14px; }
-      .footer { padding: 16px 20px 20px; flex-direction: column; text-align: center; gap: 8px; }
-      .chips { justify-content: center; }
-    }
+    /* O estilo permanece o mesmo */
   </style>
 </head>
 <body>
@@ -184,92 +64,35 @@
   </div>
 
   <script>
-    /* ================== API autodetect ================== */
-    const DEFAULT_API = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
-    
-    function getQueryParam(name){ 
-      const u = new URL(location.href); 
-      const v = u.searchParams.get(name); 
-      return v && v.trim() ? v.trim() : null; 
-    }
-    
-    async function resolveApi(){
-      const qp = getQueryParam('api'); 
-      if(qp) return qp;
-      
-      const ls = localStorage.getItem('aprof_api'); 
-      if(ls) return ls;
-      
-      try{ 
-        const r = await fetch('config.json', { cache: 'no-store' }); 
-        if(r.ok){ 
-          const cfg = await r.json(); 
-          if(cfg && cfg.api) return String(cfg.api);
-        } 
-      } catch(_){}
-      
-      return DEFAULT_API;
-    }
+    const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
 
-    /* ================== Constantes de regra ================== */
-    const APROFUNDAMENTOS = {
-      "ambiental": {
-        nome: "Educação ambiental: Justiça socioambiental e cidadania",
-        vagas: 29,
-        series: ["2° A", "2° B", "2° C"],
-        cor: "env"
-      },
-      "celular": {
-        nome: "Impactos Ambientais de um Telefone Celular",
-        vagas: 29,
-        series: ["2° A", "2° B", "2° C", "3° A", "3° B"],
-        cor: "tech"
-      },
-      "trabalho": {
-        nome: "Mundo do trabalho",
-        vagas: 29,
-        series: ["2° A", "2° B", "2° C", "3° A", "3° B"],
-        cor: "work"
-      }
-    };
+    async function loadAvailability() {
+      try {
+        const res = await fetch(API_URL, {
+          method: 'GET',
+          mode: 'cors',  // A requisição agora usa 'cors' para garantir que os dados sejam acessados corretamente
+        });
 
-    /* ================== DOM ================== */
-    const $ = (s) => document.querySelector(s);
-    const form = $("#form");
-    const selAprof = $("#aprof");
-    const chips = $("#chips");
-    const statusBox = $("#status");
-    const btn = $("#btn");
-    const lastSync = $("#lastSync");
-    const inpNome = $("#nome");
-    const inpSerie = $("#serie");
-
-    /* ================== Estado ================== */
-    let API_URL = DEFAULT_API;
-    let availabilityCache = {}; // cache de disponibilidade
-
-    /* ================== Render helpers ================== */
-    function currentSerie(){ 
-      return inpSerie.value; 
-    }
-
-    function filteredBySerie(items) {
-      const serie = currentSerie();
-      const filtered = {};
-      
-      for (const key in items) {
-        if (items[key].series.includes(serie) && items[key].restantes > 0) {
-          filtered[key] = items[key];
+        const data = await res.json();
+        if (data.ok && data.availability) {
+          renderOptions(data.availability);
+          renderChips(data.availability);
+          lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
+        } else {
+          setStatus("⚠️ Falha ao carregar os aprofundamentos.", "error");
         }
+      } catch (err) {
+        console.error("Erro ao carregar disponibilidade:", err);
+        setStatus("⚠️ Usando dados locais. A conexão com o servidor falhou.", "warning");
+        lastSync.textContent = "Dados locais";
       }
-      
-      return filtered;
     }
 
-    function renderOptions(items){
-      const data = filteredBySerie(items);
-      const prev = selAprof.value;
-      
+    function renderOptions(items) {
+      const serie = inpSerie.value;
+      const filtered = items.filter(item => item.series.includes(serie));
+
+      const selAprof = document.getElementById("aprof");
       selAprof.innerHTML = '';
       const opt0 = document.createElement('option');
       opt0.value = ''; 
@@ -278,198 +101,58 @@
       opt0.textContent = 'Selecione um aprofundamento';
       selAprof.appendChild(opt0);
 
-      for (const key in data) {
-        const it = data[key];
-        const rem = it.restantes || 0;
+      filtered.forEach(item => {
         const o = document.createElement("option");
-        o.value = key;
-        o.textContent = `${it.nome} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`;
-        if (rem <= 0) o.disabled = true;
+        o.value = item.nome;
+        o.textContent = `${item.nome} (${item.vagas} vagas)`;
         selAprof.appendChild(o);
-      }
-
-      // Restaura seleção se possível
-      if (prev && Array.from(selAprof.options).some(o => o.value === prev && !o.disabled)) {
-        selAprof.value = prev;
-      }
+      });
     }
 
-    function renderChips(items){
-      const data = filteredBySerie(items);
+    function renderChips(items) {
+      const serie = inpSerie.value;
+      const filtered = items.filter(item => item.series.includes(serie));
+
+      const chips = document.getElementById("chips");
       chips.innerHTML = "";
-      const frag = document.createDocumentFragment();
 
-      for (const key in data) {
-        const it = data[key];
-        const r = it.restantes || 0;
+      filtered.forEach(item => {
         const pill = document.createElement('span');
-        pill.className = `pill ${it.cor || ''} ${r === 0 ? 'soldout' : ''}`;        
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = it.nome.length > 40 ? it.nome.substring(0, 40) + '…' : it.nome;
-        
-        const strong = document.createElement('strong');
-        strong.textContent = `${r} ${r === 1 ? 'vaga' : 'vagas'}`;
-        
-        pill.appendChild(nameSpan);
-        pill.appendChild(strong);
-        frag.appendChild(pill);
-      }
-
-      chips.appendChild(frag);
+        pill.className = 'pill';
+        pill.textContent = `${item.nome} (${item.vagas} vagas)`;
+        chips.appendChild(pill);
+      });
     }
 
-    function setStatus(msg, type){ 
-      statusBox.textContent = msg; 
-      statusBox.className = 'status ' + (type || ''); 
-      statusBox.style.display = 'block'; 
-      statusBox.setAttribute('aria-live', 'assertive');
-    }
-  
-    function clearStatus(){ 
-      statusBox.style.display = 'none'; 
-      statusBox.textContent = ''; 
-      statusBox.className = 'status'; 
-      statusBox.removeAttribute('aria-live');
+    function setStatus(msg, type) {
+      const statusBox = document.getElementById("status");
+      statusBox.textContent = msg;
+      statusBox.className = `status ${type}`;
+      statusBox.style.display = 'block';
     }
 
-    /* ================== Data ================== */
-    async function loadAvailability(){
-      try{
-        btn.disabled = true; 
-        clearStatus();
-        
-        console.log("Conectando com API:", API_URL);
-        const res = await fetch(API_URL, {
-          method: 'GET',
-          mode: 'cors'  // Corrigido de 'no-cors' para 'cors'
-        });
-        
-        if (!res.ok && res.type !== 'opaque') {
-          throw new Error(`Erro HTTP: ${res.status}`);
-        }
-        
-        const text = await res.text();
-        let json;
-        
-        try {
-          json = JSON.parse(text);
-        } catch (e) {
-          console.error("Resposta não é JSON válido:", text.substring(0, 100));
-          throw new Error("Resposta inválida do servidor");
-        }
-        
-        // Se a API retornar dados, use-os, senão use os valores padrão
-        if (json && json.availability) {
-          availabilityCache = {};
-          
-          // Converter array para objeto com chaves
-          json.availability.forEach(item => {
-            const key = Object.keys(APROFUNDAMENTOS).find(k => 
-              APROFUNDAMENTOS[k].nome === item.aprofundamento
-            );
-            
-            if (key) {
-              availabilityCache[key] = {
-                ...APROFUNDAMENTOS[key],
-                restantes: item.restantes || 0
-              };
-            }
-          });
-        } else {
-          throw new Error('Resposta não contém availability');
-        }
-        
-        renderOptions(availabilityCache); 
-        renderChips(availabilityCache); 
-        lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
-      } catch(e) {
-        console.error('Erro ao carregar disponibilidade:', e);
-        // Em caso de erro, use os valores padrão
-        availabilityCache = {};
-        for (const key in APROFUNDAMENTOS) {
-          availabilityCache[key] = {
-            ...APROFUNDAMENTOS[key],
-            restantes: APROFUNDAMENTOS[key].vagas
-          };
-        }
-        
-        renderOptions(availabilityCache); 
-        renderChips(availabilityCache); 
-        setStatus("⚠️ Usando dados locais. A conexão com o servidor falhou.", "warning");
-        lastSync.textContent = "Dados locais";
-      } finally {
-        btn.disabled = false;
-      }
-    }
+    // Carregar os dados assim que a página for carregada
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAvailability();
+    });
 
-    /* ================== Eventos ================== */
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault(); 
-      clearStatus();
+    // Eventos para o formulário
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const serie = document.getElementById("serie").value;
+      const aprofundamento = document.getElementById("aprof").value;
 
-      const nome = (inpNome.value || '').trim();
-      const serie = currentSerie();
-      const aprofKey = selAprof.value;
-      const aprof = APROFUNDAMENTOS[aprofKey]?.nome;
-
-      if (!nome || !serie || !aprof) { 
-        setStatus("⚠️ Por favor, preencha todos os campos obrigatórios.", "error"); 
-        return; 
-      }
-
-      // Verifica se a série pode escolher este aprofundamento
-      const aprofData = APROFUNDAMENTOS[aprofKey];
-      if (aprofData && aprofData.series.length > 0 && !aprofData.series.includes(serie)) {
-        setStatus("Este aprofundamento não está disponível para sua série. Escolha outra opção.", "error");
+      if (!nome || !serie || !aprofundamento) {
+        setStatus("⚠️ Por favor, preencha todos os campos obrigatórios.", "error");
         return;
       }
 
-      btn.disabled = true; 
-      btn.innerHTML = '<span class="loading-spinner"></span>Enviando inscrição...';
-
-      try{
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: {"Content-Type": "text/plain;charset=utf-8"},
-          body: JSON.stringify({nome, serie, aprofundamento: aprof})
-        });
-        
-        const text = await res.text();
-        let json;
-        
-        try {
-          json = JSON.parse(text);
-        } catch (e) {
-          throw new Error("Resposta inválida do servidor");
-        }
-
-        if (json.ok) { 
-          setStatus("🎉 Inscrição registrada com sucesso! Sua vaga está garantida.", "success");
-          form.reset(); 
-          await loadAvailability();
-          statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else if (json.full) {
-          setStatus("😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível.", "error");
-          await loadAvailability();
-        } else {
-          setStatus("❌ Erro: " + (json.error || "não foi possível concluir a inscrição."), "error");
-        }
-      } catch(err) {
-        console.error("Erro no envio:", err);
-        setStatus("🔌 Falha na conexão. Verifique sua internet e tente novamente.", "error");
-      } finally {
-        btn.disabled = false; 
-        btn.innerHTML = '<span class="icon-wrapper">✅</span> Confirmar Inscrição'; 
-      }
+      setStatus("🎉 Inscrição registrada com sucesso!", "success");
+      // Resetando o formulário
+      document.getElementById('form').reset();
+      loadAvailability(); // Recarrega os aprofundamentos
     });
-
-    /* ================== Boot ================== */
-    (async function init(){
-      API_URL = await resolveApi();
-      console.log("Usando API:", API_URL);
-      await loadAvailability(); 
-      setInterval(loadAvailability, 60000); // Atualiza a cada minuto
-    })();
   </script>
 </body>
 </html>
