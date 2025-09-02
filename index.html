@@ -461,7 +461,7 @@
       
       return DEFAULT_API;
     }
-    
+
     /* ================== Constantes de regra ================== */
     const APROFUNDAMENTOS = {
       "ambiente": {
@@ -541,6 +541,9 @@
       opt0.textContent = 'Selecione um aprofundamento';
       selAprof.appendChild(opt0);
 
+      // Verificando o que está sendo retornado na API
+      console.log("Aprofundamentos disponíveis:", data);
+
       for (const key in data) {
         const it = data[key];
         const rem = it.restantes || 0;
@@ -587,7 +590,7 @@
       statusBox.style.display = 'block'; 
       statusBox.setAttribute('aria-live', 'assertive');
     }
-    
+  
     function clearStatus(){ 
       statusBox.style.display = 'none'; 
       statusBox.textContent = ''; 
@@ -724,53 +727,6 @@
         btn.disabled = false; 
         btn.innerHTML = '<span class="icon-wrapper">✅</span> Confirmar Inscrição'; 
       }
-    });
-
-    // Atualiza opções quando a série muda
-    inpSerie.addEventListener('change', () => {
-      const prevAprof = selAprof.value;
-      renderOptions(availabilityCache);
-      renderChips(availabilityCache);
-      
-      // Remove classes de erro se houver
-      inpSerie.classList.remove('input-error');
-      
-      // Se o aprofundamento escolhido ficou inválido, limpa
-      if (!Array.from(selAprof.options).some(o => o.value === prevAprof && !o.disabled)) {
-        selAprof.value = "";
-      }
-    });
-
-    // Validação visual do nome
-    inpNome.addEventListener('input', function() {
-      if (this.value.trim().length < 3) {
-        this.classList.add('input-error');
-        this.classList.remove('input-success');
-      } else {
-        this.classList.remove('input-error');
-        this.classList.add('input-success');
-      }
-    });
-
-    // Remove classes de erro ao interagir com os selects
-    selAprof.addEventListener('change', function() {
-      this.classList.remove('input-error');
-    });
-
-    // Efeito pill hover
-    document.addEventListener('DOMContentLoaded', function() {
-      const style = document.createElement('style');
-      style.textContent = `
-
-        .pill {
-          transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-        }
-        .pill:hover { 
-          transform: translateY(-2px) scale(1.02); 
-          box-shadow: 0 4px 12px rgba(76,175,80,0.2); 
-        }
-      `;
-      document.head.appendChild(style);
     });
 
     /* ================== Boot ================== */
