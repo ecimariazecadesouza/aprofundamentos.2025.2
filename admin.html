@@ -253,7 +253,7 @@
 
 <script>
 /* ============ CONFIG / API AUTODETECT ============ */
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
+const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwY-3n6D5VXIeXEanzdikpQxBN8LGC1-FoIKnPytWp5qzItkA3FWaLFspf0wNfZBeZ6/exec";
 function withTimeout(promise, ms) { return new Promise((res, rej) => { const t=setTimeout(()=>rej(new Error('timeout')), ms); promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)}); }); }
 function getQueryParam(name) { const u = new URL(location.href); const v = u.searchParams.get(name); return v && v.trim() ? v.trim() : null; }
 async function resolveApi() {
