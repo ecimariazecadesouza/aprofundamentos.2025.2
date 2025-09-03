@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aprofundamentos 2025.2 - Formulário de Inscrição</title>
+  <!-- Meta tags para SEO e acessibilidade -->
+  <meta name="description" content="Formulário de inscrição para os aprofundamentos 2025.2 - 2° ano: 29 vagas | 3° ano: 37 vagas">
+  <meta name="theme-color" content="#7c5cff">
+  
+  <style>
+    /* ===== VARIÁVEIS CSS ===== */
+    :root { 
+      /* Cores */
+      --bg: #0e0f13; 
+      --card: #151823; 
+      --card-hover: #1a1d2a;
+      --txt: #e9ecf1; 
+      --muted: #9aa3b2; 
+      --accent: #7c5cff; 
+      --accent-hover: #8b6bff;
+      --success: #2fd180; 
+      --error: #ff5c7a; 
+      --warning: #ffa726;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --gradient: linear-gradient(135deg, var(--accent), #4c82ff);
+      
+      /* Espaçamentos */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-xxl: 3rem;
+      
+      /* Bordas */
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      
+      /* Tipografia */
+      --text-sm: 0.85rem;
+      --text-base: 1rem;
+      --text-lg: 1.25rem;
+      --text-xl: 1.5rem;
+      --text-xxl: 1.75rem;
+      
+      /* Transições */
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Sombras */
+      --shadow-sm: 0 2px 8px var(--shadow);
+      --shadow-md: 0 4px 16px var(--shadow);
+      --shadow-lg: 0 8px 24px var(--shadow);
+    }
+    
+    /* ===== RESET E ESTILOS BASE ===== */
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif; 
+      background: linear-gradient(120deg, #0e0f13, #12131a 40%, #101628); 
+      color: var(--txt); 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: var(--space-md);
+      line-height: 1.6;
+    }
+    
+    /* ===== COMPONENTES ===== */
+    .card { 
+      width: 100%; 
+      max-width: 720px; 
+      background: var(--card); 
+      border: 1px solid rgba(255,255,255,.06); 
+      border-radius: var(--radius-xl); 
+      box-shadow: var(--shadow-lg); 
+      overflow: hidden;
+      transition: all var(--transition-normal);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px var(--shadow);
+    }
+    
+    header { 
+      padding: var(--space-xl) var(--space-xl) var(--space-lg); 
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.05), rgba(76, 130, 255, 0.05));
+      text-align: center;
+    }
+    
+    h1 { 
+      margin: 0 0 var(--space-sm); 
+      font-size: var(--text-xxl); 
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    p.sub { 
+      margin: 0; 
+      color: var(--muted); 
+      font-size: var(--text-base);
+      line-height: 1.5;
+    }
+    
+    form { 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); 
+      display: grid; 
+      gap: var(--space-xl); 
+    }
+    
+    label { 
+      display: block; 
+      font-weight: 600; 
+      margin: 0 0 var(--space-sm);
+      color: var(--txt);
+      font-size: var(--text-base);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .field { 
+      display: grid; 
+      gap: var(--space-sm); 
+      position: relative;
+    }
+    
+    input, select, button { 
+      width: 100%; 
+      padding: var(--space-lg); 
+      border-radius: var(--radius-lg); 
+      border: 1px solid rgba(255,255,255,.1); 
+      background: #0f1220; 
+      color: var(--txt);
+      font-size: var(--text-base);
+      transition: all var(--transition-normal);
+      outline: none;
+    }
+    
+    /* Estilização personalizada para select */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-lg) center;
+      background-size: 16px;
+      padding-right: var(--space-xxl);
+    }
+    
+    /* Estados dos campos */
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+      background: #111426;
+    }
+    
+    input.success, select.success {
+      border-color: var(--success);
+      box-shadow: 0 0 0 2px rgba(47, 209, 128, 0.1);
+    }
+    
+    input.error, select.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 2px rgba(255, 92, 122, 0.1);
+    }
+    
+    input::placeholder { 
+      color: #7d8597; 
+    }
+    
+    .hint { 
+      font-size: var(--text-sm); 
+      color: var(--muted);
+      margin-top: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .row { 
+      display: grid; 
+      gap: var(--space-lg); 
+      grid-template-columns: 1fr; 
+    } 
+    @media (min-width: 720px) { .row { grid-template-columns: 1fr 1fr; } }
+    
+    .chips-container {
+      background: rgba(15, 18, 32, 0.5);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin: var(--space-md) 0;
+    }
+    .chips-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: var(--space-md);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+    .pill { 
+      display: inline-flex; gap: var(--space-sm); align-items: center; 
+      font-size: var(--text-sm); padding: var(--space-sm) var(--space-md); 
+      border-radius: 20px; background: #0f1220; border: 1px solid rgba(255,255,255,.08); 
+      color: var(--muted); transition: all var(--transition-normal); cursor: default;
+    }
+    .pill:hover { background: #141a2a; border-color: rgba(124, 92, 255, 0.3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2); }
+    
+    .status { 
+      padding: var(--space-lg); border-radius: var(--radius-lg); background: #0f1a1f; 
+      border: 1px solid rgba(255,255,255,.08); font-size: var(--text-base); display: none;
+      margin: var(--space-md) 0; transition: all var(--transition-normal);
+      display: flex; align-items: center; gap: var(--space-md);
+    }
+    .status.success { display: flex; border-color: rgba(47,209,128,.5); background: rgba(47,209,128,.1); color: var(--success); }
+    .status.error   { display: flex; border-color: rgba(255,92,122,.5); background: rgba(255,92,122,.1); color: var(--error); }
+    
+    .footer { 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); display: flex; justify-content: space-between; 
+      align-items: center; color: var(--muted); border-top: 1px solid rgba(255,255,255,.06); 
+      font-size: var(--text-sm); flex-wrap: wrap; gap: var(--space-md); background: rgba(15, 18, 32, 0.3);
+    }
+    
+    button { 
+      background: var(--gradient); border: none; font-weight: 700; cursor: pointer;
+      transition: all var(--transition-normal); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: var(--space-sm);
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+    button:hover::before { left: 100%; }
+    
+    .sync-indicator { display: inline-flex; align-items: center; gap: var(--space-sm); }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .required-marker { color: var(--error); margin-left: var(--space-xs); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: fadeIn 0.5s ease forwards; }
+    
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 768px) {
+      :root { --space-xl: 1.5rem; --space-lg: 1.25rem; --space-md: 0.75rem; }
+      body { padding: var(--space-sm); align-items: flex-start; padding-top: var(--space-lg); }
+      .card { border-radius: var(--radius-lg); margin: var(--space-md) 0; }
+      header { padding: var(--space-lg) var(--space-md) var(--space-md); }
+      h1 { font-size: var(--text-xl); }
+      form { padding: var(--space-md); gap: var(--space-lg); }
+      input, select, button { padding: var(--space-md); }
+      select { background-position: right var(--space-md) center; }
+      .footer { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
+      .chips { justify-content: center; }
+      .status { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
+    }
+    @media (max-width: 360px) {
+      .chips { flex-direction: column; align-items: stretch; }
+      .pill { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-label="Formulário de inscrição para aprofundamentos 2025.2">
+    <header>
+      <h1>🎓 Aprofundamentos 2025.2</h1>
+      <p class="sub">Preencha o formulário abaixo para garantir sua vaga.<br>
+      <strong>Cada aprofundamento tem limite de vagas</strong> - não perca tempo!</p>
+    </header>
+
+    <form id="form" novalidate aria-labelledby="form-title">
+      <div class="field">
+        <label for="nome">
+          👤 Nome Completo <span class="required-marker" aria-hidden="true">*</span>
+        </label>
+        <input id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required 
+               aria-required="true" aria-describedby="nome-hint" />
+        <div class="hint" id="nome-hint">
+          <span aria-hidden="true">ℹ️</span>
+          <span>Informe seu nome completo conforme documentos oficiais</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="serie">
+            🏫 Série/Turma <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="serie" name="serie" required aria-required="true" aria-describedby="serie-hint">
+            <option value="" disabled selected>Selecione sua turma</option>
+            <option>2° A</option><option>2° B</option><option>2° C</option>
+            <option>3° A</option><option>3° B</option>
+          </select>
+          <div class="hint" id="serie-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Escolha sua série e turma atual</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="aprofundamento">
+            📚 Aprofundamento <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="aprofundamento" name="aprofundamento" required 
+                  aria-required="true" aria-describedby="aprofundamento-hint" disabled>
+            <option value="" disabled selected>Carregando opções...</option>
+          </select>
+          <div class="hint" id="aprofundamento-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Aprofundamentos esgotados ficam indisponíveis</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips-container">
+        <div class="chips-title">
+          <span aria-hidden="true">📊</span>
+          <span>Vagas Disponíveis</span>
+        </div>
+        <div class="chips" id="chips" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      
+      <div id="status" class="status" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      
+      <button id="btn" type="submit" aria-label="Confirmar inscrição no aprofundamento selecionado">
+        <span aria-hidden="true">✨</span>
+        <span>Confirmar Inscrição</span>
+      </button>
+    </form>
+
+    <div class="footer">
+      <span>
+        <span aria-hidden="true">📚</span>
+        <span>ECI Maria Zeca de Souza • Lkton • 2025</span>
+      </span>
+      <div class="sync-indicator">
+        <div class="sync-dot" aria-hidden="true"></div>
+        <span id="lastSync">Sincronizando...</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Config =====
+    const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
+    const $ = (s) => document.querySelector(s);
+
+    // ===== Elements =====
+    const form = $("#form");
+    const selSerie = $("#serie");
+    const selAprofundamento = $("#aprofundamento");
+    const chips = $("#chips");
+    const statusBox = $("#status");
+    const btn = $("#btn");
+    const lastSync = $("#lastSync");
+    const nomeInput = $("#nome");
+
+    // ===== Lista por série =====
+    const APROFUNDAMENTOS_POR_SERIE = {
+      "2° A": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° B": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° C": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "3° A": [
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
+      ],
+      "3° B": [
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
+      ]
+    };
+
+    // ===== State =====
+    let availabilityData = [];
+    let lastSerieSelected = '';
+
+    // Util: pega o nome do aprofundamento do objeto (compat: pratica | aprofundamento)
+    const getNomeAprof = (obj) => (obj && (obj.pratica || obj.aprofundamento)) || '';
+
+    // ===== API: disponibilidade =====
+    async function loadAvailability() {
+      try {
+        btn.disabled = true; 
+        statusBox.style.display = "none";
+        
+        const res = await fetch(API_URL, { cache: "no-store" }); 
+        const text = await res.text();
+        let json;
+        try { json = JSON.parse(text); } catch(_) { throw new Error("Resposta inválida da API: " + text.slice(0,120)); }
+        availabilityData = (json && (json.availability || json.capacidade || [])) || []; 
+        
+        renderOptions(availabilityData); 
+        renderChips(availabilityData); 
+        lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
+      } catch(e) {
+        console.error(e);
+        showError("⚠️ Não foi possível carregar a disponibilidade. Tente novamente."); 
+        lastSync.textContent = "Erro na sincronização";
+      } finally { 
+        btn.disabled = false; 
+      }
+    }
+
+    // ===== UI: opções do select =====
+    function renderOptions(items) {
+      const serieAtual = selSerie.value;
+      selAprofundamento.innerHTML = '<option value="" disabled selected>Selecione um aprofundamento</option>';
+      
+      if (!serieAtual) {
+        selAprofundamento.innerHTML = '<option value="" disabled selected>Primeiro selecione sua turma</option>';
+        selAprofundamento.disabled = true;
+        return;
+      }
+      
+      selAprofundamento.disabled = false;
+      const aprovList = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
+      
+      aprovList.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
+        // fallback de vagas
+        const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
+        const rem = item ? (+item.restantes || 0) : vagasPadrao;
+        
+        const option = document.createElement("option"); 
+        option.value = aprofundamento; 
+        option.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
+        if (rem <= 0) option.disabled = true; 
+        selAprofundamento.appendChild(option); 
+      });
+    }
+
+    // ===== UI: chips de vagas =====
+    function renderChips(items) {
+      chips.innerHTML = ""; 
+      
+      const serieAtual = selSerie.value;
+      let paraMostrar = [];
+      
+      if (serieAtual && APROFUNDAMENTOS_POR_SERIE[serieAtual]) {
+        paraMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
+      } else {
+        const setAll = new Set();
+        Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => lista.forEach(n => setAll.add(n)));
+        paraMostrar = Array.from(setAll);
+      }
+      
+      paraMostrar.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
+        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", 
+                       "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
+        const vagasPadrao = eh3Ano ? 37 : 29;
+        const vagasRestantes = item ? (+item.restantes || 0) : vagasPadrao;
+        
+        const chip = document.createElement("span"); 
+        chip.className = "pill"; 
+        chip.innerHTML = `
+          <span>${aprofundamento.length > 25 ? aprofundamento.substring(0, 25) + '...' : aprofundamento}</span>
+          <strong>${vagasRestantes} ${vagasRestantes === 1 ? 'vaga' : 'vagas'}</strong>
+        `;
+        
+        if (vagasRestantes === 0) {
+          chip.style.opacity = '0.6';
+          chip.innerHTML += ' <span aria-hidden="true">❌</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: Esgotado`);
+        } else if (vagasRestantes < 5) {
+          chip.innerHTML += ' <span aria-hidden="true">⚠️</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes - Poucas vagas!`);
+        } else {
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes`);
+        }
+        
+        chips.appendChild(chip); 
+      });
+    }
+
+    // ===== Mensagens =====
+    function showError(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status error"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+    }
+    function showSuccess(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status success"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+      setTimeout(() => { statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+    }
+
+    // ===== Validação =====
+    function validateField(field) {
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        field.classList.remove('success');
+        return false;
+      } else {
+        field.classList.remove('error');
+        field.classList.add('success');
+        return true;
+      }
+    }
+
+    // Troca de série
+    selSerie.addEventListener('change', function() {
+      if (this.value !== lastSerieSelected) {
+        lastSerieSelected = this.value;
+        renderOptions(availabilityData);
+        renderChips(availabilityData);
+        document.querySelectorAll('.pill').forEach((pill, i) => {
+          pill.style.animationDelay = `${i * 0.1}s`;
+          pill.classList.add('animate-in');
+        });
+      }
+    });
+
+    // Validação de nome
+    nomeInput.addEventListener('input', function(){ validateField(this); });
+    nomeInput.addEventListener('blur',  function(){ validateField(this); });
+
+    // ===== Envio =====
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault(); 
+      statusBox.style.display = "none";
+      
+      const okNome = validateField(nomeInput);
+      const okSerie = validateField(selSerie);
+      const okAprof = validateField(selAprofundamento);
+      if (!okNome || !okSerie || !okAprof) { 
+        showError("⚠️ Por favor, preencha todos os campos obrigatórios."); 
+        return; 
+      }
+      
+      const nome = nomeInput.value.trim();
+      const serie = selSerie.value;
+      const aprofundamento = selAprofundamento.value;
+      
+      btn.disabled = true; 
+      btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span><span>Enviando inscrição...</span>';
+      
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          // Cabeçalho 'text/plain' evita preflight CORS nos Apps Script
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          // Envia *ambas* as chaves por compat: aprofundamento (correto) e pratica
+          body: JSON.stringify({ nome, serie, aprofundamento, pratica: aprofundamento })
+        });
+        const text = await res.text();
+        let json;
+        try { json = JSON.parse(text); } catch(_){ throw new Error("Resposta inválida da API: " + text.slice(0,120)); }
+        
+        if (json.ok) { 
+          showSuccess("🎉 Inscrição registrada com sucesso! Sua vaga está garantida."); 
+          form.reset();
+          selAprofundamento.disabled = true;
+          await loadAvailability();
+        }
+        else if (json.full) { 
+          showError("😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível."); 
+          await loadAvailability();
+        }
+        else { 
+          showError("❌ Erro: " + (json.error || "não foi possível concluir a inscrição.")); 
+        }
+      } catch(err) { 
+        console.error(err);
+        showError("🔌 Falha na conexão com a API."); 
+      } finally { 
+        btn.disabled = false; 
+        btn.innerHTML = '<span aria-hidden="true">✨</span><span>Confirmar Inscrição</span>'; 
+      }
+    });
+    
+    // ===== Boot =====
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('.card').classList.add('animate-in');
+      loadAvailability(); 
+      setInterval(loadAvailability, 60000);
+    });
+  </script>
+</body>
+</html>
