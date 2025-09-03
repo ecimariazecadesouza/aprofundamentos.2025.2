@@ -4,84 +4,125 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aprofundamentos 2025.2 - Formulário de Inscrição</title>
-  <meta name="description" content="Formulário de inscrição para os aprofundamentos 2025.2 - 2° ano: 29 vagas | 3° ano: 37 vagas">
+  <meta name="description" content="Formulário de inscrição para os aprofundamentos 2025.2">
   <meta name="theme-color" content="#7c5cff">
   <style>
+    /* ===== VARIÁVEIS CSS ===== */
     :root { 
-      --bg:#0e0f13; --card:#151823; --card-hover:#1a1d2a; --txt:#e9ecf1; --muted:#9aa3b2;
-      --accent:#7c5cff; --accent-hover:#8b6bff; --success:#2fd180; --error:#ff5c7a; --warning:#ffa726;
-      --shadow:rgba(0,0,0,.35); --gradient:linear-gradient(135deg, var(--accent), #4c82ff);
-      --space-xs:.25rem; --space-sm:.5rem; --space-md:1rem; --space-lg:1.5rem; --space-xl:2rem; --space-xxl:3rem;
-      --radius-sm:.5rem; --radius-md:.75rem; --radius-lg:1rem; --radius-xl:1.25rem;
-      --text-sm:.85rem; --text-base:1rem; --text-lg:1.25rem; --text-xl:1.5rem; --text-xxl:1.75rem;
-      --transition-fast:.2s ease; --transition-normal:.3s ease; --transition-slow:.5s ease;
-      --shadow-sm:0 2px 8px var(--shadow); --shadow-md:0 4px 16px var(--shadow); --shadow-lg:0 8px 24px var(--shadow);
+      --bg: #0e0f13; --card: #151823; --card-hover: #1a1d2a;
+      --txt: #e9ecf1; --muted: #9aa3b2; --accent: #7c5cff; --accent-hover: #8b6bff;
+      --success: #2fd180; --error: #ff5c7a; --warning: #ffa726;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --gradient: linear-gradient(135deg, var(--accent), #4c82ff);
+      --space-xs: .25rem; --space-sm: .5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --space-xxl: 3rem;
+      --radius-sm: .5rem; --radius-md: .75rem; --radius-lg: 1rem; --radius-xl: 1.25rem;
+      --text-sm: .85rem; --text-base: 1rem; --text-lg: 1.25rem; --text-xl: 1.5rem; --text-xxl: 1.75rem;
+      --transition-fast: .2s ease; --transition-normal: .3s ease; --transition-slow: .5s ease;
+      --shadow-sm: 0 2px 8px var(--shadow); --shadow-md: 0 4px 16px var(--shadow); --shadow-lg: 0 8px 24px var(--shadow);
     }
-    *{box-sizing:border-box;margin:0;padding:0}
+    *{ box-sizing:border-box; margin:0; padding:0; }
     body{
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,Cantarell,Arial,sans-serif;
-      background:linear-gradient(120deg,#0e0f13,#12131a 40%,#101628); color:var(--txt);
-      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:var(--space-md); line-height:1.6;
+      background:linear-gradient(120deg,#0e0f13,#12131a 40%,#101628);
+      color:var(--txt); min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:var(--space-md); line-height:1.6;
     }
-    .card{width:100%;max-width:720px;background:var(--card);border:1px solid rgba(255,255,255,.06);
-      border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); overflow:hidden; transition:all var(--transition-normal)}
-    .card:hover{transform:translateY(-4px); box-shadow:0 20px 40px var(--shadow)}
-    header{padding:var(--space-xl) var(--space-xl) var(--space-lg); border-bottom:1px solid rgba(255,255,255,.06);
-      background:linear-gradient(135deg,rgba(124,92,255,.05),rgba(76,130,255,.05)); text-align:center}
-    h1{margin:0 0 var(--space-sm); font-size:var(--text-xxl); font-weight:700; background:var(--gradient);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text}
-    p.sub{margin:0; color:var(--muted); font-size:var(--text-base); line-height:1.5}
-    form{padding:var(--space-lg) var(--space-xl) var(--space-xl); display:grid; gap:var(--space-xl)}
-    label{display:block; font-weight:600; margin:0 0 var(--space-sm); color:var(--txt); font-size:var(--text-base); display:flex; align-items:center; gap:var(--space-sm)}
-    .field{display:grid; gap:var(--space-sm); position:relative}
-    input,select,button{width:100%; padding:var(--space-lg); border-radius:var(--radius-lg); border:1px solid rgba(255,255,255,.1);
-      background:#0f1220; color:var(--txt); font-size:var(--text-base); transition:all var(--transition-normal); outline:none}
-    select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat:no-repeat; background-position:right var(--space-lg) center; background-size:16px; padding-right:var(--space-xxl)}
-    input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,92,255,.2); background:#111426}
-    input.success,select.success{border-color:var(--success); box-shadow:0 0 0 2px rgba(47,209,128,.1)}
-    input.error,select.error{border-color:var(--error); box-shadow:0 0 0 2px rgba(255,92,122,.1)}
-    input::placeholder{color:#7d8597}
-    .hint{font-size:var(--text-sm); color:var(--muted); margin-top:var(--space-xs); display:flex; align-items:center; gap:var(--space-sm)}
-    .row{display:grid; gap:var(--space-lg); grid-template-columns:1fr}
-    @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
-    .chips-container{background:rgba(15,18,32,.5); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:var(--space-lg); margin:var(--space-md) 0}
-    .chips-title{font-size:var(--text-sm); font-weight:600; color:var(--muted); margin-bottom:var(--space-md); text-transform:uppercase; letter-spacing:.5px; display:flex; align-items:center; gap:var(--space-sm)}
-    .chips{display:flex; flex-wrap:wrap; gap:var(--space-sm)}
-    .pill{display:inline-flex; gap:var(--space-sm); align-items:center; font-size:var(--text-sm); padding:var(--space-sm) var(--space-md);
-      border-radius:20px; background:#0f1220; border:1px solid rgba(255,255,255,.08); color:var(--muted); transition:all var(--transition-normal); cursor:default}
-    .pill:hover{background:#141a2a; border-color:rgba(124,92,255,.3); transform:translateY(-2px); box-shadow:0 4px 12px rgba(124,92,255,.2)}
-    .status{padding:var(--space-lg); border-radius:var(--radius-lg); background:#0f1a1f; border:1px solid rgba(255,255,255,.08); font-size:var(--text-base);
-      display:none; margin:var(--space-md) 0; transition:all var(--transition-normal); display:flex; align-items:center; gap:var(--space-md)}
-    .status.success{display:flex; border-color:rgba(47,209,128,.5); background:rgba(47,209,128,.1); color:var(--success)}
-    .status.error{display:flex; border-color:rgba(255,92,122,.5); background:rgba(255,92,122,.1); color:var(--error)}
-    .footer{padding:var(--space-lg) var(--space-xl) var(--space-xl); display:flex; justify-content:space-between; align-items:center; color:var(--muted);
-      border-top:1px solid rgba(255,255,255,.06); font-size:var(--text-sm); flex-wrap:wrap; gap:var(--space-md); background:rgba(15,18,32,.3)}
-    button{background:var(--gradient); border:none; font-weight:700; cursor:pointer; transition:all var(--transition-normal); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:var(--space-sm)}
-    button:hover{transform:translateY(-2px); box-shadow:0 8px 25px rgba(124,92,255,.3)}
-    button:active{transform:translateY(0)}
-    button:disabled{opacity:.6; cursor:not-allowed; transform:none}
-    button::before{content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); transition:left .5s}
-    button:hover::before{left:100%}
-    .sync-indicator{display:inline-flex; align-items:center; gap:var(--space-sm)}
-    .sync-dot{width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite}
-    @keyframes pulse{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
-    .loading-spinner{display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,.3); border-radius:50%; border-top-color:#fff; animation:spin 1s ease-in-out infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .required-marker{color:var(--error); margin-left:var(--space-xs)}
-    @keyframes fadeIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
-    .animate-in{animation:fadeIn .5s ease forwards}
-    @media (max-width:768px){
-      :root{--space-xl:1.5rem;--space-lg:1.25rem;--space-md:.75rem}
-      body{padding:var(--space-sm); align-items:flex-start; padding-top:var(--space-lg)}
-      .card{border-radius:var(--radius-lg); margin:var(--space-md) 0}
-      header{padding:var(--space-lg) var(--space-md) var(--space-md)}
-      h1{font-size:var(--text-xl)} form{padding:var(--space-md); gap:var(--space-lg)}
-      input,select,button{padding:var(--space-md)} select{background-position:right var(--space-md) center}
-      .footer{padding:var(--space-md); flex-direction:column; text-align:center; gap:var(--space-sm)}
-      .chips{justify-content:center} .status{padding:var(--space-md); flex-direction:column; text-align:center; gap:var(--space-sm)}
+    .card{
+      width:100%; max-width:720px; background:var(--card); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); overflow:hidden; transition:all var(--transition-normal);
     }
-    @media (max-width:360px){ .chips{flex-direction:column; align-items:stretch} .pill{justify-content:center; text-align:center} }
+    .card:hover{ transform:translateY(-4px); box-shadow:0 20px 40px var(--shadow); }
+    header{
+      padding:var(--space-xl) var(--space-xl) var(--space-lg); border-bottom:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(135deg,rgba(124,92,255,.05),rgba(76,130,255,.05)); text-align:center;
+    }
+    h1{ margin:0 0 var(--space-sm); font-size:var(--text-xxl); font-weight:700; background:var(--gradient);
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    p.sub{ margin:0; color:var(--muted); font-size:var(--text-base); line-height:1.5; }
+    form{ padding:var(--space-lg) var(--space-xl) var(--space-xl); display:grid; gap:var(--space-xl); }
+    label{
+      display:flex; align-items:center; gap:var(--space-sm); font-weight:600; margin:0 0 var(--space-sm); color:var(--txt);
+      font-size:var(--text-base);
+    }
+    .field{ display:grid; gap:var(--space-sm); position:relative; }
+    input,select,button{
+      width:100%; padding:var(--space-lg); border-radius:var(--radius-lg); border:1px solid rgba(255,255,255,.1);
+      background:#0f1220; color:var(--txt); font-size:var(--text-base); transition:all var(--transition-normal); outline:none;
+    }
+    select{
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right var(--space-lg) center; background-size:16px; padding-right:var(--space-xxl);
+    }
+    input:focus,select:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,92,255,.2); background:#111426; }
+    input.success,select.success{ border-color:var(--success); box-shadow:0 0 0 2px rgba(47,209,128,.1); }
+    input.error,select.error{ border-color:var(--error); box-shadow:0 0 0 2px rgba(255,92,122,.1); }
+    input::placeholder{ color:#7d8597; }
+    .hint{ font-size:var(--text-sm); color:var(--muted); margin-top:var(--space-xs); display:flex; align-items:center; gap:var(--space-sm); }
+    .row{ display:grid; gap:var(--space-lg); grid-template-columns:1fr; }
+    @media(min-width:720px){ .row{ grid-template-columns:1fr 1fr; } }
+    .chips-container{
+      background:rgba(15,18,32,.5); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg);
+      padding:var(--space-lg); margin:var(--space-md) 0;
+    }
+    .chips-title{
+      font-size:var(--text-sm); font-weight:600; color:var(--muted); margin-bottom:var(--space-md);
+      text-transform:uppercase; letter-spacing:.5px; display:flex; align-items:center; gap:var(--space-sm);
+    }
+    .chips{ display:flex; flex-wrap:wrap; gap:var(--space-sm); }
+    .pill{
+      display:inline-flex; gap:var(--space-sm); align-items:center; font-size:var(--text-sm);
+      padding:var(--space-sm) var(--space-md); border-radius:20px; background:#0f1220; border:1px solid rgba(255,255,255,.08);
+      color:var(--muted); transition:all var(--transition-normal); cursor:default;
+    }
+    .pill:hover{ background:#141a2a; border-color:rgba(124,92,255,.3); transform:translateY(-2px); box-shadow:0 4px 12px rgba(124,92,255,.2); }
+    .status{
+      padding:var(--space-lg); border-radius:var(--radius-lg); background:#0f1a1f; border:1px solid rgba(255,255,255,.08);
+      font-size:var(--text-base); display:none; margin:var(--space-md) 0; transition:all var(--transition-normal);
+      display:flex; align-items:center; gap:var(--space-md);
+    }
+    .status.success{ display:flex; border-color:rgba(47,209,128,.5); background:rgba(47,209,128,.1); color:var(--success); }
+    .status.error{ display:flex; border-color:rgba(255,92,122,.5); background:rgba(255,92,122,.1); color:var(--error); }
+    .footer{
+      padding:var(--space-lg) var(--space-xl) var(--space-xl); display:flex; justify-content:space-between; align-items:center;
+      color:var(--muted); border-top:1px solid rgba(255,255,255,.06); font-size:var(--text-sm); flex-wrap:wrap; gap:var(--space-md);
+      background:rgba(15,18,32,.3);
+    }
+    button{
+      background:var(--gradient); border:none; font-weight:700; cursor:pointer; transition:all var(--transition-normal);
+      position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:var(--space-sm);
+    }
+    button:hover{ transform:translateY(-2px); box-shadow:0 8px 25px rgba(124,92,255,.3); }
+    button:active{ transform:translateY(0); }
+    button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+    button::before{
+      content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); transition:left .5s;
+    }
+    button:hover::before{ left:100%; }
+    .sync-indicator{ display:inline-flex; align-items:center; gap:var(--space-sm); }
+    .sync-dot{ width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
+    @keyframes pulse{ 0%{opacity:1} 50%{opacity:.5} 100%{opacity:1} }
+    .loading-spinner{ display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,.3); border-radius:50%;
+      border-top-color:#fff; animation:spin 1s ease-in-out infinite; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    .required-marker{ color:var(--error); margin-left:var(--space-xs); }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .animate-in{ animation:fadeIn .5s ease forwards; }
+    @media(max-width:768px){
+      :root{ --space-xl:1.5rem; --space-lg:1.25rem; --space-md:.75rem; }
+      body{ padding:var(--space-sm); align-items:flex-start; padding-top:var(--space-lg); }
+      .card{ border-radius:var(--radius-lg); margin:var(--space-md) 0; }
+      header{ padding:var(--space-lg) var(--space-md) var(--space-md); }
+      h1{ font-size:var(--text-xl); }
+      form{ padding:var(--space-md); gap:var(--space-lg); }
+      input,select,button{ padding:var(--space-md); }
+      select{ background-position:right var(--space-md) center; }
+      .footer{ padding:var(--space-md); flex-direction:column; text-align:center; gap:var(--space-sm); }
+      .chips{ justify-content:center; }
+      .status{ padding:var(--space-md); flex-direction:column; text-align:center; gap:var(--space-sm); }
+    }
+    @media(max-width:360px){ .chips{ flex-direction:column; align-items:stretch; } .pill{ justify-content:center; text-align:center; } }
   </style>
 </head>
 <body>
@@ -104,6 +145,7 @@
           <label for="serie">🏫 Série/Turma <span class="required-marker" aria-hidden="true">*</span></label>
           <select id="serie" name="serie" required aria-required="true" aria-describedby="serie-hint">
             <option value="" disabled selected>Selecione sua turma</option>
+            <option>1° A</option><option>1° B</option><option>1° C</option><option>1° D</option><option>1° E</option>
             <option>2° A</option><option>2° B</option><option>2° C</option>
             <option>3° A</option><option>3° B</option>
           </select>
@@ -139,7 +181,6 @@
 
   <script>
     // ===== Config =====
-    // Usa sua URL definitiva do Apps Script:
     const API_URL = "https://script.google.com/macros/s/AKfycbwY-3n6D5VXIeXEanzdikpQxBN8LGC1-FoIKnPytWp5qzItkA3FWaLFspf0wNfZBeZ6/exec";
     const $ = (s) => document.querySelector(s);
 
@@ -155,48 +196,60 @@
 
     // ===== Lista por série =====
     const APROFUNDAMENTOS_POR_SERIE = {
-      "2° A": [
-        "Educação ambiental: Justiça socioambiental e cidadania",
-        "Impactos Ambientais de um Telefone Celular",
-        "Mundo do trabalho"
-      ],
-      "2° B": [
-        "Educação ambiental: Justiça socioambiental e cidadania",
-        "Impactos Ambientais de um Telefone Celular",
-        "Mundo do trabalho"
-      ],
-      "2° C": [
-        "Educação ambiental: Justiça socioambiental e cidadania",
-        "Impactos Ambientais de um Telefone Celular",
-        "Mundo do trabalho"
-      ],
-      "3° A": [
-        "Construindo Oportunidades: os desafios do amanhã",
-        "Solos: conhecer e entender para conservar e restaurar"
-      ],
-      "3° B": [
-        "Construindo Oportunidades: os desafios do amanhã",
-        "Solos: conhecer e entender para conservar e restaurar"
-      ]
+      // 1º ano
+      "1° A": ["Cinearte","Cultura e Diversidade na Paraíba","GameLab","Muros Invisíveis: liberdade e desafios nas ruas","Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° B": ["Cinearte","Cultura e Diversidade na Paraíba","GameLab","Muros Invisíveis: liberdade e desafios nas ruas","Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° C": ["Cinearte","Cultura e Diversidade na Paraíba","GameLab","Muros Invisíveis: liberdade e desafios nas ruas","Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° D": ["Cinearte","Cultura e Diversidade na Paraíba","GameLab","Muros Invisíveis: liberdade e desafios nas ruas","Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° E": ["Cinearte","Cultura e Diversidade na Paraíba","GameLab","Muros Invisíveis: liberdade e desafios nas ruas","Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      // 2º ano
+      "2° A": ["Educação ambiental: Justiça socioambiental e cidadania","Impactos Ambientais de um Telefone Celular","Mundo do trabalho"],
+      "2° B": ["Educação ambiental: Justiça socioambiental e cidadania","Impactos Ambientais de um Telefone Celular","Mundo do trabalho"],
+      "2° C": ["Educação ambiental: Justiça socioambiental e cidadania","Impactos Ambientais de um Telefone Celular","Mundo do trabalho"],
+      // 3º ano
+      "3° A": ["Construindo Oportunidades: os desafios do amanhã","Solos: conhecer e entender para conservar e restaurar"],
+      "3° B": ["Construindo Oportunidades: os desafios do amanhã","Solos: conhecer e entender para conservar e restaurar"]
+    };
+
+    // ===== Vagas oficiais (fallback caso a aba capacidade ainda não esteja populada) =====
+    const DEFAULT_VAGAS = {
+      // 1º ano
+      "Cinearte": 28,
+      "Cultura e Diversidade na Paraíba": 26,
+      "GameLab": 27,
+      "Muros Invisíveis: liberdade e desafios nas ruas": 25,
+      "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais": 25,
+      // 2º ano
+      "Educação ambiental: Justiça socioambiental e cidadania": 29,
+      "Impactos Ambientais de um Telefone Celular": 29,
+      "Mundo do trabalho": 29,
+      // 3º ano
+      "Construindo Oportunidades: os desafios do amanhã": 37,
+      "Solos: conhecer e entender para conservar e restaurar": 37
     };
 
     // ===== State =====
     let availabilityData = [];
     let lastSerieSelected = '';
 
+    // ===== Helpers =====
+    const getAprofNome = (obj) => (obj && (obj.aprofundamento || obj.pratica || '')) || '';
+    const vagasPadrao = (serie, nome) => {
+      // usa o mapeamento oficial por nome; se não houver, chuta por série (37 p/ 3°, 29 p/ demais)
+      if (DEFAULT_VAGAS[nome] != null) return DEFAULT_VAGAS[nome];
+      return String(serie||'').startsWith('3°') ? 37 : 29;
+    };
+
     // ===== API: disponibilidade =====
     async function loadAvailability() {
       try {
         btn.disabled = true; 
         statusBox.style.display = "none";
-        
-        const res = await fetch(API_URL, { cache: "no-store" }); 
+        const res = await fetch(API_URL, { cache: "no-store" });
         const text = await res.text();
         let json;
         try { json = JSON.parse(text); } catch(_) { throw new Error("Resposta inválida da API: " + text.slice(0,120)); }
-        // Espera { ok:true, availability:[{ aprofundamento, limite, inscritos, restantes }, ...] }
-        availabilityData = (json && json.availability) || []; 
-        
+        availabilityData = Array.isArray(json?.availability) ? json.availability : [];
         renderOptions(availabilityData); 
         renderChips(availabilityData); 
         lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
@@ -224,10 +277,8 @@
       const aprovList = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
       
       aprovList.forEach(aprofundamento => {
-        const item = items.find(it => (it.aprofundamento === aprofundamento));
-        const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
-        const rem = item ? (+item.restantes || 0) : vagasPadrao;
-        
+        const item = items.find(it => getAprofNome(it) === aprofundamento);
+        const rem = item ? (+item.restantes || 0) : vagasPadrao(serieAtual, aprofundamento);
         const option = document.createElement("option"); 
         option.value = aprofundamento; 
         option.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
@@ -239,31 +290,26 @@
     // ===== UI: chips de vagas =====
     function renderChips(items) {
       chips.innerHTML = ""; 
-      
       const serieAtual = selSerie.value;
       let paraMostrar = [];
-      
+
       if (serieAtual && APROFUNDAMENTOS_POR_SERIE[serieAtual]) {
         paraMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
       } else {
         const setAll = new Set();
         Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => lista.forEach(n => setAll.add(n)));
-        paraMostrar = Array.from(setAll);
+        paraMostrar = Array.from(setAll).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       }
       
       paraMostrar.forEach(aprofundamento => {
-        const item = items.find(it => (it.aprofundamento === aprofundamento));
-        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
-        const vagasPadrao = eh3Ano ? 37 : 29;
-        const vagasRestantes = item ? (+item.restantes || 0) : vagasPadrao;
-        
+        const item = items.find(it => getAprofNome(it) === aprofundamento);
+        const vagasRestantes = item ? (+item.restantes || 0) : DEFAULT_VAGAS[aprofundamento] ?? 0;
         const chip = document.createElement("span"); 
         chip.className = "pill"; 
         chip.innerHTML = `
-          <span>${aprofundamento.length > 25 ? aprofundamento.substring(0, 25) + '...' : aprofundamento}</span>
+          <span>${aprofundamento.length > 28 ? aprofundamento.substring(0, 28) + '…' : aprofundamento}</span>
           <strong>${vagasRestantes} ${vagasRestantes === 1 ? 'vaga' : 'vagas'}</strong>
         `;
-        
         if (vagasRestantes === 0) {
           chip.style.opacity = '0.6';
           chip.innerHTML += ' <span aria-hidden="true">❌</span>';
@@ -274,7 +320,6 @@
         } else {
           chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes`);
         }
-        
         chips.appendChild(chip); 
       });
     }
@@ -296,8 +341,15 @@
 
     // ===== Validação =====
     function validateField(field) {
-      if (!field.value.trim()) { field.classList.add('error'); field.classList.remove('success'); return false; }
-      field.classList.remove('error'); field.classList.add('success'); return true;
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        field.classList.remove('success');
+        return false;
+      } else {
+        field.classList.remove('error');
+        field.classList.add('success');
+        return true;
+      }
     }
 
     // Troca de série
@@ -307,9 +359,11 @@
         renderOptions(availabilityData);
         renderChips(availabilityData);
         document.querySelectorAll('.pill').forEach((pill, i) => {
-          pill.style.animationDelay = `${i * 0.1}s`;
+          pill.style.animationDelay = `${i * 0.05}s`;
           pill.classList.add('animate-in');
         });
+        // limpa seleção anterior de aprofundamento
+        selAprofundamento.value = "";
       }
     });
 
@@ -325,7 +379,10 @@
       const okNome = validateField(nomeInput);
       const okSerie = validateField(selSerie);
       const okAprof = validateField(selAprofundamento);
-      if (!okNome || !okSerie || !okAprof) { showError("⚠️ Por favor, preencha todos os campos obrigatórios."); return; }
+      if (!okNome || !okSerie || !okAprof) { 
+        showError("⚠️ Por favor, preencha todos os campos obrigatórios."); 
+        return; 
+      }
       
       const nome = nomeInput.value.trim();
       const serie = selSerie.value;
@@ -337,8 +394,8 @@
       try {
         const res = await fetch(API_URL, {
           method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ nome, serie, aprofundamento }) // apenas 'aprofundamento'
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, // evita preflight no Apps Script
+          body: JSON.stringify({ nome, serie, aprofundamento })
         });
         const text = await res.text();
         let json;
