@@ -1,565 +1,617 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin PRO • Aprofundamentos 2025.2</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
-<style>
-  :root { 
-    --bg: #0b0e17; --card: #131a2b; --card-2:#0f1526; --card-hover: #19223a;
-    --txt: #ecf1f6; --muted: #9aa3b2; --accent: #4CAF50; --accent-2:#2fd180;
-    --error:#ff6b7a; --warn:#ffa726; --line:#1f2740; --shadow: rgba(0,0,0,.25);
-    --gradient: linear-gradient(135deg, var(--accent), #66BB6A);
-  }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body { background: radial-gradient(1200px 600px at 10% -10%, rgba(76,175,80,.07), transparent), linear-gradient(120deg,#0a0d14,#0e1322 45%,#0a1230); color:var(--txt); font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; }
-  .container { max-width: 1300px; margin:0 auto; padding:28px 20px; }
-  .header h1 { font-size: 2.2rem; font-weight: 800; margin:0 0 8px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .header p { color:var(--muted); }
-  .row { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 8px 30px var(--shadow); }
-  .card:hover { background:var(--card-hover); }
-  .card-title { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:10px; }
-  .muted { color:var(--muted); }
-  label { font-size:.95rem; font-weight:700; }
-  input, select, button { background:#0f1426; color:var(--txt); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font:inherit; }
-  input:focus,select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(76,175,80,.15); }
-  .btn { background:var(--gradient); border:none; font-weight:800; cursor:pointer; }
-  .btn.secondary { background:#1a2138; }
-  .btn.small { padding:8px 10px; border-radius:10px; font-size:.9rem; }
-  .btn.danger { background:linear-gradient(135deg,#ff4757,#ff6b7a); }
-  .btn.warn { background:linear-gradient(135deg,#ffa726,#ffb74d); }
-  .btn.success { background:linear-gradient(135deg,#2ed573,#2fd180); }
-  .grid { display:grid; gap:14px; }
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr; }
-  @media (min-width: 860px) { .grid-2 { grid-template-columns: 1fr 1fr; } .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
-  table { width:100%; border-collapse: collapse; }
-  th, td { padding:14px 12px; border-bottom: 1px solid var(--line); }
-  th { text-align:left; font-size:.85rem; letter-spacing:.5px; text-transform:uppercase; background:rgba(76,175,80,.06); position: sticky; top:0; }
-  tr:hover td { background:rgba(76,175,80,.07); }
-  code.badge { background:#0e1631; border:1px solid var(--line); padding:2px 6px; border-radius:8px; }
-  .message { padding:10px 12px; border-radius:12px; margin:8px 0; display:flex; align-items:center; gap:8px; }
-  .message.success { color:#2fd180; background:rgba(47,209,128,.12); border:1px solid rgba(47,209,128,.35); }
-  .message.error { color:#ff6b7a; background:rgba(255,107,122,.12); border:1px solid rgba(255,107,122,.35); }
-  .message.warn { color:#ffa726; background:rgba(255,167,38,.12); border:1px solid rgba(255,167,38,.35); }
-  .hide { display:none !important; }
-  .table-actions { display:flex; gap:8px; flex-wrap:wrap; }
-  .flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .spacer { flex:1; }
-  .inline { display:inline-flex; align-items:center; gap:8px; }
-  .capacity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:14px; }
-  .cap-item { background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:14px; }
-  .progress { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
-  .progress > div { height:8px; background:var(--gradient); }
-  .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-  .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aprofundamentos 2025.2 - Formulário de Inscrição</title>
+  <!-- Meta tags para SEO e acessibilidade -->
+  <meta name="description" content="Formulário de inscrição para os aprofundamentos 2025.2 - 2° ano: 29 vagas | 3° ano: 37 vagas">
+  <meta name="theme-color" content="#7c5cff">
+  
+  <style>
+    /* ===== VARIÁVEIS CSS ===== */
+    :root { 
+      /* Cores */
+      --bg: #0e0f13; 
+      --card: #151823; 
+      --card-hover: #1a1d2a;
+      --txt: #e9ecf1; 
+      --muted: #9aa3b2; 
+      --accent: #7c5cff; 
+      --accent-hover: #8b6bff;
+      --success: #2fd180; 
+      --error: #ff5c7a; 
+      --warning: #ffa726;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --gradient: linear-gradient(135deg, var(--accent), #4c82ff);
+      
+      /* Espaçamentos */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-xxl: 3rem;
+      
+      /* Bordas */
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      
+      /* Tipografia */
+      --text-sm: 0.85rem;
+      --text-base: 1rem;
+      --text-lg: 1.25rem;
+      --text-xl: 1.5rem;
+      --text-xxl: 1.75rem;
+      
+      /* Transições */
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Sombras */
+      --shadow-sm: 0 2px 8px var(--shadow);
+      --shadow-md: 0 4px 16px var(--shadow);
+      --shadow-lg: 0 8px 24px var(--shadow);
+    }
+    
+    /* ===== RESET E ESTILOS BASE ===== */
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif; 
+      background: linear-gradient(120deg, #0e0f13, #12131a 40%, #101628); 
+      color: var(--txt); 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: var(--space-md);
+      line-height: 1.6;
+    }
+    
+    /* ===== COMPONENTES ===== */
+    .card { 
+      width: 100%; 
+      max-width: 720px; 
+      background: var(--card); 
+      border: 1px solid rgba(255,255,255,.06); 
+      border-radius: var(--radius-xl); 
+      box-shadow: var(--shadow-lg); 
+      overflow: hidden;
+      transition: all var(--transition-normal);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px var(--shadow);
+    }
+    
+    header { 
+      padding: var(--space-xl) var(--space-xl) var(--space-lg); 
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.05), rgba(76, 130, 255, 0.05));
+      text-align: center;
+    }
+    
+    h1 { 
+      margin: 0 0 var(--space-sm); 
+      font-size: var(--text-xxl); 
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    p.sub { 
+      margin: 0; 
+      color: var(--muted); 
+      font-size: var(--text-base);
+      line-height: 1.5;
+    }
+    
+    form { 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); 
+      display: grid; 
+      gap: var(--space-xl); 
+    }
+    
+    label { 
+      display: block; 
+      font-weight: 600; 
+      margin: 0 0 var(--space-sm);
+      color: var(--txt);
+      font-size: var(--text-base);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .field { 
+      display: grid; 
+      gap: var(--space-sm); 
+      position: relative;
+    }
+    
+    input, select, button { 
+      width: 100%; 
+      padding: var(--space-lg); 
+      border-radius: var(--radius-lg); 
+      border: 1px solid rgba(255,255,255,.1); 
+      background: #0f1220; 
+      color: var(--txt);
+      font-size: var(--text-base);
+      transition: all var(--transition-normal);
+      outline: none;
+    }
+    
+    /* Estilização personalizada para select */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-lg) center;
+      background-size: 16px;
+      padding-right: var(--space-xxl);
+    }
+    
+    /* Estados dos campos */
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+      background: #111426;
+    }
+    
+    input.success, select.success {
+      border-color: var(--success);
+      box-shadow: 0 0 0 2px rgba(47, 209, 128, 0.1);
+    }
+    
+    input.error, select.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 2px rgba(255, 92, 122, 0.1);
+    }
+    
+    input::placeholder { 
+      color: #7d8597; 
+    }
+    
+    .hint { 
+      font-size: var(--text-sm); 
+      color: var(--muted);
+      margin-top: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .row { 
+      display: grid; 
+      gap: var(--space-lg); 
+      grid-template-columns: 1fr; 
+    } 
+    @media (min-width: 720px) { .row { grid-template-columns: 1fr 1fr; } }
+    
+    .chips-container {
+      background: rgba(15, 18, 32, 0.5);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin: var(--space-md) 0;
+    }
+    .chips-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: var(--space-md);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+    .pill { 
+      display: inline-flex; gap: var(--space-sm); align-items: center; 
+      font-size: var(--text-sm); padding: var(--space-sm) var(--space-md); 
+      border-radius: 20px; background: #0f1220; border: 1px solid rgba(255,255,255,.08); 
+      color: var(--muted); transition: all var(--transition-normal); cursor: default;
+    }
+    .pill:hover { background: #141a2a; border-color: rgba(124, 92, 255, 0.3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2); }
+    
+    .status { 
+      padding: var(--space-lg); border-radius: var(--radius-lg); background: #0f1a1f; 
+      border: 1px solid rgba(255,255,255,.08); font-size: var(--text-base); display: none;
+      margin: var(--space-md) 0; transition: all var(--transition-normal);
+      display: flex; align-items: center; gap: var(--space-md);
+    }
+    .status.success { display: flex; border-color: rgba(47,209,128,.5); background: rgba(47,209,128,.1); color: var(--success); }
+    .status.error   { display: flex; border-color: rgba(255,92,122,.5); background: rgba(255,92,122,.1); color: var(--error); }
+    
+    .footer { 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); display: flex; justify-content: space-between; 
+      align-items: center; color: var(--muted); border-top: 1px solid rgba(255,255,255,.06); 
+      font-size: var(--text-sm); flex-wrap: wrap; gap: var(--space-md); background: rgba(15, 18, 32, 0.3);
+    }
+    
+    button { 
+      background: var(--gradient); border: none; font-weight: 700; cursor: pointer;
+      transition: all var(--transition-normal); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: var(--space-sm);
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+    button:hover::before { left: 100%; }
+    
+    .sync-indicator { display: inline-flex; align-items: center; gap: var(--space-sm); }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .required-marker { color: var(--error); margin-left: var(--space-xs); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: fadeIn 0.5s ease forwards; }
+    
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 768px) {
+      :root { --space-xl: 1.5rem; --space-lg: 1.25rem; --space-md: 0.75rem; }
+      body { padding: var(--space-sm); align-items: flex-start; padding-top: var(--space-lg); }
+      .card { border-radius: var(--radius-lg); margin: var(--space-md) 0; }
+      header { padding: var(--space-lg) var(--space-md) var(--space-md); }
+      h1 { font-size: var(--text-xl); }
+      form { padding: var(--space-md); gap: var(--space-lg); }
+      input, select, button { padding: var(--space-md); }
+      select { background-position: right var(--space-md) center; }
+      .footer { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
+      .chips { justify-content: center; }
+      .status { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
+    }
+    @media (max-width: 360px) {
+      .chips { flex-direction: column; align-items: stretch; }
+      .pill { justify-content: center; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>🔐 Admin PRO • Aprofundamentos 2025.2</h1>
-    <p class="muted">Gestão avançada de inscrições, capacidade e exportações.</p>
-  </div>
+  <div class="card" role="main" aria-label="Formulário de inscrição para aprofundamentos 2025.2">
+    <header>
+      <h1>🎓 Aprofundamentos 2025.2</h1>
+      <p class="sub">Preencha o formulário abaixo para garantir sua vaga.<br>
+      <strong>Cada aprofundamento tem limite de vagas</strong> - não perca tempo!</p>
+    </header>
 
-    <div id="loginCard" class="card">
-    <div class="card-title"><span>🔒</span> Acesso</div>
-    <div class="muted" id="apiInfo">Detectando API...</div>
+    <form id="form" novalidate aria-labelledby="form-title">
+      <div class="field">
+        <label for="nome">
+          👤 Nome Completo <span class="required-marker" aria-hidden="true">*</span>
+        </label>
+        <input id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required 
+               aria-required="true" aria-describedby="nome-hint" />
+        <div class="hint" id="nome-hint">
+          <span aria-hidden="true">ℹ️</span>
+          <span>Informe seu nome completo conforme documentos oficiais</span>
+        </div>
+      </div>
 
-    <div id="apiEditor" class="grid grid-2 hide" style="margin-top:10px;">
-      <div>
-        <label for="api">🌐 URL da API</label>
-        <input id="api" placeholder="https://script.google.com/macros/s/....../exec" />
-        <small class="muted">Você pode alterar a URL detectada aqui.</small>
-      </div>
-    </div>
+      <div class="row">
+        <div class="field">
+          <label for="serie">
+            🏫 Série/Turma <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="serie" name="serie" required aria-required="true" aria-describedby="serie-hint">
+            <option value="" disabled selected>Selecione sua turma</option>
+            <option>2° A</option><option>2° B</option><option>2° C</option>
+            <option>3° A</option><option>3° B</option>
+          </select>
+          <div class="hint" id="serie-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Escolha sua série e turma atual</span>
+          </div>
+        </div>
 
-    <div class="grid grid-2" style="margin-top:14px;">
-      <div>
-        <label for="pwd">🔑 Senha</label>
-        <input id="pwd" type="password" placeholder="••••••••" />
-        <small class="muted">Use a senha admin definida no GAS.</small>
-      </div>
-    </div>
+        <div class="field">
+          <label for="aprofundamento">
+            📚 Aprofundamento <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="aprofundamento" name="aprofundamento" required 
+                  aria-required="true" aria-describedby="aprofundamento-hint" disabled>
+            <option value="" disabled selected>Carregando opções...</option>
+          </select>
+          <div class="hint" id="aprofundamento-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Aprofundamentos esgotados ficam indisponíveis</span>
+          </div>
+        </div>
+      </div>
 
-    <div class="flex" style="margin-top:12px;">
-      <button id="btEnter" class="btn"><span>🚀</span> Entrar</button>
-      <button id="toggleApi" class="btn secondary"><span>⚙️</span> Configurar API</button>
-      <span id="loginMsg" class="message hide" role="status" aria-live="polite"></span>
-    </div>
-  </div>
+      <div class="chips-container">
+        <div class="chips-title">
+          <span aria-hidden="true">📊</span>
+          <span>Vagas Disponíveis</span>
+        </div>
+        <div class="chips" id="chips" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      
+      <div id="status" class="status" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      
+      <button id="btn" type="submit" aria-label="Confirmar inscrição no aprofundamento selecionado">
+        <span aria-hidden="true">✨</span>
+        <span>Confirmar Inscrição</span>
+      </button>
+    </form>
 
-    <div id="dash" class="hide">
-    <div class="flex" style="justify-content:flex-end; margin-bottom:10px;">
-      <button id="btLogout" class="btn secondary"><span>👋</span> Sair</button>
-    </div>
+    <div class="footer">
+      <span>
+        <span aria-hidden="true">📚</span>
+        <span>ECI Maria Zeca de Souza • Lkton • 2025</span>
+      </span>
+      <div class="sync-indicator">
+        <div class="sync-dot" aria-hidden="true"></div>
+        <span id="lastSync">Sincronizando...</span>
+      </div>
+    </div>
+  </div>
 
-        <div class="row">
-      <div class="card" style="flex:1; min-width:260px;">
-        <div class="card-title"><span>📊</span> Estatísticas</div>
-        <div class="grid grid-3">
-          <div class="card">
-            <div class="muted">Total de Inscrições</div>
-            <div id="tot" style="font-size:2rem; font-weight:800;">-</div>
-          </div>
-          <div class="card">
-            <div class="muted">Esgotados</div>
-            <div id="esgot" style="font-size:2rem; font-weight:800;">-</div>
-          </div>
-          <div class="card">
-            <div class="muted">Última Atualização</div>
-            <div id="last" style="font-weight:800;">-</div>
-          </div>
-        </div>
-      </div>
+  <script>
+    // ===== Config =====
+    const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
+    const $ = (s) => document.querySelector(s);
 
-      <div class="card" style="flex:1.5; min-width:320px;">
-        <div class="card-title"><span>🔍</span> Filtros</div>
-        <div class="grid grid-3">
-          <div>
-            <label for="fAprof">📚 Aprofundamento</label>
-            <select id="fAprof"><option value="">Todos</option></select>
-          </div>
-          <div>
-            <label for="fSerie">🏫 Série/Turma</label>
-            <select id="fSerie">
-              <option value="">Todas</option>
-              <option>2° A</option><option>2° B</option><option>2° C</option>
-              <option>3° A</option><option>3° B</option>
-            </select>
-          </div>
-          <div>
-            <label for="fQ">🔎 Buscar por nome</label>
-            <input id="fQ" placeholder="Digite um nome..." />
-          </div>
-        </div>
-        <div class="grid grid-3" style="margin-top:10px;">
-          <div>
-            <label for="fFrom">🗓️ De</label>
-            <input id="fFrom" type="date" />
-          </div>
-          <div>
-            <label for="fTo">🗓️ Até</label>
-            <input id="fTo" type="date" />
-          </div>
-          <div style="display:flex; align-items:flex-end; gap:10px;">
-            <button id="btFiltrar" class="btn"><span>🔄</span> Aplicar</button>
-            <button id="btSort" class="btn secondary" title="Alternar ordenação"><span>📋</span> Ordenar: Data/Hora</button>
-          </div>
-        </div>
-        <div id="fltMsg" class="message hide"></div>
-        <div class="flex" style="margin-top:10px;">
-          <div class="inline">
-            <label for="pageSize">Linhas por página</label>
-            <select id="pageSize">
-              <option>25</option><option selected>50</option><option>100</option><option>200</option>
-            </select>
-          </div>
-          <div class="spacer"></div>
-          <div class="inline">
-            <button id="btPDF" class="btn small"><span>📄</span> PDF</button>
-            <button id="btXLSX" class="btn small success"><span>📊</span> XLSX</button>
-            <button id="btDOCX" class="btn small warn"><span>📝</span> DOC</button>
-            <button id="btCSV" class="btn small secondary"><span>📋</span> CSV</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    // ===== Elements =====
+    const form = $("#form");
+    const selSerie = $("#serie");
+    const selAprofundamento = $("#aprofundamento");
+    const chips = $("#chips");
+    const statusBox = $("#status");
+    const btn = $("#btn");
+    const lastSync = $("#lastSync");
+    const nomeInput = $("#nome");
 
-        <div class="card" style="margin-top:16px;">
-      <div class="flex">
-        <div class="card-title"><span>📋</span> Inscrições</div>
-        <div class="spacer"></div>
-        <div class="pagination">
-          <button id="prevPage" class="btn secondary small">◀</button>
-          <span class="pill"><span id="pageInfo">Página 1/1</span></span>
-          <button id="nextPage" class="btn secondary small">▶</button>
-          <span class="pill"><span id="count">-</span></span>
-        </div>
-      </div>
-      <div class="loading" id="loading" style="padding:50px; text-align:center;">
-        <div>Carregando dados…</div>
-      </div>
-      <div class="hide" id="tblWrap">
-        <table id="tbl">
-          <thead>
-            <tr>
-              <th>🕒 Data/Hora</th>
-              <th>👤 Nome</th>
-              <th>🏫 Série/Turma</th>
-              <th>📚 Aprofundamento</th>
-              <th>🆔 ID</th>
-              <th style="width:260px;">⚙️ Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
+    // ===== Lista por série =====
+    const APROFUNDAMENTOS_POR_SERIE = {
+      "2° A": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° B": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° C": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "3° A": [
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
+      ],
+      "3° B": [
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
+      ]
+    };
 
-        <div class="card" style="margin-top:16px;">
-      <div class="card-title"><span>📊</span> Capacidade dos Aprofundamentos</div>
-      <div id="capGrid" class="capacity-grid"></div>
-    </div>
-  </div>
-</div>
+    // ===== State =====
+    let availabilityData = [];
+    let lastSerieSelected = '';
 
-<div id="modalBackdrop" class="modal-backdrop hide">
-  <div class="modal">
-    <div class="card-title"><span>🔁</span> Transferir Inscrição</div>
-    <div class="grid grid-2">
-      <div>
-        <label>Aluno</label>
-        <div id="mAluno" class="pill"></div>
-      </div>
-      <div>
-        <label>ID</label>
-        <div id="mId" class="pill"></div>
-      </div>
-      <div>
-        <label>De</label>
-        <div id="mFrom" class="pill"></div>
-      </div>
-      <div>
-        <label>Para</label>
-        <select id="mTo"></select>
-      </div>
-    </div>
-    <div class="flex" style="margin-top:12px;">
-      <button id="btDoTransfer" class="btn"><span>✅</span> Confirmar</button>
-      <button id="btCancelTransfer" class="btn secondary"><span>✖</span> Cancelar</button>
-      <span id="mMsg" class="message hide"></span>
-    </div>
-  </div>
-</div>
+    // Util: pega o nome do aprofundamento do objeto (compat: pratica | aprofundamento)
+    const getNomeAprof = (obj) => (obj && (obj.pratica || obj.aprofundamento)) || '';
 
-<script>
-/* ============ CONFIG / API AUTODETECT ============ */
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
-function withTimeout(promise, ms) { return new Promise((res, rej) => { const t=setTimeout(()=>rej(new Error('timeout')), ms); promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)}); }); }
-function getQueryParam(name) { const u = new URL(location.href); const v = u.searchParams.get(name); return v && v.trim() ? v.trim() : null; }
-async function resolveApi() {
-  const qp = getQueryParam('api'); if (qp) return qp;
-  const ls = localStorage.getItem('aprof_api'); if (ls) return ls;
-  try { const r = await fetch('config.json', { cache:'no-store' }); if (r.ok) { const cfg = await r.json(); if (cfg && cfg.api) return String(cfg.api); } } catch(_){}
-  return DEFAULT_API;
-}
+    // ===== API: disponibilidade =====
+    async function loadAvailability() {
+      try {
+        btn.disabled = true; 
+        statusBox.style.display = "none";
+        
+        const res = await fetch(API_URL, { cache: "no-store" }); 
+        const text = await res.text();
+        let json;
+        try { json = JSON.parse(text); } catch(_) { throw new Error("Resposta inválida da API: " + text.slice(0,120)); }
+        availabilityData = (json && (json.availability || json.capacidade || [])) || []; 
+        
+        renderOptions(availabilityData); 
+        renderChips(availabilityData); 
+        lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
+      } catch(e) {
+        console.error(e);
+        showError("⚠️ Não foi possível carregar a disponibilidade. Tente novamente."); 
+        lastSync.textContent = "Erro na sincronização";
+      } finally { 
+        btn.disabled = false; 
+      }
+    }
 
-/* ============ ELEMENTS ============ */
-const $ = s => document.querySelector(s);
-const apiInfo=$('#apiInfo'), apiEditor=$('#apiEditor'), apiEl=$('#api'); const toggleApiBtn=$('#toggleApi');
-const pwdEl=$('#pwd'), enterBtn=$('#btEnter'), loginCard=$('#loginCard'), loginMsg=$('#loginMsg'), dash=$('#dash');
-const fAprof=$('#fAprof'), fSerie=$('#fSerie'), fQ=$('#fQ'), fFrom=$('#fFrom'), fTo=$('#fTo');
-const pageSizeEl=$('#pageSize'), prevPage=$('#prevPage'), nextPage=$('#nextPage'), pageInfo=$('#pageInfo');
-const btFiltrar=$('#btFiltrar'), btSort=$('#btSort'), btLogout=$('#btLogout');
-const totEl=$('#tot'), esgotEl=$('#esgot'), lastEl=$('#last');
-const loading=$('#loading'), tblWrap=$('#tblWrap'), tbody=$('#tbody'), count=$('#count');
-const btPDF=$('#btPDF'), btXLSX=$('#btXLSX'), btDOCX=$('#btDOCX'), btCSV=$('#btCSV');
-const capGrid=$('#capGrid');
-// modal
-const modalBackdrop=$('#modalBackdrop'); const mAluno=$('#mAluno'); const mId=$('#mId'); const mFrom=$('#mFrom'); const mTo=$('#mTo'); const mMsg=$('#mMsg'); const btDoTransfer=$('#btDoTransfer'); const btCancelTransfer=$('#btCancelTransfer');
+    // ===== UI: opções do select =====
+    function renderOptions(items) {
+      const serieAtual = selSerie.value;
+      selAprofundamento.innerHTML = '<option value="" disabled selected>Selecione um aprofundamento</option>';
+      
+      if (!serieAtual) {
+        selAprofundamento.innerHTML = '<option value="" disabled selected>Primeiro selecione sua turma</option>';
+        selAprofundamento.disabled = true;
+        return;
+      }
+      
+      selAprofundamento.disabled = false;
+      const aprovList = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
+      
+      aprovList.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
+        // fallback de vagas
+        const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
+        const rem = item ? (+item.restantes || 0) : vagasPadrao;
+        
+        const option = document.createElement("option"); 
+        option.value = aprofundamento; 
+        option.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
+        if (rem <= 0) option.disabled = true; 
+        selAprofundamento.appendChild(option); 
+      });
+    }
 
-/* ============ STATE ============ */
-let TOKEN='', API=''; let baseData=[], filteredData=[], currentPage=1, sortMode='ts', capacidade=[];
-let listController, statsController;
+    // ===== UI: chips de vagas =====
+    function renderChips(items) {
+      chips.innerHTML = ""; 
+      
+      const serieAtual = selSerie.value;
+      let paraMostrar = [];
+      
+      if (serieAtual && APROFUNDAMENTOS_POR_SERIE[serieAtual]) {
+        paraMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
+      } else {
+        const setAll = new Set();
+        Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => lista.forEach(n => setAll.add(n)));
+        paraMostrar = Array.from(setAll);
+      }
+      
+      paraMostrar.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
+        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", 
+                       "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
+        const vagasPadrao = eh3Ano ? 37 : 29;
+        const vagasRestantes = item ? (+item.restantes || 0) : vagasPadrao;
+        
+        const chip = document.createElement("span"); 
+        chip.className = "pill"; 
+        chip.innerHTML = `
+          <span>${aprofundamento.length > 25 ? aprofundamento.substring(0, 25) + '...' : aprofundamento}</span>
+          <strong>${vagasRestantes} ${vagasRestantes === 1 ? 'vaga' : 'vagas'}</strong>
+        `;
+        
+        if (vagasRestantes === 0) {
+          chip.style.opacity = '0.6';
+          chip.innerHTML += ' <span aria-hidden="true">❌</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: Esgotado`);
+        } else if (vagasRestantes < 5) {
+          chip.innerHTML += ' <span aria-hidden="true">⚠️</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes - Poucas vagas!`);
+        } else {
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes`);
+        }
+        
+        chips.appendChild(chip); 
+      });
+    }
 
-/* ============ SESSION ============ */
-function setSession(a,t){ sessionStorage.setItem('aprof_api', a); sessionStorage.setItem('aprof_token', t); }
-function restoreSession(){ const a=sessionStorage.getItem('aprof_api'), t=sessionStorage.getItem('aprof_token'); if(a && t){ API=a; TOKEN=t; return true; } return false; }
+    // ===== Mensagens =====
+    function showError(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status error"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+    }
+    function showSuccess(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status success"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+      setTimeout(() => { statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+    }
 
-/* ============ UI HELPERS ============ */
-function showMessage(el, text, type='error'){ el.textContent=text; el.className = 'message ' + (type==='success'?'success':type==='warn'?'warn':'error'); el.classList.remove('hide'); if(type==='success'){ setTimeout(()=>el.classList.add('hide'), 2500);} }
-function hideMessage(el){ el.classList.add('hide'); }
-function fmtDate(iso){ try{ return new Date(iso).toLocaleString('pt-BR'); } catch(_){ return iso||''; } }
-function parseDateOnly(val){ if(!val) return null; const d = new Date(val + 'T00:00:00'); return isNaN(+d) ? null : d; }
-function inDateRange(tsIso, from, to){ if(!from && !to) return true; const t = tsIso ? new Date(tsIso) : null; if(!t) return false; if(from && t < from) return false; if(to){ const end = new Date(to); end.setHours(23,59,59,999); if(t > end) return false; } return true; }
+    // ===== Validação =====
+    function validateField(field) {
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        field.classList.remove('success');
+        return false;
+      } else {
+        field.classList.remove('error');
+        field.classList.add('success');
+        return true;
+      }
+    }
 
-/* ============ FETCH HELPERS ============ */
-async function authedGet(url, params={}, extra={}){ const u=new URL(url); Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { signal: extra.signal }); const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
-async function authedPost(url, body={}, extra={}){ const u=new URL(url); u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: extra.signal });
-  const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
+    // Troca de série
+    selSerie.addEventListener('change', function() {
+      if (this.value !== lastSerieSelected) {
+        lastSerieSelected = this.value;
+        renderOptions(availabilityData);
+        renderChips(availabilityData);
+        document.querySelectorAll('.pill').forEach((pill, i) => {
+          pill.style.animationDelay = `${i * 0.1}s`;
+          pill.classList.add('animate-in');
+        });
+      }
+    });
 
-/* ============ LOADERS ============ */
-async function loadStats(){ if(statsController) statsController.abort(); statsController = new AbortController(); return authedGet(API, { stats:'1' }, { signal: statsController.signal }); }
-async function loadList(params={}){ if(listController) listController.abort(); listController = new AbortController();
-  const q={ list:'1' }; if(params.aprofundamento) q.aprofundamento=params.aprofundamento; if(params.serie) q.serie=params.serie; if(params.q) q.q=params.q;
-  return authedGet(API, q, { signal: listController.signal });
-}
+    // Validação de nome
+    nomeInput.addEventListener('input', function(){ validateField(this); });
+    nomeInput.addEventListener('blur',  function(){ validateField(this); });
 
-/* ============ RENDERERS ============ */
-function renderStats(s){ 
-  totEl.textContent = s.totalInscricoes || 0; 
-  lastEl.textContent = new Date().toLocaleTimeString('pt-BR'); 
-  capacidade = s.capacidade || []; 
-  esgotEl.textContent = capacidade.filter(c => (+c.restantes||0)===0).length;
-
-  // select de aprofundamentos
-  fAprof.innerHTML = '<option value=\"\">Todos</option>' + capacidade.map(c => `<option value="${c.aprofundamento}">${c.aprofundamento} (${c.restantes} restantes)</option>`).join('');
-
-  // grid de capacidade com edição de limite
-  capGrid.innerHTML = '';
-  capacidade.forEach(c => { 
-    const pct = c.limite>0 ? Math.min((c.inscritos/c.limite)*100, 100) : 0;
-    const div=document.createElement('div'); 
-    div.className='cap-item';
-    div.innerHTML = `<div style="display:flex; align-items:center; gap:8px; justify-content:space-between;">
-        <strong>${c.aprofundamento}</strong>
-        <span class="pill">${c.inscritos}/${c.limite} · ${c.restantes} vagas</span>
-      </div>
-      <div class="progress" style="margin:8px 0 10px;"><div style="width:${pct}%"></div></div>
-      <div class="flex">
-        <div class="inline">
-          <label>Limite</label>
-          <input type="number" min="0" value="${c.limite}" style="width:120px" data-aprof="${c.aprofundamento}" class="cap-limit"/>
-        </div>
-        <div class="spacer"></div>
-        <button class="btn small success btSetLimit" data-aprof="${c.aprofundamento}">Salvar limite</button>
-      </div>`;
-    capGrid.appendChild(div);
-  });
-}
-
-function applyClientFilters(rows){
-  const q = (fQ.value||'').trim().toLowerCase(); const serie = fSerie.value||''; const aprof = fAprof.value||'';
-  const from = parseDateOnly(fFrom.value); const to = parseDateOnly(fTo.value);
-  let data = rows.filter(r => {
-    if(aprof && r.aprofundamento !== aprof) return false;
-    if(serie && r.serie !== serie) return false;
-    if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
-    if(!inDateRange(r.ts, from, to)) return false;
-    return true;
-  });
-  // sort
-  if(sortMode==='nome'){ data.sort((a,b)=> (a.nome||'').localeCompare(b.nome||'', 'pt-BR', { sensitivity:'base' })); }
-  else { data.sort((a,b)=> (a.ts<b.ts?1:-1)); }
-  return data;
-}
-
-function renderTable(paged){
-  tbody.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  paged.forEach(r => {
-    const tr = document.createElement('tr');
-    const tds = [
-      fmtDate(r.ts),
-      `<strong>${r.nome||''}</strong>`,
-      r.serie||'',
-      r.aprofundamento||'',
-      `<code class="badge">${r.id||''}</code>`,
-      `<div class="table-actions">
-         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
-         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
-       </div>`
-    ];
-    tds.forEach(html => { const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td); });
-    frag.appendChild(tr);
-  });
-  tbody.appendChild(frag);
-}
-
-function paginate(data){
-  const size = parseInt(pageSizeEl.value,10)||50; const total = data.length; const pages = Math.max(1, Math.ceil(total/size));
-  currentPage = Math.min(currentPage, pages);
-  const start = (currentPage-1)*size; const end = Math.min(start+size, total);
-  const pageData = data.slice(start, end);
-  pageInfo.textContent = `Página ${currentPage}/${pages}`;
-  count.textContent = `${total} registro(s)`;
-  prevPage.disabled = (currentPage<=1); nextPage.disabled = (currentPage>=pages);
-  return pageData;
-}
-
-/* ============ EXPORTS ============ */
-function exportToPDF(rows){ 
-  const { jsPDF } = window.jspdf; 
-  const doc = new jsPDF(); 
-  doc.setFontSize(16);
-  doc.text('Aprofundamentos 2025.2 - Inscrições', 14, 20);
-  doc.setFontSize(10);
-  doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
-  const headers = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
-  const body = rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id]);
-  doc.autoTable({ head: headers, body, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [76,175,80], textColor: 255 } });
-  doc.save(`aprofundamentos_${new Date().toISOString().split('T')[0]}.pdf`);
-}
-function exportToXLSX(rows){ 
-  const data = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'], ...rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id])];
-  const wb = XLSX.utils.book_new(); 
-  const ws = XLSX.utils.aoa_to_sheet(data); 
-  ws['!cols'] = [{ width: 20 }, { width: 30 }, { width: 16 }, { width: 40 }, { width: 18 }];
-  XLSX.utils.book_append_sheet(wb, ws, 'Inscrições'); 
-  XLSX.writeFile(wb, `aprofundamentos_${new Date().toISOString().split('T')[0]}.xlsx`);
-}
-function exportToDOC(rows){ 
-  let html = `<html><head><meta charset='utf-8'><title>Inscrições</title></head><body>`;
-  html += `<h1 style='text-align:center;color:#4CAF50'>Aprofundamentos 2025.2</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')}</p>`;
-  html += `<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Data/Hora</th><th>Nome</th><th>Série/Turma</th><th>Aprofundamento</th><th>ID</th></tr></thead><tbody>`;
-  rows.forEach(r => html += `<tr><td>${fmtDate(r.ts)}</td><td>${r.nome||''}</td><td>${r.serie||''}</td><td>${r.aprofundamento||''}</td><td>${r.id||''}</td></tr>`);
-  html += `</tbody></table></body></html>`; 
-  const blob = new Blob([html], { type:'application/msword' }); 
-  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.doc`);
-}
-function exportToCSV(rows){ 
-  const headers=['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']; 
-  const lines=[headers.join(';')];
-  rows.forEach(r => { 
-    const vals=[fmtDate(r.ts), r.nome||'', r.serie||'', r.aprofundamento||'', r.id||''].map(v=>String(v).replace(/"/g,'""')); 
-    lines.push(vals.map(v => (/[",\n;]/.test(v) ? `"${v}"` : v)).join(';')); 
-  });
-  const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' }); 
-  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.csv`);
-}
-
-/* ============ ADMIN ACTIONS (PRO) ============ */
-async function setLimit(aprof, limit){ return authedPost(API, { action:'setLimit', aprofundamento: aprof, limite: Number(limit) }); }
-async function transfer(id, novo){ return authedPost(API, { action:'transfer', id, novoAprofundamento: novo }); }
-async function removeById(id){ return authedPost(API, { action:'delete', id }); }
-
-/* ============ EVENT HANDLERS ============ */
-function wireCapacityButtons(){
-  document.querySelectorAll('.btSetLimit').forEach(btn => btn.addEventListener('click', async (e) => { 
-    const aprof=e.currentTarget.dataset.aprof;
-    const input = document.querySelector(`input.cap-limit[data-aprof="${CSS.escape(aprof)}"]`); 
-    const val = input ? Number(input.value) : NaN;
-    if(isNaN(val) || val<0) return alert('Informe um limite válido');
-    try{ 
-      await setLimit(aprof, val); 
-      showMessage($('#fltMsg'), 'Limite atualizado para "'+aprof+'"', 'success'); 
-      const s = await loadStats(); renderStats(s); 
-    }catch(err){ alert('Erro ao definir limite: '+err.message); }
-  }));
-}
-
-function openTransfer(ev){ 
-  const b=ev.currentTarget; const id=b.dataset.id; const nome=b.dataset.nome; const from=b.dataset.from;
-  mAluno.textContent = nome; mId.textContent = id; mFrom.textContent = from; mMsg.classList.add('hide');
-  // opções destino
-  mTo.innerHTML = capacidade.map(c => `<option value="${c.aprofundamento}" ${from===c.aprofundamento?'disabled':''}>${c.aprofundamento} (${c.restantes} vagas)</option>`).join('');
-  modalBackdrop.classList.remove('hide'); 
-}
-
-async function deleteRow(ev){ 
-  const b=ev.currentTarget; const id=b.dataset.id; const from=b.dataset.from;
-  if(!confirm('Confirmar exclusão da inscrição '+id+'? A vaga de "'+from+'" será devolvida.')) return;
-  try{ 
-    await removeById(id); 
-    showMessage($('#fltMsg'), 'Inscrição removida com sucesso.', 'success'); 
-    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable(); 
-  } catch(err){ alert('Erro ao excluir: '+err.message); }
-}
-
-btDoTransfer.addEventListener('click', async () => { 
-  const id=mId.textContent; const novo = mTo.value;
-  try{ 
-    await transfer(id, novo); 
-    showMessage(mMsg, 'Transferência concluída!', 'success'); 
-    setTimeout(()=>{ modalBackdrop.classList.add('hide'); }, 700);
-    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable();
-  }catch(err){ showMessage(mMsg, 'Erro: '+err.message, 'error'); }
-});
-btCancelTransfer.addEventListener('click', () => modalBackdrop.classList.add('hide'));
-window.openTransfer = openTransfer; window.deleteRow = deleteRow;
-
-/* ============ TABLE FLOW ============ */
-function refreshTable(){ filteredData = applyClientFilters(baseData); const pageData = paginate(filteredData); renderTable(pageData); wireCapacityButtons(); }
-
-/* ============ BOOT ============ */
-document.addEventListener('DOMContentLoaded', () => { 
-  apiInfo.textContent = 'Detectando API...'; 
-  apiEditor.classList.add('hide');
-  (async () => { 
-    try{ 
-      const detected = await withTimeout(resolveApi(), 2000); 
-      API = detected || DEFAULT_API; 
-      apiEl.value = API; 
-      apiInfo.textContent = 'API detectada: '+API+' — clique em ⚙️ para alterar.'; 
-    }
-    catch(e){ 
-      API = getQueryParam('api') || localStorage.getItem('aprof_api') || DEFAULT_API; 
-      apiEl.value = API; 
-      apiInfo.textContent = 'Não foi possível detectar automaticamente. Informe a URL abaixo.'; 
-      apiEditor.classList.remove('hide'); 
-      setTimeout(()=>apiEl.focus(),0); 
-    }
-    if (restoreSession()) { API = API || sessionStorage.getItem('aprof_api'); enterBtn.click(); }
-  })();
-});
-
-toggleApiBtn.addEventListener('click', () => apiEditor.classList.toggle('hide'));
-
-enterBtn.addEventListener('click', async () => { 
-  API = (apiEl.value||'').trim() || API; 
-  TOKEN = (pwdEl.value||'').trim();
-  if(!API) return showMessage(loginMsg, 'Informe a URL da API.', 'error');
-  if(!TOKEN) return showMessage(loginMsg, 'Informe a senha.', 'error');
-  enterBtn.disabled = true; enterBtn.textContent = 'Validando...'; showMessage(loginMsg, 'Validando credenciais...', 'warn');
-  try{ 
-    const stats = await loadStats(); 
-    setSession(API, TOKEN); 
-    localStorage.setItem('aprof_api', API);
-    loginCard.classList.add('hide'); 
-    dash.classList.remove('hide'); 
-    renderStats(stats);
-    loading.classList.remove('hide'); 
-    tblWrap.classList.add('hide');
-    const lst = await loadList({}); 
-    baseData = lst.rows || []; 
-    refreshTable();
-    loading.classList.add('hide'); 
-    tblWrap.classList.remove('hide'); 
-    hideMessage(loginMsg);
-  }catch(err){ 
-    showMessage(loginMsg, 'Falha no acesso: '+err.message, 'error'); 
-  } finally { 
-    enterBtn.disabled = false; 
-    enterBtn.textContent = 'Entrar'; 
-  }
-});
-
-btFiltrar.addEventListener('click', async () => { 
-  btFiltrar.disabled = true; btFiltrar.textContent = 'Atualizando...';
-  try{ 
-    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable(); 
-    showMessage($('#fltMsg'), 'Filtros aplicados!', 'success'); 
-  }catch(err){ 
-    showMessage($('#fltMsg'), 'Erro: '+err.message, 'error'); 
-  } finally { 
-    btFiltrar.disabled = false; 
-    btFiltrar.textContent = 'Aplicar'; 
-  }
-});
-btSort.addEventListener('click', () => { sortMode = sortMode==='ts' ? 'nome' : 'ts'; btSort.innerHTML = sortMode==='ts' ? '<span>📋</span> Ordenar: Data/Hora' : '<span>📋</span> Ordenar: Nome (A→Z)'; refreshTable(); });
-pageSizeEl.addEventListener('change', () => { currentPage=1; refreshTable(); });
-prevPage.addEventListener('click', () => { if(currentPage>1){ currentPage--; refreshTable(); } });
-nextPage.addEventListener('click', () => { currentPage++; refreshTable(); });
-
-btPDF.addEventListener('click', () => exportToPDF(filteredData));
-btXLSX.addEventListener('click', () => exportToXLSX(filteredData));
-btDOCX.addEventListener('click', () => exportToDOC(filteredData));
-btCSV.addEventListener('click', () => exportToCSV(filteredData));
-
-pwdEl.addEventListener('keydown', e => { if(e.key==='Enter') enterBtn.click(); });
-fQ.addEventListener('keydown', e => { if(e.key==='Enter') btFiltrar.click(); });
-
-btLogout?.addEventListener('click', () => { 
-  sessionStorage.removeItem('aprof_api'); 
-  sessionStorage.removeItem('aprof_token'); 
-  TOKEN=''; 
-  dash.classList.add('hide'); 
-  loginCard.classList.remove('hide'); 
-  showMessage(loginMsg, 'Sessão encerrada.', 'success'); 
-});
-</script>
+    // ===== Envio =====
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault(); 
+      statusBox.style.display = "none";
+      
+      const okNome = validateField(nomeInput);
+      const okSerie = validateField(selSerie);
+      const okAprof = validateField(selAprofundamento);
+      if (!okNome || !okSerie || !okAprof) { 
+        showError("⚠️ Por favor, preencha todos os campos obrigatórios."); 
+        return; 
+      }
+      
+      const nome = nomeInput.value.trim();
+      const serie = selSerie.value;
+      const aprofundamento = selAprofundamento.value;
+      
+      btn.disabled = true; 
+      btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span><span>Enviando inscrição...</span>';
+      
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          // Cabeçalho 'text/plain' evita preflight CORS nos Apps Script
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          // Envia *ambas* as chaves por compat: aprofundamento (correto) e pratica
+          body: JSON.stringify({ nome, serie, aprofundamento, pratica: aprofundamento })
+        });
+        const text = await res.text();
+        let json;
+        try { json = JSON.parse(text); } catch(_){ throw new Error("Resposta inválida da API: " + text.slice(0,120)); }
+        
+        if (json.ok) { 
+          showSuccess("🎉 Inscrição registrada com sucesso! Sua vaga está garantida."); 
+          form.reset();
+          selAprofundamento.disabled = true;
+          await loadAvailability();
+        }
+        else if (json.full) { 
+          showError("😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível."); 
+          await loadAvailability();
+        }
+        else { 
+          showError("❌ Erro: " + (json.error || "não foi possível concluir a inscrição.")); 
+        }
+      } catch(err) { 
+        console.error(err);
+        showError("🔌 Falha na conexão com a API."); 
+      } finally { 
+        btn.disabled = false; 
+        btn.innerHTML = '<span aria-hidden="true">✨</span><span>Confirmar Inscrição</span>'; 
+      }
+    });
+    
+    // ===== Boot =====
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('.card').classList.add('animate-in');
+      loadAvailability(); 
+      setInterval(loadAvailability, 60000);
+    });
+  </script>
 </body>
 </html>
