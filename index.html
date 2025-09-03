@@ -197,12 +197,7 @@
       gap: var(--space-lg); 
       grid-template-columns: 1fr; 
     } 
-    
-    @media (min-width: 720px) { 
-      .row { 
-        grid-template-columns: 1fr 1fr; 
-      } 
-    }
+    @media (min-width: 720px) { .row { grid-template-columns: 1fr 1fr; } }
     
     .chips-container {
       background: rgba(15, 18, 32, 0.5);
@@ -211,7 +206,6 @@
       padding: var(--space-lg);
       margin: var(--space-md) 0;
     }
-    
     .chips-title {
       font-size: var(--text-sm);
       font-weight: 600;
@@ -223,239 +217,68 @@
       align-items: center;
       gap: var(--space-sm);
     }
-    
-    .chips { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: var(--space-sm); 
-    }
-    
+    .chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
     .pill { 
-      display: inline-flex; 
-      gap: var(--space-sm); 
-      align-items: center; 
-      font-size: var(--text-sm); 
-      padding: var(--space-sm) var(--space-md); 
-      border-radius: 20px; 
-      background: #0f1220; 
-      border: 1px solid rgba(255,255,255,.08); 
-      color: var(--muted);
-      transition: all var(--transition-normal);
-      cursor: default;
+      display: inline-flex; gap: var(--space-sm); align-items: center; 
+      font-size: var(--text-sm); padding: var(--space-sm) var(--space-md); 
+      border-radius: 20px; background: #0f1220; border: 1px solid rgba(255,255,255,.08); 
+      color: var(--muted); transition: all var(--transition-normal); cursor: default;
     }
-    
-    .pill:hover {
-      background: #141a2a;
-      border-color: rgba(124, 92, 255, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2);
-    }
+    .pill:hover { background: #141a2a; border-color: rgba(124, 92, 255, 0.3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2); }
     
     .status { 
-      padding: var(--space-lg); 
-      border-radius: var(--radius-lg); 
-      background: #0f1a1f; 
-      border: 1px solid rgba(255,255,255,.08); 
-      font-size: var(--text-base); 
-      display: none;
-      margin: var(--space-md) 0;
-      transition: all var(--transition-normal);
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
+      padding: var(--space-lg); border-radius: var(--radius-lg); background: #0f1a1f; 
+      border: 1px solid rgba(255,255,255,.08); font-size: var(--text-base); display: none;
+      margin: var(--space-md) 0; transition: all var(--transition-normal);
+      display: flex; align-items: center; gap: var(--space-md);
     }
-    
-    .status.success { 
-      display: flex; 
-      border-color: rgba(47,209,128,.5);
-      background: rgba(47,209,128,.1);
-      color: var(--success);
-    }
-    
-    .status.error { 
-      display: flex; 
-      border-color: rgba(255,92,122,.5);
-      background: rgba(255,92,122,.1);
-      color: var(--error);
-    }
+    .status.success { display: flex; border-color: rgba(47,209,128,.5); background: rgba(47,209,128,.1); color: var(--success); }
+    .status.error   { display: flex; border-color: rgba(255,92,122,.5); background: rgba(255,92,122,.1); color: var(--error); }
     
     .footer { 
-      padding: var(--space-lg) var(--space-xl) var(--space-xl); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      color: var(--muted); 
-      border-top: 1px solid rgba(255,255,255,.06); 
-      font-size: var(--text-sm); 
-      flex-wrap: wrap; 
-      gap: var(--space-md);
-      background: rgba(15, 18, 32, 0.3);
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); display: flex; justify-content: space-between; 
+      align-items: center; color: var(--muted); border-top: 1px solid rgba(255,255,255,.06); 
+      font-size: var(--text-sm); flex-wrap: wrap; gap: var(--space-md); background: rgba(15, 18, 32, 0.3);
     }
     
     button { 
-      background: var(--gradient); 
-      border: none; 
-      font-weight: 700; 
-      cursor: pointer;
-      transition: all var(--transition-normal);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
+      background: var(--gradient); border: none; font-weight: 700; cursor: pointer;
+      transition: all var(--transition-normal); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: var(--space-sm);
     }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+    button:hover::before { left: 100%; }
     
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3);
-    }
+    .sync-indicator { display: inline-flex; align-items: center; gap: var(--space-sm); }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     
-    button:active {
-      transform: translateY(0);
-    }
-    
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-    
-    button:hover::before {
-      left: 100%;
-    }
-    
-    .sync-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-    
-    .sync-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    
-    .loading-spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Indicador visual para campos obrigatórios */
-    .required-marker {
-      color: var(--error);
-      margin-left: var(--space-xs);
-    }
-    
-    /* Animações de entrada */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .animate-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
+    .required-marker { color: var(--error); margin-left: var(--space-xs); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: fadeIn 0.5s ease forwards; }
     
     /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 768px) {
-      :root {
-        --space-xl: 1.5rem;
-        --space-lg: 1.25rem;
-        --space-md: 0.75rem;
-      }
-      
-      body {
-        padding: var(--space-sm);
-        align-items: flex-start;
-        padding-top: var(--space-lg);
-      }
-      
-      .card {
-        border-radius: var(--radius-lg);
-        margin: var(--space-md) 0;
-      }
-      
-      header {
-        padding: var(--space-lg) var(--space-md) var(--space-md);
-      }
-      
-      h1 {
-        font-size: var(--text-xl);
-      }
-      
-      form {
-        padding: var(--space-md);
-        gap: var(--space-lg);
-      }
-      
-      input, select, button {
-        padding: var(--space-md);
-      }
-      
-      select {
-        background-position: right var(--space-md) center;
-      }
-      
-      .footer {
-        padding: var(--space-md);
-        flex-direction: column;
-        text-align: center;
-        gap: var(--space-sm);
-      }
-      
-      .chips {
-        justify-content: center;
-      }
-      
-      .status {
-        padding: var(--space-md);
-        flex-direction: column;
-        text-align: center;
-        gap: var(--space-sm);
-      }
+      :root { --space-xl: 1.5rem; --space-lg: 1.25rem; --space-md: 0.75rem; }
+      body { padding: var(--space-sm); align-items: flex-start; padding-top: var(--space-lg); }
+      .card { border-radius: var(--radius-lg); margin: var(--space-md) 0; }
+      header { padding: var(--space-lg) var(--space-md) var(--space-md); }
+      h1 { font-size: var(--text-xl); }
+      form { padding: var(--space-md); gap: var(--space-lg); }
+      input, select, button { padding: var(--space-md); }
+      select { background-position: right var(--space-md) center; }
+      .footer { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
+      .chips { justify-content: center; }
+      .status { padding: var(--space-md); flex-direction: column; text-align: center; gap: var(--space-sm); }
     }
-
-    /* Melhorias para telas muito pequenas */
     @media (max-width: 360px) {
-      .chips {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .pill {
-        justify-content: center;
-        text-align: center;
-      }
+      .chips { flex-direction: column; align-items: stretch; }
+      .pill { justify-content: center; text-align: center; }
     }
   </style>
 </head>
@@ -540,9 +363,11 @@
   </div>
 
   <script>
-    // Constantes e seleção de elementos
+    // ===== Config =====
     const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
     const $ = (s) => document.querySelector(s);
+
+    // ===== Elements =====
     const form = $("#form");
     const selSerie = $("#serie");
     const selAprofundamento = $("#aprofundamento");
@@ -552,7 +377,7 @@
     const lastSync = $("#lastSync");
     const nomeInput = $("#nome");
 
-    // Definir aprofundamentos por série
+    // ===== Lista por série =====
     const APROFUNDAMENTOS_POR_SERIE = {
       "2° A": [
         "Educação ambiental: Justiça socioambiental e cidadania",
@@ -579,13 +404,14 @@
       ]
     };
 
-    // Estado da aplicação
+    // ===== State =====
     let availabilityData = [];
     let lastSerieSelected = '';
 
-    /**
-     * Carrega a disponibilidade de vagas da API
-     */
+    // Util: pega o nome do aprofundamento do objeto (compat: pratica | aprofundamento)
+    const getNomeAprof = (obj) => (obj && (obj.pratica || obj.aprofundamento)) || '';
+
+    // ===== API: disponibilidade =====
     async function loadAvailability() {
       try {
         btn.disabled = true; 
@@ -593,7 +419,7 @@
         
         const res = await fetch(API_URL); 
         const json = await res.json();
-        availabilityData = (json && json.availability) || []; 
+        availabilityData = (json && (json.availability || json.capacidade || [])) || []; 
         
         renderOptions(availabilityData); 
         renderChips(availabilityData); 
@@ -605,11 +431,8 @@
         btn.disabled = false; 
       }
     }
-    
-    /**
-     * Renderiza as opções no select de aprofundamentos
-     * @param {Array} items - Dados de disponibilidade
-     */
+
+    // ===== UI: opções do select =====
     function renderOptions(items) {
       const serieAtual = selSerie.value;
       selAprofundamento.innerHTML = '<option value="" disabled selected>Selecione um aprofundamento</option>';
@@ -620,13 +443,12 @@
         return;
       }
       
-      // Habilitar select se uma série foi selecionada
       selAprofundamento.disabled = false;
-      const aprofundamentosDisponiveis = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
+      const aprovList = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
       
-      aprofundamentosDisponiveis.forEach(aprofundamento => {
-        const item = items.find(it => it.pratica === aprofundamento);
-        // Definir vagas padrão baseado na série
+      aprovList.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
+        // fallback de vagas
         const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
         const rem = item ? (+item.restantes || 0) : vagasPadrao;
         
@@ -637,32 +459,24 @@
         selAprofundamento.appendChild(option); 
       });
     }
-    
-    /**
-     * Renderiza os chips de vagas disponíveis
-     * @param {Array} items - Dados de disponibilidade
-     */
+
+    // ===== UI: chips de vagas =====
     function renderChips(items) {
       chips.innerHTML = ""; 
       
-      // Mostrar apenas os aprofundamentos relevantes para a série selecionada
       const serieAtual = selSerie.value;
-      let aprofundamentosParaMostrar = [];
+      let paraMostrar = [];
       
       if (serieAtual && APROFUNDAMENTOS_POR_SERIE[serieAtual]) {
-        aprofundamentosParaMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
+        paraMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
       } else {
-        // Se nenhuma série selecionada, mostrar todos os aprofundamentos únicos
-        const todosAprofundamentos = new Set();
-        Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => {
-          lista.forEach(aprofundamento => todosAprofundamentos.add(aprofundamento));
-        });
-        aprofundamentosParaMostrar = Array.from(todosAprofundamentos);
+        const setAll = new Set();
+        Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => lista.forEach(n => setAll.add(n)));
+        paraMostrar = Array.from(setAll);
       }
       
-      aprofundamentosParaMostrar.forEach(aprofundamento => {
-        const item = items.find(it => it.pratica === aprofundamento);
-        // Definir vagas padrão baseado no aprofundamento
+      paraMostrar.forEach(aprofundamento => {
+        const item = items.find(it => getNomeAprof(it) === aprofundamento);
         const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", 
                        "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
         const vagasPadrao = eh3Ano ? 37 : 29;
@@ -675,7 +489,6 @@
           <strong>${vagasRestantes} ${vagasRestantes === 1 ? 'vaga' : 'vagas'}</strong>
         `;
         
-        // Adicionar indicador visual para vagas esgotadas
         if (vagasRestantes === 0) {
           chip.style.opacity = '0.6';
           chip.innerHTML += ' <span aria-hidden="true">❌</span>';
@@ -690,39 +503,23 @@
         chips.appendChild(chip); 
       });
     }
-    
-    /**
-     * Exibe uma mensagem de erro
-     * @param {String} message - Mensagem de erro
-     */
+
+    // ===== Mensagens =====
     function showError(message) {
       statusBox.textContent = message; 
       statusBox.className = "status error"; 
       statusBox.style.display = "flex";
       statusBox.setAttribute('aria-live', 'assertive');
     }
-    
-    /**
-     * Exibe uma mensagem de sucesso
-     * @param {String} message - Mensagem de sucesso
-     */
     function showSuccess(message) {
       statusBox.textContent = message; 
       statusBox.className = "status success"; 
       statusBox.style.display = "flex";
       statusBox.setAttribute('aria-live', 'assertive');
-      
-      // Scroll suave para a mensagem de sucesso
-      setTimeout(() => {
-        statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+      setTimeout(() => { statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
     }
-    
-    /**
-     * Valida um campo do formulário
-     * @param {HTMLElement} field - Campo a ser validado
-     * @returns {Boolean} - True se o campo é válido
-     */
+
+    // ===== Validação =====
     function validateField(field) {
       if (!field.value.trim()) {
         field.classList.add('error');
@@ -735,42 +532,32 @@
       }
     }
 
-    // Event listener para mudança de série
+    // Troca de série
     selSerie.addEventListener('change', function() {
       if (this.value !== lastSerieSelected) {
         lastSerieSelected = this.value;
         renderOptions(availabilityData);
         renderChips(availabilityData);
-        
-        // Animar os chips para feedback visual
-        document.querySelectorAll('.pill').forEach((pill, index) => {
-          pill.style.animationDelay = `${index * 0.1}s`;
+        document.querySelectorAll('.pill').forEach((pill, i) => {
+          pill.style.animationDelay = `${i * 0.1}s`;
           pill.classList.add('animate-in');
         });
       }
     });
-    
-    // Validação em tempo real para o campo nome
-    nomeInput.addEventListener('input', function() {
-      validateField(this);
-    });
-    
-    // Validação ao sair do campo
-    nomeInput.addEventListener('blur', function() {
-      validateField(this);
-    });
-    
-    // Event listener para o envio do formulário
+
+    // Validação de nome
+    nomeInput.addEventListener('input', function(){ validateField(this); });
+    nomeInput.addEventListener('blur',  function(){ validateField(this); });
+
+    // ===== Envio =====
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); 
       statusBox.style.display = "none";
       
-      // Validar todos os campos
-      const isNomeValid = validateField(nomeInput);
-      const isSerieValid = validateField(selSerie);
-      const isAprofValid = validateField(selAprofundamento);
-      
-      if (!isNomeValid || !isSerieValid || !isAprofValid) { 
+      const okNome = validateField(nomeInput);
+      const okSerie = validateField(selSerie);
+      const okAprof = validateField(selAprofundamento);
+      if (!okNome || !okSerie || !okAprof) { 
         showError("⚠️ Por favor, preencha todos os campos obrigatórios."); 
         return; 
       }
@@ -785,8 +572,9 @@
       try {
         const res = await fetch(API_URL, {
           method: "POST",
-          headers: {"Content-Type": "text/plain;charset=utf-8"},
-          body: JSON.stringify({nome, serie, pratica: aprofundamento})
+          headers: { "Content-Type": "application/json" },
+          // Envia *ambas* as chaves por compat: aprofundamento (correto) e pratica
+          body: JSON.stringify({ nome, serie, aprofundamento, pratica: aprofundamento })
         });
         
         const json = await res.json();
@@ -812,15 +600,10 @@
       }
     });
     
-    // Carregamento inicial e atualização periódica
+    // ===== Boot =====
     document.addEventListener('DOMContentLoaded', function() {
-      // Adicionar animação de entrada para a card
       document.querySelector('.card').classList.add('animate-in');
-      
-      // Iniciar a carga de disponibilidade
       loadAvailability(); 
-      
-      // Atualizar a cada minuto
       setInterval(loadAvailability, 60000);
     });
   </script>
