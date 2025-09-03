@@ -3,9 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aprofundamentos 2025.2</title>
+  <title>Aprofundamentos 2025.2 - Formulário de Inscrição</title>
+  <!-- Meta tags para SEO e acessibilidade -->
+  <meta name="description" content="Formulário de inscrição para os aprofundamentos 2025.2 - 2° ano: 29 vagas | 3° ano: 37 vagas">
+  <meta name="theme-color" content="#7c5cff">
+  
   <style>
+    /* ===== VARIÁVEIS CSS ===== */
     :root { 
+      /* Cores */
       --bg: #0e0f13; 
       --card: #151823; 
       --card-hover: #1a1d2a;
@@ -18,14 +24,47 @@
       --warning: #ffa726;
       --shadow: rgba(0, 0, 0, 0.35);
       --gradient: linear-gradient(135deg, var(--accent), #4c82ff);
+      
+      /* Espaçamentos */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-xxl: 3rem;
+      
+      /* Bordas */
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      
+      /* Tipografia */
+      --text-sm: 0.85rem;
+      --text-base: 1rem;
+      --text-lg: 1.25rem;
+      --text-xl: 1.5rem;
+      --text-xxl: 1.75rem;
+      
+      /* Transições */
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.5s ease;
+      
+      /* Sombras */
+      --shadow-sm: 0 2px 8px var(--shadow);
+      --shadow-md: 0 4px 16px var(--shadow);
+      --shadow-lg: 0 8px 24px var(--shadow);
     }
     
+    /* ===== RESET E ESTILOS BASE ===== */
     * { 
       box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
     }
     
     body { 
-      margin: 0; 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif; 
       background: linear-gradient(120deg, #0e0f13, #12131a 40%, #101628); 
       color: var(--txt); 
@@ -33,19 +72,20 @@
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      padding: 24px;
+      padding: var(--space-md);
       line-height: 1.6;
     }
     
+    /* ===== COMPONENTES ===== */
     .card { 
       width: 100%; 
       max-width: 720px; 
       background: var(--card); 
       border: 1px solid rgba(255,255,255,.06); 
-      border-radius: 20px; 
-      box-shadow: 0 10px 30px var(--shadow); 
+      border-radius: var(--radius-xl); 
+      box-shadow: var(--shadow-lg); 
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
     }
     
     .card:hover {
@@ -54,15 +94,15 @@
     }
     
     header { 
-      padding: 32px 32px 20px; 
+      padding: var(--space-xl) var(--space-xl) var(--space-lg); 
       border-bottom: 1px solid rgba(255,255,255,.06);
       background: linear-gradient(135deg, rgba(124, 92, 255, 0.05), rgba(76, 130, 255, 0.05));
       text-align: center;
     }
     
     h1 { 
-      margin: 0 0 8px; 
-      font-size: 1.6rem; 
+      margin: 0 0 var(--space-sm); 
+      font-size: var(--text-xxl); 
       font-weight: 700;
       background: var(--gradient);
       -webkit-background-clip: text;
@@ -73,45 +113,70 @@
     p.sub { 
       margin: 0; 
       color: var(--muted); 
-      font-size: 1rem;
+      font-size: var(--text-base);
       line-height: 1.5;
     }
     
     form { 
-      padding: 28px 32px 32px; 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); 
       display: grid; 
-      gap: 24px; 
+      gap: var(--space-xl); 
     }
     
     label { 
       display: block; 
       font-weight: 600; 
-      margin: 0 0 8px;
+      margin: 0 0 var(--space-sm);
       color: var(--txt);
-      font-size: 0.95rem;
+      font-size: var(--text-base);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
     }
     
     .field { 
       display: grid; 
-      gap: 8px; 
+      gap: var(--space-sm); 
+      position: relative;
     }
     
     input, select, button { 
       width: 100%; 
-      padding: 16px; 
-      border-radius: 12px; 
+      padding: var(--space-lg); 
+      border-radius: var(--radius-lg); 
       border: 1px solid rgba(255,255,255,.1); 
       background: #0f1220; 
       color: var(--txt);
-      font-size: 15px;
-      transition: all 0.3s ease;
+      font-size: var(--text-base);
+      transition: all var(--transition-normal);
       outline: none;
     }
     
+    /* Estilização personalizada para select */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-lg) center;
+      background-size: 16px;
+      padding-right: var(--space-xxl);
+    }
+    
+    /* Estados dos campos */
     input:focus, select:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
       background: #111426;
+    }
+    
+    input.success, select.success {
+      border-color: var(--success);
+      box-shadow: 0 0 0 2px rgba(47, 209, 128, 0.1);
+    }
+    
+    input.error, select.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 2px rgba(255, 92, 122, 0.1);
     }
     
     input::placeholder { 
@@ -119,14 +184,17 @@
     }
     
     .hint { 
-      font-size: 0.85rem; 
+      font-size: var(--text-sm); 
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
     }
     
     .row { 
       display: grid; 
-      gap: 20px; 
+      gap: var(--space-lg); 
       grid-template-columns: 1fr; 
     } 
     
@@ -139,80 +207,88 @@
     .chips-container {
       background: rgba(15, 18, 32, 0.5);
       border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px;
-      padding: 16px;
-      margin: 8px 0;
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin: var(--space-md) 0;
     }
     
     .chips-title {
-      font-size: 0.9rem;
+      font-size: var(--text-sm);
       font-weight: 600;
       color: var(--muted);
-      margin-bottom: 12px;
+      margin-bottom: var(--space-md);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
     }
     
     .chips { 
       display: flex; 
       flex-wrap: wrap; 
-      gap: 10px; 
+      gap: var(--space-sm); 
     }
     
     .pill { 
       display: inline-flex; 
-      gap: 8px; 
+      gap: var(--space-sm); 
       align-items: center; 
-      font-size: 0.85rem; 
-      padding: 8px 14px; 
+      font-size: var(--text-sm); 
+      padding: var(--space-sm) var(--space-md); 
       border-radius: 20px; 
       background: #0f1220; 
       border: 1px solid rgba(255,255,255,.08); 
       color: var(--muted);
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
+      cursor: default;
     }
     
     .pill:hover {
       background: #141a2a;
       border-color: rgba(124, 92, 255, 0.3);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2);
     }
     
     .status { 
-      padding: 16px 20px; 
-      border-radius: 12px; 
+      padding: var(--space-lg); 
+      border-radius: var(--radius-lg); 
       background: #0f1a1f; 
       border: 1px solid rgba(255,255,255,.08); 
-      font-size: 0.95rem; 
+      font-size: var(--text-base); 
       display: none;
-      margin: 16px 0;
-      transition: all 0.3s ease;
+      margin: var(--space-md) 0;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
     }
     
     .status.success { 
-      display: block; 
+      display: flex; 
       border-color: rgba(47,209,128,.5);
       background: rgba(47,209,128,.1);
       color: var(--success);
     }
     
     .status.error { 
-      display: block; 
+      display: flex; 
       border-color: rgba(255,92,122,.5);
       background: rgba(255,92,122,.1);
       color: var(--error);
     }
     
     .footer { 
-      padding: 20px 32px 28px; 
+      padding: var(--space-lg) var(--space-xl) var(--space-xl); 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
       color: var(--muted); 
       border-top: 1px solid rgba(255,255,255,.06); 
-      font-size: 0.9rem; 
+      font-size: var(--text-sm); 
       flex-wrap: wrap; 
-      gap: 12px;
+      gap: var(--space-md);
       background: rgba(15, 18, 32, 0.3);
     }
     
@@ -221,9 +297,13 @@
       border: none; 
       font-weight: 700; 
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
       position: relative;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
     }
     
     button:hover {
@@ -259,12 +339,12 @@
     .sync-indicator {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--space-sm);
     }
     
     .sync-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--success);
       animation: pulse 2s infinite;
@@ -278,117 +358,199 @@
     
     .loading-spinner {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border: 2px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
-      margin-right: 8px;
     }
     
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
     
+    /* Indicador visual para campos obrigatórios */
+    .required-marker {
+      color: var(--error);
+      margin-left: var(--space-xs);
+    }
+    
+    /* Animações de entrada */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 768px) {
+      :root {
+        --space-xl: 1.5rem;
+        --space-lg: 1.25rem;
+        --space-md: 0.75rem;
+      }
+      
       body {
-        padding: 16px;
+        padding: var(--space-sm);
+        align-items: flex-start;
+        padding-top: var(--space-lg);
       }
       
       .card {
-        border-radius: 16px;
+        border-radius: var(--radius-lg);
+        margin: var(--space-md) 0;
       }
       
       header {
-        padding: 24px 20px 16px;
+        padding: var(--space-lg) var(--space-md) var(--space-md);
       }
       
       h1 {
-        font-size: 1.4rem;
+        font-size: var(--text-xl);
       }
       
       form {
-        padding: 20px;
-        gap: 20px;
+        padding: var(--space-md);
+        gap: var(--space-lg);
       }
       
       input, select, button {
-        padding: 14px;
+        padding: var(--space-md);
+      }
+      
+      select {
+        background-position: right var(--space-md) center;
       }
       
       .footer {
-        padding: 16px 20px 20px;
+        padding: var(--space-md);
         flex-direction: column;
         text-align: center;
-        gap: 8px;
+        gap: var(--space-sm);
       }
       
       .chips {
         justify-content: center;
       }
+      
+      .status {
+        padding: var(--space-md);
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-sm);
+      }
+    }
+
+    /* Melhorias para telas muito pequenas */
+    @media (max-width: 360px) {
+      .chips {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .pill {
+        justify-content: center;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="card" role="main" aria-label="Formulário de inscrição para aprofundamentos 2025.2">
     <header>
       <h1>🎓 Aprofundamentos 2025.2</h1>
       <p class="sub">Preencha o formulário abaixo para garantir sua vaga.<br>
-      <strong>2° ano: 29 vagas | 3° ano: 37 vagas</strong> - não perca tempo!</p>
+      <strong>Cada aprofundamento tem limite de vagas</strong> - não perca tempo!</p>
     </header>
 
-    <form id="form">
+    <form id="form" novalidate aria-labelledby="form-title">
       <div class="field">
-        <label for="nome">👤 Nome Completo</label>
-        <input id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required />
-        <div class="hint">Informe seu nome completo conforme documentos oficiais</div>
+        <label for="nome">
+          👤 Nome Completo <span class="required-marker" aria-hidden="true">*</span>
+        </label>
+        <input id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required 
+               aria-required="true" aria-describedby="nome-hint" />
+        <div class="hint" id="nome-hint">
+          <span aria-hidden="true">ℹ️</span>
+          <span>Informe seu nome completo conforme documentos oficiais</span>
+        </div>
       </div>
 
       <div class="row">
         <div class="field">
-          <label for="serie">🏫 Série/Turma</label>
-          <select id="serie" name="serie" required>
+          <label for="serie">
+            🏫 Série/Turma <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="serie" name="serie" required aria-required="true" aria-describedby="serie-hint">
             <option value="" disabled selected>Selecione sua turma</option>
             <option>2° A</option><option>2° B</option><option>2° C</option>
             <option>3° A</option><option>3° B</option>
           </select>
-          <div class="hint">Escolha sua série e turma atual</div>
+          <div class="hint" id="serie-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Escolha sua série e turma atual</span>
+          </div>
         </div>
 
         <div class="field">
-          <label for="aprofundamento">📚 Aprofundamento</label>
-          <select id="aprofundamento" name="aprofundamento" required>
+          <label for="aprofundamento">
+            📚 Aprofundamento <span class="required-marker" aria-hidden="true">*</span>
+          </label>
+          <select id="aprofundamento" name="aprofundamento" required 
+                  aria-required="true" aria-describedby="aprofundamento-hint" disabled>
             <option value="" disabled selected>Carregando opções...</option>
           </select>
-          <div class="hint">Aprofundamentos esgotados ficam indisponíveis</div>
+          <div class="hint" id="aprofundamento-hint">
+            <span aria-hidden="true">ℹ️</span>
+            <span>Aprofundamentos esgotados ficam indisponíveis</span>
+          </div>
         </div>
       </div>
 
       <div class="chips-container">
-        <div class="chips-title">📊 Vagas Disponíveis</div>
-        <div class="chips" id="chips"></div>
+        <div class="chips-title">
+          <span aria-hidden="true">📊</span>
+          <span>Vagas Disponíveis</span>
+        </div>
+        <div class="chips" id="chips" aria-live="polite" aria-atomic="true"></div>
       </div>
       
-      <div id="status" class="status"></div>
-      <button id="btn" type="submit">
-        ✨ Confirmar Inscrição
+      <div id="status" class="status" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      
+      <button id="btn" type="submit" aria-label="Confirmar inscrição no aprofundamento selecionado">
+        <span aria-hidden="true">✨</span>
+        <span>Confirmar Inscrição</span>
       </button>
     </form>
 
     <div class="footer">
-      <span>🚀 GitHub Pages • Google Sheets</span>
+      <span>
+        <span aria-hidden="true">📚</span>
+        <span>ECI Maria Zeca de Souza • Lkton • 2025</span>
+      </span>
       <div class="sync-indicator">
-        <div class="sync-dot"></div>
+        <div class="sync-dot" aria-hidden="true"></div>
         <span id="lastSync">Sincronizando...</span>
       </div>
     </div>
   </div>
 
   <script>
+    // Constantes e seleção de elementos
     const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
     const $ = (s) => document.querySelector(s);
-    const form = $("#form"), selSerie = $("#serie"), selAprofundamento = $("#aprofundamento"), chips = $("#chips"), box = $("#status"), btn = $("#btn"), last = $("#lastSync");
+    const form = $("#form");
+    const selSerie = $("#serie");
+    const selAprofundamento = $("#aprofundamento");
+    const chips = $("#chips");
+    const statusBox = $("#status");
+    const btn = $("#btn");
+    const lastSync = $("#lastSync");
+    const nomeInput = $("#nome");
 
     // Definir aprofundamentos por série
     const APROFUNDAMENTOS_POR_SERIE = {
@@ -417,37 +579,49 @@
       ]
     };
 
+    // Estado da aplicação
+    let availabilityData = [];
+    let lastSerieSelected = '';
+
+    /**
+     * Carrega a disponibilidade de vagas da API
+     */
     async function loadAvailability() {
       try {
         btn.disabled = true; 
-        box.style.display = "none";
+        statusBox.style.display = "none";
         
         const res = await fetch(API_URL); 
         const json = await res.json();
-        const items = (json && json.availability) || []; 
+        availabilityData = (json && json.availability) || []; 
         
-        renderOptions(items); 
-        renderChips(items); 
-        last.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
+        renderOptions(availabilityData); 
+        renderChips(availabilityData); 
+        lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
       } catch(e) {
-        box.textContent = "⚠️ Não foi possível carregar a disponibilidade. Tente novamente."; 
-        box.className = "status error"; 
-        box.style.display = "block";
-        last.textContent = "Erro na sincronização";
+        showError("⚠️ Não foi possível carregar a disponibilidade. Tente novamente."); 
+        lastSync.textContent = "Erro na sincronização";
       } finally { 
         btn.disabled = false; 
       }
     }
     
+    /**
+     * Renderiza as opções no select de aprofundamentos
+     * @param {Array} items - Dados de disponibilidade
+     */
     function renderOptions(items) {
       const serieAtual = selSerie.value;
       selAprofundamento.innerHTML = '<option value="" disabled selected>Selecione um aprofundamento</option>';
       
       if (!serieAtual) {
         selAprofundamento.innerHTML = '<option value="" disabled selected>Primeiro selecione sua turma</option>';
+        selAprofundamento.disabled = true;
         return;
       }
       
+      // Habilitar select se uma série foi selecionada
+      selAprofundamento.disabled = false;
       const aprofundamentosDisponiveis = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
       
       aprofundamentosDisponiveis.forEach(aprofundamento => {
@@ -456,14 +630,18 @@
         const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
         const rem = item ? (+item.restantes || 0) : vagasPadrao;
         
-        const o = document.createElement("option"); 
-        o.value = aprofundamento; 
-        o.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
-        if (rem <= 0) o.disabled = true; 
-        selAprofundamento.appendChild(o); 
+        const option = document.createElement("option"); 
+        option.value = aprofundamento; 
+        option.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
+        if (rem <= 0) option.disabled = true; 
+        selAprofundamento.appendChild(option); 
       });
     }
     
+    /**
+     * Renderiza os chips de vagas disponíveis
+     * @param {Array} items - Dados de disponibilidade
+     */
     function renderChips(items) {
       chips.innerHTML = ""; 
       
@@ -484,47 +662,125 @@
       
       aprofundamentosParaMostrar.forEach(aprofundamento => {
         const item = items.find(it => it.pratica === aprofundamento);
-        // Definir vagas padrão baseado no aprofundamento (se for dos 3° anos, usar 37, senão 29)
-        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
+        // Definir vagas padrão baseado no aprofundamento
+        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", 
+                       "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
         const vagasPadrao = eh3Ano ? 37 : 29;
-        const r = item ? (+item.restantes || 0) : vagasPadrao;
+        const vagasRestantes = item ? (+item.restantes || 0) : vagasPadrao;
         
-        const s = document.createElement("span"); 
-        s.className = "pill"; 
-        s.innerHTML = `
+        const chip = document.createElement("span"); 
+        chip.className = "pill"; 
+        chip.innerHTML = `
           <span>${aprofundamento.length > 25 ? aprofundamento.substring(0, 25) + '...' : aprofundamento}</span>
-          <strong>${r} ${r === 1 ? 'vaga' : 'vagas'}</strong>
+          <strong>${vagasRestantes} ${vagasRestantes === 1 ? 'vaga' : 'vagas'}</strong>
         `;
-        if (r === 0) {
-          s.style.opacity = '0.5';
-          s.style.textDecoration = 'line-through';
+        
+        // Adicionar indicador visual para vagas esgotadas
+        if (vagasRestantes === 0) {
+          chip.style.opacity = '0.6';
+          chip.innerHTML += ' <span aria-hidden="true">❌</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: Esgotado`);
+        } else if (vagasRestantes < 5) {
+          chip.innerHTML += ' <span aria-hidden="true">⚠️</span>';
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes - Poucas vagas!`);
+        } else {
+          chip.setAttribute('aria-label', `${aprofundamento}: ${vagasRestantes} vagas restantes`);
         }
-        chips.appendChild(s); 
+        
+        chips.appendChild(chip); 
       });
     }
     
+    /**
+     * Exibe uma mensagem de erro
+     * @param {String} message - Mensagem de erro
+     */
+    function showError(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status error"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+    }
+    
+    /**
+     * Exibe uma mensagem de sucesso
+     * @param {String} message - Mensagem de sucesso
+     */
+    function showSuccess(message) {
+      statusBox.textContent = message; 
+      statusBox.className = "status success"; 
+      statusBox.style.display = "flex";
+      statusBox.setAttribute('aria-live', 'assertive');
+      
+      // Scroll suave para a mensagem de sucesso
+      setTimeout(() => {
+        statusBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+    
+    /**
+     * Valida um campo do formulário
+     * @param {HTMLElement} field - Campo a ser validado
+     * @returns {Boolean} - True se o campo é válido
+     */
+    function validateField(field) {
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        field.classList.remove('success');
+        return false;
+      } else {
+        field.classList.remove('error');
+        field.classList.add('success');
+        return true;
+      }
+    }
+
     // Event listener para mudança de série
     selSerie.addEventListener('change', function() {
-      const items = []; // Você pode manter os dados em cache se necessário
-      renderOptions(items);
-      renderChips(items);
+      if (this.value !== lastSerieSelected) {
+        lastSerieSelected = this.value;
+        renderOptions(availabilityData);
+        renderChips(availabilityData);
+        
+        // Animar os chips para feedback visual
+        document.querySelectorAll('.pill').forEach((pill, index) => {
+          pill.style.animationDelay = `${index * 0.1}s`;
+          pill.classList.add('animate-in');
+        });
+      }
     });
     
+    // Validação em tempo real para o campo nome
+    nomeInput.addEventListener('input', function() {
+      validateField(this);
+    });
+    
+    // Validação ao sair do campo
+    nomeInput.addEventListener('blur', function() {
+      validateField(this);
+    });
+    
+    // Event listener para o envio do formulário
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); 
-      box.style.display = "none";
+      statusBox.style.display = "none";
       
-      const nome = $("#nome").value.trim(), serie = selSerie.value, aprofundamento = selAprofundamento.value;
+      // Validar todos os campos
+      const isNomeValid = validateField(nomeInput);
+      const isSerieValid = validateField(selSerie);
+      const isAprofValid = validateField(selAprofundamento);
       
-      if (!nome || !serie || !aprofundamento) { 
-        box.textContent = "⚠️ Por favor, preencha todos os campos obrigatórios."; 
-        box.className = "status error"; 
-        box.style.display = "block"; 
+      if (!isNomeValid || !isSerieValid || !isAprofValid) { 
+        showError("⚠️ Por favor, preencha todos os campos obrigatórios."); 
         return; 
       }
       
+      const nome = nomeInput.value.trim();
+      const serie = selSerie.value;
+      const aprofundamento = selAprofundamento.value;
+      
       btn.disabled = true; 
-      btn.innerHTML = '<span class="loading-spinner"></span>Enviando inscrição...';
+      btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span><span>Enviando inscrição...</span>';
       
       try {
         const res = await fetch(API_URL, {
@@ -536,58 +792,37 @@
         const json = await res.json();
         
         if (json.ok) { 
-          box.textContent = "🎉 Inscrição registrada com sucesso! Sua vaga está garantida."; 
-          box.className = "status success"; 
-          form.reset(); 
+          showSuccess("🎉 Inscrição registrada com sucesso! Sua vaga está garantida."); 
+          form.reset();
+          selAprofundamento.disabled = true;
           await loadAvailability();
-          
-          // Scroll suave para a mensagem de sucesso
-          box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (json.full) { 
-          box.textContent = "😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível."; 
-          box.className = "status error"; 
+          showError("😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível."); 
           await loadAvailability();
         }
         else { 
-          box.textContent = "❌ Erro: " + (json.error || "não foi possível concluir a inscrição."); 
-          box.className = "status error"; 
+          showError("❌ Erro: " + (json.error || "não foi possível concluir a inscrição.")); 
         }
       } catch(err) { 
-        box.textContent = "🔌 Falha na conexão. Verifique sua internet e tente novamente."; 
-        box.className = "status error"; 
+        showError("🔌 Falha na conexão. Verifique sua internet e tente novamente."); 
       } finally { 
-        box.style.display = "block"; 
         btn.disabled = false; 
-        btn.innerHTML = "✨ Confirmar Inscrição"; 
+        btn.innerHTML = '<span aria-hidden="true">✨</span><span>Confirmar Inscrição</span>'; 
       }
     });
     
     // Carregamento inicial e atualização periódica
-    loadAvailability(); 
-    setInterval(loadAvailability, 60000);
-    
-    // Validação em tempo real
-    $("#nome").addEventListener('input', function() {
-      if (this.value.trim().length < 3) {
-        this.style.borderColor = 'rgba(255, 92, 122, 0.5)';
-      } else {
-        this.style.borderColor = 'rgba(47, 209, 128, 0.5)';
-      }
-    });
-    
-    // Efeito de hover nos chips
     document.addEventListener('DOMContentLoaded', function() {
-      const style = document.createElement('style');
-      style.textContent = `
-        .pill:hover {
-          transform: translateY(-2px) scale(1.02);
-          box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2);
-        }
-      `;
-      document.head.appendChild(style);
+      // Adicionar animação de entrada para a card
+      document.querySelector('.card').classList.add('animate-in');
+      
+      // Iniciar a carga de disponibilidade
+      loadAvailability(); 
+      
+      // Atualizar a cada minuto
+      setInterval(loadAvailability, 60000);
     });
   </script>
 </body>
 </html>
-
