@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aprofundamentos 2025.2</title>
   <style>
-    /* O estilo permanece o mesmo */
+    /* Estilo permanece o mesmo */
   </style>
 </head>
 <body>
@@ -66,6 +66,7 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
 
+    // Função para carregar os dados de disponibilidade
     async function loadAvailability() {
       try {
         const res = await fetch(API_URL, {
@@ -75,8 +76,8 @@
 
         const data = await res.json();
         if (data.ok && data.availability) {
-          renderOptions(data.availability);
-          renderChips(data.availability);
+          renderOptions(data.availability);  // Renderizar as opções de Aprofundamento
+          renderChips(data.availability);  // Exibir chips de disponibilidade
           lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
         } else {
           setStatus("⚠️ Falha ao carregar os aprofundamentos.", "error");
@@ -88,12 +89,13 @@
       }
     }
 
+    // Renderiza as opções de aprofundamento com base na série escolhida
     function renderOptions(items) {
       const serie = inpSerie.value;
       const filtered = items.filter(item => item.series.includes(serie));
 
       const selAprof = document.getElementById("aprof");
-      selAprof.innerHTML = '';
+      selAprof.innerHTML = '';  // Limpa as opções de aprofundamento
       const opt0 = document.createElement('option');
       opt0.value = ''; 
       opt0.disabled = true; 
@@ -109,12 +111,13 @@
       });
     }
 
+    // Renderiza os chips de vagas disponíveis
     function renderChips(items) {
       const serie = inpSerie.value;
       const filtered = items.filter(item => item.series.includes(serie));
 
       const chips = document.getElementById("chips");
-      chips.innerHTML = "";
+      chips.innerHTML = "";  // Limpa os chips de vagas disponíveis
 
       filtered.forEach(item => {
         const pill = document.createElement('span');
@@ -124,6 +127,7 @@
       });
     }
 
+    // Exibe o status de erro ou sucesso
     function setStatus(msg, type) {
       const statusBox = document.getElementById("status");
       statusBox.textContent = msg;
