@@ -5,7 +5,329 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aprofundamentos 2025.2</title>
   <style>
-    /* Estilo permanece o mesmo */
+    :root { 
+      --bg: #0e0f13; 
+      --card: #151823; 
+      --card-hover: #1a1d2a;
+      --txt: #e9ecf1; 
+      --muted: #9aa3b2; 
+      --accent: #7c5cff; 
+      --accent-hover: #8b6bff;
+      --success: #2fd180; 
+      --error: #ff5c7a; 
+      --warning: #ffa726;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --gradient: linear-gradient(135deg, var(--accent), #4c82ff);
+    }
+    
+    * { 
+      box-sizing: border-box; 
+    }
+    
+    body { 
+      margin: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif; 
+      background: linear-gradient(120deg, #0e0f13, #12131a 40%, #101628); 
+      color: var(--txt); 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 24px;
+      line-height: 1.6;
+    }
+    
+    .card { 
+      width: 100%; 
+      max-width: 720px; 
+      background: var(--card); 
+      border: 1px solid rgba(255,255,255,.06); 
+      border-radius: 20px; 
+      box-shadow: 0 10px 30px var(--shadow); 
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px var(--shadow);
+    }
+    
+    header { 
+      padding: 32px 32px 20px; 
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.05), rgba(76, 130, 255, 0.05));
+      text-align: center;
+    }
+    
+    h1 { 
+      margin: 0 0 8px; 
+      font-size: 1.6rem; 
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    p.sub { 
+      margin: 0; 
+      color: var(--muted); 
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    form { 
+      padding: 28px 32px 32px; 
+      display: grid; 
+      gap: 24px; 
+    }
+    
+    label { 
+      display: block; 
+      font-weight: 600; 
+      margin: 0 0 8px;
+      color: var(--txt);
+      font-size: 0.95rem;
+    }
+    
+    .field { 
+      display: grid; 
+      gap: 8px; 
+    }
+    
+    input, select, button { 
+      width: 100%; 
+      padding: 16px; 
+      border-radius: 12px; 
+      border: 1px solid rgba(255,255,255,.1); 
+      background: #0f1220; 
+      color: var(--txt);
+      font-size: 15px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1);
+      background: #111426;
+    }
+    
+    input::placeholder { 
+      color: #7d8597; 
+    }
+    
+    .hint { 
+      font-size: 0.85rem; 
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    
+    .row { 
+      display: grid; 
+      gap: 20px; 
+      grid-template-columns: 1fr; 
+    } 
+    
+    @media (min-width: 720px) { 
+      .row { 
+        grid-template-columns: 1fr 1fr; 
+      } 
+    }
+    
+    .chips-container {
+      background: rgba(15, 18, 32, 0.5);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 8px 0;
+    }
+    
+    .chips-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .chips { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px; 
+    }
+    
+    .pill { 
+      display: inline-flex; 
+      gap: 8px; 
+      align-items: center; 
+      font-size: 0.85rem; 
+      padding: 8px 14px; 
+      border-radius: 20px; 
+      background: #0f1220; 
+      border: 1px solid rgba(255,255,255,.08); 
+      color: var(--muted);
+      transition: all 0.3s ease;
+    }
+    
+    .pill:hover {
+      background: #141a2a;
+      border-color: rgba(124, 92, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .status { 
+      padding: 16px 20px; 
+      border-radius: 12px; 
+      background: #0f1a1f; 
+      border: 1px solid rgba(255,255,255,.08); 
+      font-size: 0.95rem; 
+      display: none;
+      margin: 16px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .status.success { 
+      display: block; 
+      border-color: rgba(47,209,128,.5);
+      background: rgba(47,209,128,.1);
+      color: var(--success);
+    }
+    
+    .status.error { 
+      display: block; 
+      border-color: rgba(255,92,122,.5);
+      background: rgba(255,92,122,.1);
+      color: var(--error);
+    }
+    
+    .footer { 
+      padding: 20px 32px 28px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      color: var(--muted); 
+      border-top: 1px solid rgba(255,255,255,.06); 
+      font-size: 0.9rem; 
+      flex-wrap: wrap; 
+      gap: 12px;
+      background: rgba(15, 18, 32, 0.3);
+    }
+    
+    button { 
+      background: var(--gradient); 
+      border: none; 
+      font-weight: 700; 
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(124, 92, 255, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    button:hover::before {
+      left: 100%;
+    }
+    
+    .sync-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      .card {
+        border-radius: 16px;
+      }
+      
+      header {
+        padding: 24px 20px 16px;
+      }
+      
+      h1 {
+        font-size: 1.4rem;
+      }
+      
+      form {
+        padding: 20px;
+        gap: 20px;
+      }
+      
+      input, select, button {
+        padding: 14px;
+      }
+      
+      .footer {
+        padding: 16px 20px 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+      }
+      
+      .chips {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -13,7 +335,7 @@
     <header>
       <h1>🎓 Aprofundamentos 2025.2</h1>
       <p class="sub">Preencha o formulário abaixo para garantir sua vaga.<br>
-      <strong>Cada aprofundamento tem limite de vagas</strong> - não perca tempo!</p>
+      <strong>Cada aprofundamento tem limite de 29 vagas</strong> - não perca tempo!</p>
     </header>
 
     <form id="form">
@@ -35,8 +357,8 @@
         </div>
 
         <div class="field">
-          <label for="aprof"><span class="icon-wrapper">🔍</span> Aprofundamento</label>
-          <select id="aprof" name="aprof" required>
+          <label for="aprofundamento">📚 Aprofundamento</label>
+          <select id="aprofundamento" name="aprofundamento" required>
             <option value="" disabled selected>Carregando opções...</option>
           </select>
           <div class="hint">Aprofundamentos esgotados ficam indisponíveis</div>
@@ -44,18 +366,18 @@
       </div>
 
       <div class="chips-container">
-        <div class="chips-title"><span class="icon-wrapper">📊</span> Vagas Disponíveis</div>
+        <div class="chips-title">📊 Vagas Disponíveis</div>
         <div class="chips" id="chips"></div>
       </div>
       
-      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <div id="status" class="status"></div>
       <button id="btn" type="submit">
-        <span class="icon-wrapper">✅</span> Confirmar Inscrição
+        ✨ Confirmar Inscrição
       </button>
     </form>
 
     <div class="footer">
-      <span><span class="icon-wrapper">📚</span> ECI Maria Zeca de Souza • Aprofundamentos 2025.2 • Lkton • 2025</span>
+      <span>🚀 GitHub Pages • Google Sheets</span>
       <div class="sync-indicator">
         <div class="sync-dot"></div>
         <span id="lastSync">Sincronizando...</span>
@@ -65,98 +387,202 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
+    const $ = (s) => document.querySelector(s);
+    const form = $("#form"), selSerie = $("#serie"), selAprofundamento = $("#aprofundamento"), chips = $("#chips"), box = $("#status"), btn = $("#btn"), last = $("#lastSync");
 
-    // Função para carregar os dados de disponibilidade
+    // Definir aprofundamentos por série
+    const APROFUNDAMENTOS_POR_SERIE = {
+      "2° A": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° B": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "2° C": [
+        "Educação ambiental: Justiça socioambiental e cidadania",
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "3° A": [
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ],
+      "3° B": [
+        "Impactos Ambientais de um Telefone Celular",
+        "Mundo do trabalho"
+      ]
+    };
+
     async function loadAvailability() {
       try {
-        const res = await fetch(API_URL, {
-          method: 'GET',
-          mode: 'cors',  // A requisição agora usa 'cors' para garantir que os dados sejam acessados corretamente
-        });
-
-        const data = await res.json();
-        if (data.ok && data.availability) {
-          renderOptions(data.availability);  // Renderizar as opções de Aprofundamento
-          renderChips(data.availability);  // Exibir chips de disponibilidade
-          lastSync.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
-        } else {
-          setStatus("⚠️ Falha ao carregar os aprofundamentos.", "error");
-        }
-      } catch (err) {
-        console.error("Erro ao carregar disponibilidade:", err);
-        setStatus("⚠️ Usando dados locais. A conexão com o servidor falhou.", "warning");
-        lastSync.textContent = "Dados locais";
+        btn.disabled = true; 
+        box.style.display = "none";
+        
+        const res = await fetch(API_URL); 
+        const json = await res.json();
+        const items = (json && json.availability) || []; 
+        
+        renderOptions(items); 
+        renderChips(items); 
+        last.textContent = "Atualizado " + new Date().toLocaleTimeString('pt-BR');
+      } catch(e) {
+        box.textContent = "⚠️ Não foi possível carregar a disponibilidade. Tente novamente."; 
+        box.className = "status error"; 
+        box.style.display = "block";
+        last.textContent = "Erro na sincronização";
+      } finally { 
+        btn.disabled = false; 
       }
     }
-
-    // Renderiza as opções de aprofundamento com base na série escolhida
+    
     function renderOptions(items) {
-      const serie = inpSerie.value;
-      const filtered = items.filter(item => item.series.includes(serie));
-
-      const selAprof = document.getElementById("aprof");
-      selAprof.innerHTML = '';  // Limpa as opções de aprofundamento
-      const opt0 = document.createElement('option');
-      opt0.value = ''; 
-      opt0.disabled = true; 
-      opt0.selected = true;
-      opt0.textContent = 'Selecione um aprofundamento';
-      selAprof.appendChild(opt0);
-
-      filtered.forEach(item => {
-        const o = document.createElement("option");
-        o.value = item.nome;
-        o.textContent = `${item.nome} (${item.vagas} vagas)`;
-        selAprof.appendChild(o);
-      });
-    }
-
-    // Renderiza os chips de vagas disponíveis
-    function renderChips(items) {
-      const serie = inpSerie.value;
-      const filtered = items.filter(item => item.series.includes(serie));
-
-      const chips = document.getElementById("chips");
-      chips.innerHTML = "";  // Limpa os chips de vagas disponíveis
-
-      filtered.forEach(item => {
-        const pill = document.createElement('span');
-        pill.className = 'pill';
-        pill.textContent = `${item.nome} (${item.vagas} vagas)`;
-        chips.appendChild(pill);
-      });
-    }
-
-    // Exibe o status de erro ou sucesso
-    function setStatus(msg, type) {
-      const statusBox = document.getElementById("status");
-      statusBox.textContent = msg;
-      statusBox.className = `status ${type}`;
-      statusBox.style.display = 'block';
-    }
-
-    // Carregar os dados assim que a página for carregada
-    window.addEventListener('DOMContentLoaded', () => {
-      loadAvailability();
-    });
-
-    // Eventos para o formulário
-    document.getElementById('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nome = document.getElementById("nome").value.trim();
-      const serie = document.getElementById("serie").value;
-      const aprofundamento = document.getElementById("aprof").value;
-
-      if (!nome || !serie || !aprofundamento) {
-        setStatus("⚠️ Por favor, preencha todos os campos obrigatórios.", "error");
+      const serieAtual = selSerie.value;
+      selAprofundamento.innerHTML = '<option value="" disabled selected>Selecione um aprofundamento</option>';
+      
+      if (!serieAtual) {
+        selAprofundamento.innerHTML = '<option value="" disabled selected>Primeiro selecione sua turma</option>';
         return;
       }
-
-      setStatus("🎉 Inscrição registrada com sucesso!", "success");
-      // Resetando o formulário
-      document.getElementById('form').reset();
-      loadAvailability(); // Recarrega os aprofundamentos
+      
+      const aprofundamentosDisponiveis = APROFUNDAMENTOS_POR_SERIE[serieAtual] || [];
+      
+      aprofundamentosDisponiveis.forEach(aprofundamento => {
+        const item = items.find(it => it.pratica === aprofundamento);
+        const rem = item ? (+item.restantes || 0) : 29; // Default 29 se não encontrar
+        
+        const o = document.createElement("option"); 
+        o.value = aprofundamento; 
+        o.textContent = `${aprofundamento} ${rem > 0 ? `(${rem} vagas)` : '(ESGOTADO)'}`; 
+        if (rem <= 0) o.disabled = true; 
+        selAprofundamento.appendChild(o); 
+      });
+    }
+    
+    function renderChips(items) {
+      chips.innerHTML = ""; 
+      
+      // Mostrar apenas os aprofundamentos relevantes para a série selecionada
+      const serieAtual = selSerie.value;
+      let aprofundamentosParaMostrar = [];
+      
+      if (serieAtual && APROFUNDAMENTOS_POR_SERIE[serieAtual]) {
+        aprofundamentosParaMostrar = APROFUNDAMENTOS_POR_SERIE[serieAtual];
+      } else {
+        // Se nenhuma série selecionada, mostrar todos os aprofundamentos únicos
+        const todosAprofundamentos = new Set();
+        Object.values(APROFUNDAMENTOS_POR_SERIE).forEach(lista => {
+          lista.forEach(aprofundamento => todosAprofundamentos.add(aprofundamento));
+        });
+        aprofundamentosParaMostrar = Array.from(todosAprofundamentos);
+      }
+      
+      aprofundamentosParaMostrar.forEach(aprofundamento => {
+        const item = items.find(it => it.pratica === aprofundamento);
+        const r = item ? (+item.restantes || 0) : 29; // Default 29 se não encontrar
+        
+        const s = document.createElement("span"); 
+        s.className = "pill"; 
+        s.innerHTML = `
+          <span>${aprofundamento.length > 25 ? aprofundamento.substring(0, 25) + '...' : aprofundamento}</span>
+          <strong>${r} ${r === 1 ? 'vaga' : 'vagas'}</strong>
+        `;
+        if (r === 0) {
+          s.style.opacity = '0.5';
+          s.style.textDecoration = 'line-through';
+        }
+        chips.appendChild(s); 
+      });
+    }
+    
+    // Event listener para mudança de série
+    selSerie.addEventListener('change', function() {
+      const items = []; // Você pode manter os dados em cache se necessário
+      renderOptions(items);
+      renderChips(items);
+    });
+    
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault(); 
+      box.style.display = "none";
+      
+      const nome = $("#nome").value.trim(), serie = selSerie.value, aprofundamento = selAprofundamento.value;
+      
+      if (!nome || !serie || !aprofundamento) { 
+        box.textContent = "⚠️ Por favor, preencha todos os campos obrigatórios."; 
+        box.className = "status error"; 
+        box.style.display = "block"; 
+        return; 
+      }
+      
+      btn.disabled = true; 
+      btn.innerHTML = '<span class="loading-spinner"></span>Enviando inscrição...';
+      
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {"Content-Type": "text/plain;charset=utf-8"},
+          body: JSON.stringify({nome, serie, pratica: aprofundamento})
+        });
+        
+        const json = await res.json();
+        
+        if (json.ok) { 
+          box.textContent = "🎉 Inscrição registrada com sucesso! Sua vaga está garantida."; 
+          box.className = "status success"; 
+          form.reset(); 
+          await loadAvailability();
+          
+          // Scroll suave para a mensagem de sucesso
+          box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        else if (json.full) { 
+          box.textContent = "😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível."; 
+          box.className = "status error"; 
+          await loadAvailability();
+        }
+        else { 
+          box.textContent = "❌ Erro: " + (json.error || "não foi possível concluir a inscrição."); 
+          box.className = "status error"; 
+        }
+      } catch(err) { 
+        box.textContent = "🔌 Falha na conexão. Verifique sua internet e tente novamente."; 
+        box.className = "status error"; 
+      } finally { 
+        box.style.display = "block"; 
+        btn.disabled = false; 
+        btn.innerHTML = "✨ Confirmar Inscrição"; 
+      }
+    });
+    
+    // Carregamento inicial e atualização periódica
+    loadAvailability(); 
+    setInterval(loadAvailability, 60000);
+    
+    // Validação em tempo real
+    $("#nome").addEventListener('input', function() {
+      if (this.value.trim().length < 3) {
+        this.style.borderColor = 'rgba(255, 92, 122, 0.5)';
+      } else {
+        this.style.borderColor = 'rgba(47, 209, 128, 0.5)';
+      }
+    });
+    
+    // Efeito de hover nos chips
+    document.addEventListener('DOMContentLoaded', function() {
+      const style = document.createElement('style');
+      style.textContent = `
+        .pill:hover {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 4px 12px rgba(124, 92, 255, 0.2);
+        }
+      `;
+      document.head.appendChild(style);
     });
   </script>
 </body>
 </html>
+
