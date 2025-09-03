@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin • Aprofundamentos 2025.2</title>
+<title>Admin PRO • Aprofundamentos 2025.2</title>
 
-<!-- Bibliotecas para exportação -->
+<!-- Bibliotecas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -13,254 +13,195 @@
 
 <style>
   :root { 
-    --bg: #0a0d14; 
-    --card: #141a2a; 
-    --card-hover: #1a2138;
-    --txt: #e9ecf1; 
-    --muted: #9aa3b2; 
-    --accent: #4CAF50; 
-    --accent-hover: #66BB6A;
-    --success: #2fd180; 
-    --error: #ff6b7a; 
-    --warning: #ffa726;
-    --line: #1f2740;
-    --shadow: rgba(0, 0, 0, 0.3);
+    --bg: #0b0e17; --card: #131a2b; --card-2:#0f1526; --card-hover: #19223a;
+    --txt: #ecf1f6; --muted: #9aa3b2; --accent: #4CAF50; --accent-2:#2fd180;
+    --error:#ff6b7a; --warn:#ffa726; --line:#1f2740; --shadow: rgba(0,0,0,.25);
     --gradient: linear-gradient(135deg, var(--accent), #66BB6A);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    margin: 0;
-    background: linear-gradient(120deg, #0a0d14, #0e1322 45%, #0a1230);
-    color: var(--txt);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, Arial, sans-serif;
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-  .container { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
-  .header { text-align: center; margin-bottom: 40px; padding: 0 16px; }
-  .header h1 {
-    margin: 0 0 12px;
-    font-size: 2.2rem; font-weight: 800;
-    background: var(--gradient);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    letter-spacing: -0.5px;
-  }
-  .header p { margin: 0; color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; line-height: 1.5; }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 28px; margin-bottom: 28px;
-    box-shadow: 0 6px 24px var(--shadow);
-    transition: var(--transition);
-  }
-  .card:hover { background: var(--card-hover); transform: translateY(-4px); box-shadow: 0 12px 36px var(--shadow); }
-  .grid { display: grid; gap: 24px; }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { background: radial-gradient(1200px 600px at 10% -10%, rgba(76,175,80,.07), transparent), linear-gradient(120deg,#0a0d14,#0e1322 45%,#0a1230); color:var(--txt); font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; }
+  .container { max-width: 1300px; margin:0 auto; padding:28px 20px; }
+  .header h1 { font-size: 2.2rem; font-weight: 800; margin:0 0 8px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .header p { color:var(--muted); }
+  .row { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 8px 30px var(--shadow); }
+  .card:hover { background:var(--card-hover); }
+  .card-title { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:10px; }
+  .muted { color:var(--muted); }
+  label { font-size:.95rem; font-weight:700; }
+  input, select, button { background:#0f1426; color:var(--txt); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font:inherit; }
+  input:focus,select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(76,175,80,.15); }
+  .btn { background:var(--gradient); border:none; font-weight:800; cursor:pointer; }
+  .btn.secondary { background:#1a2138; }
+  .btn.small { padding:8px 10px; border-radius:10px; font-size:.9rem; }
+  .btn.danger { background:linear-gradient(135deg,#ff4757,#ff6b7a); }
+  .btn.warn { background:linear-gradient(135deg,#ffa726,#ffb74d); }
+  .btn.success { background:linear-gradient(135deg,#2ed573,#2fd180); }
+  .grid { display:grid; gap:14px; }
   .grid-2 { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr; }
-  @media (min-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr 1fr; }
-    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-  }
-  .form-group { display: flex; flex-direction: column; gap: 10px; }
-  label { font-weight: 700; color: var(--txt); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-  input, select, button {
-    background: #0f1426; border: 1px solid var(--line); color: var(--txt);
-    padding: 15px 18px; border-radius: 14px; outline: none; transition: var(--transition); font-size: 15px; font-family: inherit;
-  }
-  input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15); transform: translateY(-1px); }
-  input::placeholder { color: var(--muted); }
-  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; background-size: 16px; padding-right: 48px; }
-  .btn {
-    background: var(--gradient); border: none; font-weight: 700; cursor: pointer; transition: var(--transition);
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; min-width: 130px;
-    padding: 15px 20px; border-radius: 14px; font-size: 15px; position: relative; overflow: hidden;
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3); }
-  .btn:active { transform: translateY(0); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .btn-secondary { background: #1a2138; border: 1px solid var(--line); }
-  .btn-secondary:hover { background: #242b42; box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
-  .btn-pdf { background: linear-gradient(135deg, #ff4757, #ff6b7a); }
-  .btn-excel { background: linear-gradient(135deg, #2ed573, #2fd180); }
-  .btn-word { background: linear-gradient(135deg, #3742fa, #4c82ff); }
-  .btn-csv { background: linear-gradient(135deg, #ffa726, #ffb74d); }
-  .export-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; }
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 36px; }
-  .stat-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; }
-  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient); }
-  .stat-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px var(--shadow); }
-  .stat-value { font-size: 2.2rem; font-weight: 800; color: var(--txt); margin: 12px 0; }
-  .stat-label { color: var(--muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 24px; }
-  .controls input { flex: 1; min-width: 220px; }
-  .table-container { background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; margin-top: 28px; }
-  .table-header { padding: 22px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: rgba(76, 175, 80, 0.05); }
-  .table-title { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-  .table-count { color: var(--muted); font-size: 0.95rem; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 18px 22px; text-align: left; border-bottom: 1px solid var(--line); }
-  th { background: rgba(76, 175, 80, 0.05); font-weight: 700; color: var(--txt); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; }
-  tr:hover td { background: rgba(76, 175, 80, 0.08); }
-  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 70px 24px; color: var(--muted); }
-  .spinner { width: 44px; height: 44px; border: 3px solid var(--line); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  .hide { display: none !important; }
-  .message { padding: 14px 18px; border-radius: 12px; font-size: 0.95rem; margin: 14px 0; display: flex; align-items: center; gap: 10px; }
-  .message.success { background: rgba(47, 209, 128, 0.1); border: 1px solid rgba(47, 209, 128, 0.3); color: var(--success); }
-  .message.error { background: rgba(255, 107, 122, 0.1); border: 1px solid rgba(255, 107, 122, 0.3); color: var(--error); }
-  .message.warning { background: rgba(255, 167, 38, 0.1); border: 1px solid rgba(255, 167, 38, 0.3); color: var(--warning); }
-  .capacity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 24px; }
-  .capacity-item { background: #0f1426; border: 1px solid var(--line); border-radius: 14px; padding: 20px; transition: var(--transition); }
-  .capacity-item:hover { background: #141a2a; transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-  .capacity-name { font-weight: 700; margin-bottom: 12px; color: var(--txt); font-size: 1rem; }
-  .capacity-numbers { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .capacity-ratio { font-size: 1.2rem; font-weight: 800; }
-  .capacity-status { font-size: 0.9rem; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
-  .capacity-status.available { background: rgba(47, 209, 128, 0.2); color: var(--success); }
-  .capacity-status.full { background: rgba(255, 107, 122, 0.2); color: var(--error); }
-  .progress-bar { width: 100%; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 12px; }
-  .progress-fill { height: 100%; background: var(--gradient); transition: width 0.3s ease; }
-  .muted { color: var(--muted); font-size: .9rem; line-height: 1.5; }
-  .linklike { background: none; border: none; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
-  @media (max-width: 768px) {
-    .container { padding: 20px 16px; }
-    .header h1 { font-size: 1.8rem; }
-    .header p { font-size: 1rem; }
-    .card { padding: 20px; }
-    .controls { flex-direction: column; align-items: stretch; }
-    .controls input, .controls button { width: 100%; }
-    .export-buttons { flex-direction: column; }
-    .export-buttons button { width: 100%; }
-    table { font-size: 0.9rem; }
-    th, td { padding: 14px 12px; }
-  }
-  @media (max-width: 480px) {
-    .container { padding: 16px 12px; }
-    .header h1 { font-size: 1.6rem; }
-    .card { padding: 18px 16px; border-radius: 16px; }
-    th, td { padding: 12px 8px; font-size: 0.85rem; }
-    .table-header { padding: 18px 20px; }
-  }
+  @media (min-width: 860px) { .grid-2 { grid-template-columns: 1fr 1fr; } .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
+  table { width:100%; border-collapse: collapse; }
+  th, td { padding:14px 12px; border-bottom: 1px solid var(--line); }
+  th { text-align:left; font-size:.85rem; letter-spacing:.5px; text-transform:uppercase; background:rgba(76,175,80,.06); position: sticky; top:0; }
+  tr:hover td { background:rgba(76,175,80,.07); }
+  code.badge { background:#0e1631; border:1px solid var(--line); padding:2px 6px; border-radius:8px; }
+  .message { padding:10px 12px; border-radius:12px; margin:8px 0; display:flex; align-items:center; gap:8px; }
+  .message.success { color:#2fd180; background:rgba(47,209,128,.12); border:1px solid rgba(47,209,128,.35); }
+  .message.error { color:#ff6b7a; background:rgba(255,107,122,.12); border:1px solid rgba(255,107,122,.35); }
+  .message.warn { color:#ffa726; background:rgba(255,167,38,.12); border:1px solid rgba(255,167,38,.35); }
+  .hide { display:none !important; }
+  .table-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .spacer { flex:1; }
+  .inline { display:inline-flex; align-items:center; gap:8px; }
+  .capacity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:14px; }
+  .cap-item { background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:14px; }
+  .progress { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .progress > div { height:8px; background:var(--gradient); }
+  .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1><span>🔐</span> Admin • Aprofundamentos 2025.2</h1>
-    <p>Painel administrativo para visualizar estatísticas, filtrar e exportar inscrições</p>
+    <h1>🔐 Admin PRO • Aprofundamentos 2025.2</h1>
+    <p class="muted">Gestão avançada de inscrições, capacidade e exportações.</p>
   </div>
 
-  <!-- LOGIN -->
+  <!-- Login -->
   <div id="loginCard" class="card">
-    <h3 style="margin-top:0;display:flex;align-items:center;gap:10px;"><span>🔒</span> Acesso Administrativo</h3>
-
+    <div class="card-title"><span>🔒</span> Acesso</div>
     <div class="muted" id="apiInfo">Detectando API...</div>
 
-    <div id="apiEditor" class="grid grid-2 hide" style="margin-top:16px;">
-      <div class="form-group">
-        <label for="api"><span>🌐</span> URL da API</label>
+    <div id="apiEditor" class="grid grid-2 hide" style="margin-top:10px;">
+      <div>
+        <label for="api">🌐 URL da API</label>
         <input id="api" placeholder="https://script.google.com/macros/s/....../exec" />
-        <small class="muted">Você pode sobrescrever a URL detectada aqui</small>
+        <small class="muted">Você pode alterar a URL detectada aqui.</small>
       </div>
     </div>
 
-    <div style="margin-top:12px;">
-      <button id="toggleApi" class="linklike" type="button"><span>⚙️</span> Configurar API</button>
-    </div>
-
-    <div class="grid grid-2" style="margin-top:20px;">
-      <div class="form-group">
-        <label for="pwd"><span>🔑</span> Senha</label>
+    <div class="grid grid-2" style="margin-top:14px;">
+      <div>
+        <label for="pwd">🔑 Senha</label>
         <input id="pwd" type="password" placeholder="••••••••" />
-        <small class="muted">Somente a senha é necessária para entrar</small>
+        <small class="muted">Use a senha admin definida no GAS.</small>
       </div>
     </div>
 
-    <div class="controls">
-      <button id="btEnter" class="btn"><span>🚀</span>Entrar</button>
+    <div class="flex" style="margin-top:12px;">
+      <button id="btEnter" class="btn"><span>🚀</span> Entrar</button>
+      <button id="toggleApi" class="btn secondary"><span>⚙️</span> Configurar API</button>
       <span id="loginMsg" class="message hide" role="status" aria-live="polite"></span>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- Dashboard -->
   <div id="dash" class="hide">
-    <div class="controls" style="justify-content:flex-end;margin-top:0;margin-bottom:16px;">
-      <button id="btLogout" class="btn btn-secondary"><span>👋</span>Sair</button>
+    <div class="flex" style="justify-content:flex-end; margin-bottom:10px;">
+      <button id="btLogout" class="btn secondary"><span>👋</span> Sair</button>
     </div>
 
-    <!-- Estatísticas -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label"><span>📊</span> Total de Inscrições</div>
-        <div class="stat-value" id="tot">-</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label"><span>⚠️</span> Aprofundamentos Esgotados</div>
-        <div class="stat-value" id="esgot">-</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label"><span>🕒</span> Última Atualização</div>
-        <div class="stat-value" id="last" style="font-size:1.1rem;">-</div>
-      </div>
-    </div>
-
-    <!-- Filtros -->
-    <div class="card">
-      <h3 style="margin-top:0;display:flex;align-items:center;gap:10px;"><span>🔍</span> Filtros e Busca</h3>
-      <div class="grid grid-2">
-        <div class="form-group">
-          <label for="fAprof"><span>📚</span> Aprofundamento</label>
-          <select id="fAprof">
-            <option value="">Todos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="fSerie"><span>🏫</span> Série/Turma</label>
-          <select id="fSerie">
-            <option value="">Todas</option>
-            <option>2° A</option><option>2° B</option><option>2° C</option>
-            <option>3° A</option><option>3° B</option>
-          </select>
+    <!-- Stats -->
+    <div class="row">
+      <div class="card" style="flex:1; min-width:260px;">
+        <div class="card-title"><span>📊</span> Estatísticas</div>
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="muted">Total de Inscrições</div>
+            <div id="tot" style="font-size:2rem; font-weight:800;">-</div>
+          </div>
+          <div class="card">
+            <div class="muted">Esgotados</div>
+            <div id="esgot" style="font-size:2rem; font-weight:800;">-</div>
+          </div>
+          <div class="card">
+            <div class="muted">Última Atualização</div>
+            <div id="last" style="font-weight:800;">-</div>
+          </div>
         </div>
       </div>
-      <div class="controls">
-        <input id="fQ" placeholder="🔍 Buscar por nome..." />
-        <button id="btFiltrar" class="btn"><span>🔄</span>Aplicar Filtros</button>
-        <button id="btSort" class="btn btn-secondary" title="Alternar ordenação (Data/Hora ⇄ Nome)"><span>📋</span>Ordenar: Data/Hora</button>
-        <span id="fltMsg" class="message hide" role="status" aria-live="polite"></span>
-      </div>
 
-      <!-- Exportações -->
-      <div class="export-buttons">
-        <button id="btPDF" class="btn btn-pdf"><span>📄</span>PDF</button>
-        <button id="btXLSX" class="btn btn-excel"><span>📊</span>XLSX</button>
-        <button id="btDOCX" class="btn btn-word"><span>📝</span>DOC</button>
-        <button id="btCSV" class="btn btn-csv"><span>📋</span>CSV</button>
+      <div class="card" style="flex:1.5; min-width:320px;">
+        <div class="card-title"><span>🔍</span> Filtros</div>
+        <div class="grid grid-3">
+          <div>
+            <label for="fAprof">📚 Aprofundamento</label>
+            <select id="fAprof"><option value="">Todos</option></select>
+          </div>
+          <div>
+            <label for="fSerie">🏫 Série/Turma</label>
+            <select id="fSerie">
+              <option value="">Todas</option>
+              <option>2° A</option><option>2° B</option><option>2° C</option>
+              <option>3° A</option><option>3° B</option>
+            </select>
+          </div>
+          <div>
+            <label for="fQ">🔎 Buscar por nome</label>
+            <input id="fQ" placeholder="Digite um nome..." />
+          </div>
+        </div>
+        <div class="grid grid-3" style="margin-top:10px;">
+          <div>
+            <label for="fFrom">🗓️ De</label>
+            <input id="fFrom" type="date" />
+          </div>
+          <div>
+            <label for="fTo">🗓️ Até</label>
+            <input id="fTo" type="date" />
+          </div>
+          <div style="display:flex; align-items:flex-end; gap:10px;">
+            <button id="btFiltrar" class="btn"><span>🔄</span> Aplicar</button>
+            <button id="btSort" class="btn secondary" title="Alternar ordenação"><span>📋</span> Ordenar: Data/Hora</button>
+          </div>
+        </div>
+        <div id="fltMsg" class="message hide"></div>
+        <div class="flex" style="margin-top:10px;">
+          <div class="inline">
+            <label for="pageSize">Linhas por página</label>
+            <select id="pageSize">
+              <option>25</option><option selected>50</option><option>100</option><option>200</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <div class="inline">
+            <button id="btPDF" class="btn small"><span>📄</span> PDF</button>
+            <button id="btXLSX" class="btn small success"><span>📊</span> XLSX</button>
+            <button id="btDOCX" class="btn small warn"><span>📝</span> DOC</button>
+            <button id="btCSV" class="btn small secondary"><span>📋</span> CSV</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Tabela -->
-    <div class="table-container">
-      <div class="table-header">
-        <div class="table-title"><span>📋</span> Inscrições</div>
-        <div class="table-count" id="count">-</div>
+    <div class="card" style="margin-top:16px;">
+      <div class="flex">
+        <div class="card-title"><span>📋</span> Inscrições</div>
+        <div class="spacer"></div>
+        <div class="pagination">
+          <button id="prevPage" class="btn secondary small">◀</button>
+          <span class="pill"><span id="pageInfo">Página 1/1</span></span>
+          <button id="nextPage" class="btn secondary small">▶</button>
+          <span class="pill"><span id="count">-</span></span>
+        </div>
       </div>
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div>Carregando dados...</div>
+      <div class="loading" id="loading" style="padding:50px; text-align:center;">
+        <div>Carregando dados…</div>
       </div>
       <div class="hide" id="tblWrap">
         <table id="tbl">
           <thead>
             <tr>
-              <th><span>🕒</span> Data/Hora</th>
-              <th><span>👤</span> Nome</th>
-              <th><span>🏫</span> Série/Turma</th>
-              <th><span>📚</span> Aprofundamento</th>
-              <th><span>🆔</span> ID</th>
+              <th>🕒 Data/Hora</th>
+              <th>👤 Nome</th>
+              <th>🏫 Série/Turma</th>
+              <th>📚 Aprofundamento</th>
+              <th>🆔 ID</th>
+              <th style="width:260px;">⚙️ Ações</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
@@ -269,511 +210,362 @@
     </div>
 
     <!-- Capacidade -->
-    <div class="card">
-      <h3 style="margin-top:0;display:flex;align-items:center;gap:10px;"><span>📊</span> Capacidade dos Aprofundamentos</h3>
-      <div class="capacity-grid" id="capGrid"></div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span>📊</span> Capacidade dos Aprofundamentos</div>
+      <div id="capGrid" class="capacity-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Transferência -->
+<div id="modalBackdrop" class="modal-backdrop hide">
+  <div class="modal">
+    <div class="card-title"><span>🔁</span> Transferir Inscrição</div>
+    <div class="grid grid-2">
+      <div>
+        <label>Aluno</label>
+        <div id="mAluno" class="pill"></div>
+      </div>
+      <div>
+        <label>ID</label>
+        <div id="mId" class="pill"></div>
+      </div>
+      <div>
+        <label>De</label>
+        <div id="mFrom" class="pill"></div>
+      </div>
+      <div>
+        <label>Para</label>
+        <select id="mTo"></select>
+      </div>
+    </div>
+    <div class="flex" style="margin-top:12px;">
+      <button id="btDoTransfer" class="btn"><span>✅</span> Confirmar</button>
+      <button id="btCancelTransfer" class="btn secondary"><span>✖</span> Cancelar</button>
+      <span id="mMsg" class="message hide"></span>
     </div>
   </div>
 </div>
 
 <script>
 /* ============ CONFIG / API AUTODETECT ============ */
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
-
-function getQueryParam(name) {
-  const u = new URL(location.href);
-  const v = u.searchParams.get(name);
-  return v && v.trim() ? v.trim() : null;
-}
-
+const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwY-3n6D5VXIeXEanzdikpQxBN8LGC1-FoIKnPytWp5qzItkA3FWaLFspf0wNfZBeZ6/exec";
+function withTimeout(promise, ms) { return new Promise((res, rej) => { const t=setTimeout(()=>rej(new Error('timeout')), ms); promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)}); }); }
+function getQueryParam(name) { const u = new URL(location.href); const v = u.searchParams.get(name); return v && v.trim() ? v.trim() : null; }
 async function resolveApi() {
-  const qp = getQueryParam('api'); 
-  if (qp) return qp;
-  const ls = localStorage.getItem('aprof_api'); 
-  if (ls) return ls;
-  try {
-    const r = await fetch('config.json', { cache: 'no-store' });
-    if (r.ok) { 
-      const cfg = await r.json(); 
-      if (cfg && cfg.api) return String(cfg.api); 
-    }
-  } catch(_) {}
+  const qp = getQueryParam('api'); if (qp) return qp;
+  const ls = localStorage.getItem('aprof_api'); if (ls) return ls;
+  try { const r = await fetch('config.json', { cache:'no-store' }); if (r.ok) { const cfg = await r.json(); if (cfg && cfg.api) return String(cfg.api); } } catch(_){}
   return DEFAULT_API;
 }
 
-/* ============ ELEMENTOS E VARS ============ */
+/* ============ ELEMENTS ============ */
 const $ = s => document.querySelector(s);
-const apiInfo = $('#apiInfo'), apiEditor = $('#apiEditor'), apiEl = $('#api');
-const toggleApiBtn = $('#toggleApi');
+const apiInfo=$('#apiInfo'), apiEditor=$('#apiEditor'), apiEl=$('#api'); const toggleApiBtn=$('#toggleApi');
+const pwdEl=$('#pwd'), enterBtn=$('#btEnter'), loginCard=$('#loginCard'), loginMsg=$('#loginMsg'), dash=$('#dash');
+const fAprof=$('#fAprof'), fSerie=$('#fSerie'), fQ=$('#fQ'), fFrom=$('#fFrom'), fTo=$('#fTo');
+const pageSizeEl=$('#pageSize'), prevPage=$('#prevPage'), nextPage=$('#nextPage'), pageInfo=$('#pageInfo');
+const btFiltrar=$('#btFiltrar'), btSort=$('#btSort'), btLogout=$('#btLogout');
+const totEl=$('#tot'), esgotEl=$('#esgot'), lastEl=$('#last');
+const loading=$('#loading'), tblWrap=$('#tblWrap'), tbody=$('#tbody'), count=$('#count');
+const btPDF=$('#btPDF'), btXLSX=$('#btXLSX'), btDOCX=$('#btDOCX'), btCSV=$('#btCSV');
+const capGrid=$('#capGrid');
+// modal
+const modalBackdrop=$('#modalBackdrop'); const mAluno=$('#mAluno'); const mId=$('#mId'); const mFrom=$('#mFrom'); const mTo=$('#mTo'); const mMsg=$('#mMsg'); const btDoTransfer=$('#btDoTransfer'); const btCancelTransfer=$('#btCancelTransfer');
 
-const pwdEl = $('#pwd'), enterBtn = $('#btEnter'), loginCard = $('#loginCard'), loginMsg = $('#loginMsg'), dash = $('#dash');
-const fAprof = $('#fAprof'), fSerie = $('#fSerie'), fQ = $('#fQ'), btFiltrar = $('#btFiltrar');
-const btPDF = $('#btPDF'), btXLSX = $('#btXLSX'), btDOCX = $('#btDOCX'), btCSV = $('#btCSV');
-const btSort = $('#btSort');
-const totEl = $('#tot'), esgotEl = $('#esgot'), lastEl = $('#last'), loading = $('#loading'), tblWrap = $('#tblWrap'), tbody = $('#tbody'), count = $('#count'), capGrid = $('#capGrid');
-const btLogout = $('#btLogout');
-
-let TOKEN = '', API = '';
-let baseData = [];     // dados brutos do backend
-let currentData = [];  // dados exibidos/exportados (após ordenação)
-let sortMode = 'ts';   // 'ts' (Data/Hora desc) ou 'nome' (A→Z)
+/* ============ STATE ============ */
+let TOKEN='', API=''; let baseData=[], filteredData=[], currentPage=1, sortMode='ts', capacidade=[];
 let listController, statsController;
 
-/* ============ SESSÃO ============ */
-function setSession(a, t) { 
-  sessionStorage.setItem('aprof_api', a); 
-  sessionStorage.setItem('aprof_token', t); 
-}
-function restoreSession() {
-  const a = sessionStorage.getItem('aprof_api'), t = sessionStorage.getItem('aprof_token');
-  if (a && t) { API = a; TOKEN = t; return true; }
-  return false;
+/* ============ SESSION ============ */
+function setSession(a,t){ sessionStorage.setItem('aprof_api', a); sessionStorage.setItem('aprof_token', t); }
+function restoreSession(){ const a=sessionStorage.getItem('aprof_api'), t=sessionStorage.getItem('aprof_token'); if(a && t){ API=a; TOKEN=t; return true; } return false; }
+
+/* ============ UI HELPERS ============ */
+function showMessage(el, text, type='error'){ el.textContent=text; el.className = 'message ' + (type==='success'?'success':type==='warn'?'warn':'error'); el.classList.remove('hide'); if(type==='success'){ setTimeout(()=>el.classList.add('hide'), 2500);} }
+function hideMessage(el){ el.classList.add('hide'); }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleString('pt-BR'); } catch(_){ return iso||''; } }
+function parseDateOnly(val){ if(!val) return null; const d = new Date(val + 'T00:00:00'); return isNaN(+d) ? null : d; }
+function inDateRange(tsIso, from, to){ if(!from && !to) return true; const t = tsIso ? new Date(tsIso) : null; if(!t) return false; if(from && t < from) return false; if(to){ const end = new Date(to); end.setHours(23,59,59,999); if(t > end) return false; } return true; }
+
+/* ============ FETCH HELPERS ============ */
+async function authedGet(url, params={}, extra={}){ const u=new URL(url); Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); u.searchParams.append('key', TOKEN);
+  const res=await fetch(u.toString(), { signal: extra.signal }); const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
+async function authedPost(url, body={}, extra={}){ const u=new URL(url); u.searchParams.append('key', TOKEN);
+  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: extra.signal });
+  const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
+
+/* ============ LOADERS ============ */
+async function loadStats(){ if(statsController) statsController.abort(); statsController = new AbortController(); return authedGet(API, { stats:'1' }, { signal: statsController.signal }); }
+async function loadList(params={}){ if(listController) listController.abort(); listController = new AbortController();
+  const q={ list:'1' }; if(params.aprofundamento) q.aprofundamento=params.aprofundamento; if(params.serie) q.serie=params.serie; if(params.q) q.q=params.q;
+  return authedGet(API, q, { signal: listController.signal });
 }
 
-/* ============ MENSAGENS ============ */
-function showMessage(element, text, type = 'error') {
-  element.textContent = text;
-  element.className = `message ${type}`;
-  element.classList.remove('hide');
-  // ícone visual
-  let icon = '❌';
-  if (type === 'success') icon = '✅';
-  if (type === 'warning') icon = '⚠️';
-  element.innerHTML = `<span>${icon}</span> ${text}`;
-  if (type === 'success') setTimeout(() => element.classList.add('hide'), 3000);
-}
-function hideMessage(element) { element.classList.add('hide'); }
-
-/* ============ FETCH (GAS: key na query) ============ */
-async function authedGet(url, params = {}, extra = {}) {
-  const u = new URL(url);
-  Object.keys(params).forEach(k => {
-    const v = params[k];
-    if (v != null && v !== '') u.searchParams.append(k, v);
-  });
-  u.searchParams.append('key', TOKEN);
-
-  const res = await fetch(u.toString(), { signal: extra.signal });
-  const text = await res.text();
-  let json;
-  try { json = JSON.parse(text); } 
-  catch(e) { throw new Error('Resposta não-JSON: ' + text.substring(0, 120)); }
-  if (!res.ok || json.ok === false) throw new Error(json.error || ('HTTP ' + res.status));
-  return json;
-}
-
-/* ============ UTIL ============ */
-function fmtDate(iso) { 
-  try { return new Date(iso).toLocaleString('pt-BR'); } 
-  catch(_) { return iso || ''; } 
-}
-function applySort(rows) {
-  const arr = [...rows];
-  if (sortMode === 'nome') {
-    arr.sort((a, b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR', { sensitivity: 'base' }));
-  } else {
-    arr.sort((a, b) => {
-      const da = a.ts ? new Date(a.ts).getTime() : 0;
-      const db = b.ts ? new Date(b.ts).getTime() : 0;
-      return db - da; // mais recentes primeiro
-    });
-  }
-  return arr;
-}
-
-/* ============ RENDER ============ */
-function renderStats(s) {
-  totEl.textContent = s.totalInscricoes || 0;
-  lastEl.textContent = new Date().toLocaleTimeString('pt-BR');
-  const cap = s.capacidade || [];
-  esgotEl.textContent = cap.filter(c => (+c.restantes || 0) === 0).length;
+/* ============ RENDERERS ============ */
+function renderStats(s){ 
+  totEl.textContent = s.totalInscricoes || 0; 
+  lastEl.textContent = new Date().toLocaleTimeString('pt-BR'); 
+  capacidade = s.capacidade || []; 
+  esgotEl.textContent = capacidade.filter(c => (+c.restantes||0)===0).length;
 
   // select de aprofundamentos
-  fAprof.innerHTML = '';
-  const optAll = document.createElement('option');
-  optAll.value = ''; optAll.textContent = 'Todos';
-  fAprof.appendChild(optAll);
+  fAprof.innerHTML = '<option value=\"\">Todos</option>' + capacidade.map(c => `<option value="${c.aprofundamento}">${c.aprofundamento} (${c.restantes} restantes)</option>`).join('');
 
-  cap.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c.aprofundamento; // ✅ usa o campo correto vindo da API
-    o.textContent = `${c.aprofundamento} (${(+c.restantes || 0)} restantes)`;
-    fAprof.appendChild(o);
-  });
-
-  // cards de capacidade
+  // grid de capacidade com edição de limite
   capGrid.innerHTML = '';
-  cap.forEach(c => {
-    const restantes = +c.restantes || 0;
-    const inscritos = +c.inscritos || 0;
-    const limite = +c.limite || 0;
-    const percentual = limite > 0 ? Math.min((inscritos / limite) * 100, 100) : 0;
-
-    const item = document.createElement('div');
-    item.className = 'capacity-item';
-
-    const nm = document.createElement('div'); 
-    nm.className = 'capacity-name'; 
-    nm.textContent = c.aprofundamento; // ✅
-
-    const nums = document.createElement('div'); 
-    nums.className = 'capacity-numbers';
-
-    const ratio = document.createElement('span'); 
-    ratio.className = 'capacity-ratio'; 
-    ratio.textContent = `${inscritos}/${limite}`;
-
-    const status = document.createElement('span');
-    status.className = 'capacity-status ' + (restantes > 0 ? 'available' : 'full');
-    status.textContent = restantes > 0 ? `${restantes} vagas` : 'ESGOTADO';
-
-    nums.appendChild(ratio); 
-    nums.appendChild(status);
-
-    const bar = document.createElement('div'); 
-    bar.className = 'progress-bar';
-    const fill = document.createElement('div'); 
-    fill.className = 'progress-fill'; 
-    fill.style.width = `${percentual}%`;
-    bar.appendChild(fill);
-
-    item.appendChild(nm); 
-    item.appendChild(nums); 
-    item.appendChild(bar);
-    capGrid.appendChild(item);
+  capacidade.forEach(c => { 
+    const pct = c.limite>0 ? Math.min((c.inscritos/c.limite)*100, 100) : 0;
+    const div=document.createElement('div'); 
+    div.className='cap-item';
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:8px; justify-content:space-between;">
+        <strong>${c.aprofundamento}</strong>
+        <span class="pill">${c.inscritos}/${c.limite} · ${c.restantes} vagas</span>
+      </div>
+      <div class="progress" style="margin:8px 0 10px;"><div style="width:${pct}%"></div></div>
+      <div class="flex">
+        <div class="inline">
+          <label>Limite</label>
+          <input type="number" min="0" value="${c.limite}" style="width:120px" data-aprof="${c.aprofundamento}" class="cap-limit"/>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn small success btSetLimit" data-aprof="${c.aprofundamento}">Salvar limite</button>
+      </div>`;
+    capGrid.appendChild(div);
   });
 }
 
-function safeCell(text) {
-  const td = document.createElement('td');
-  td.textContent = text ?? '';
-  return td;
+function applyClientFilters(rows){
+  const q = (fQ.value||'').trim().toLowerCase(); const serie = fSerie.value||''; const aprof = fAprof.value||'';
+  const from = parseDateOnly(fFrom.value); const to = parseDateOnly(fTo.value);
+  let data = rows.filter(r => {
+    if(aprof && r.aprofundamento !== aprof) return false;
+    if(serie && r.serie !== serie) return false;
+    if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
+    if(!inDateRange(r.ts, from, to)) return false;
+    return true;
+  });
+  // sort
+  if(sortMode==='nome'){ data.sort((a,b)=> (a.nome||'').localeCompare(b.nome||'', 'pt-BR', { sensitivity:'base' })); }
+  else { data.sort((a,b)=> (a.ts<b.ts?1:-1)); }
+  return data;
 }
 
-function renderRows(rows) {
-  baseData = rows || [];
-  currentData = applySort(baseData);
-
+function renderTable(paged){
   tbody.innerHTML = '';
   const frag = document.createDocumentFragment();
-
-  currentData.forEach(r => {
+  paged.forEach(r => {
     const tr = document.createElement('tr');
-    tr.appendChild(safeCell(fmtDate(r.ts)));
-
-    const tdNome = document.createElement('td');
-    const strong = document.createElement('strong');
-    strong.textContent = r.nome ?? '';
-    tdNome.appendChild(strong);
-    tr.appendChild(tdNome);
-
-    tr.appendChild(safeCell(r.serie));
-    tr.appendChild(safeCell(r.aprofundamento)); // ✅ coluna Aprofundamento exibe r.aprofundamento
-
-    const tdId = document.createElement('td');
-    const code = document.createElement('code');
-    code.textContent = r.id ?? '';
-    tdId.appendChild(code);
-    tr.appendChild(tdId);
-
+    const tds = [
+      fmtDate(r.ts),
+      `<strong>${r.nome||''}</strong>`,
+      r.serie||'',
+      r.aprofundamento||'',
+      `<code class="badge">${r.id||''}</code>`,
+      `<div class="table-actions">
+         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
+         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
+       </div>`
+    ];
+    tds.forEach(html => { const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td); });
     frag.appendChild(tr);
   });
-
   tbody.appendChild(frag);
-  count.textContent = `${currentData.length} registro(s) encontrado(s)`;
 }
 
-/* ============ LOAD (Abortable) ============ */
-async function loadStats() {
-  if (statsController) statsController.abort();
-  statsController = new AbortController();
-  return authedGet(API, { stats: '1' }, { signal: statsController.signal });
+function paginate(data){
+  const size = parseInt(pageSizeEl.value,10)||50; const total = data.length; const pages = Math.max(1, Math.ceil(total/size));
+  currentPage = Math.min(currentPage, pages);
+  const start = (currentPage-1)*size; const end = Math.min(start+size, total);
+  const pageData = data.slice(start, end);
+  pageInfo.textContent = `Página ${currentPage}/${pages}`;
+  count.textContent = `${total} registro(s)`;
+  prevPage.disabled = (currentPage<=1); nextPage.disabled = (currentPage>=pages);
+  return pageData;
 }
 
-async function loadList() {
-  if (listController) listController.abort();
-  listController = new AbortController();
-  const params = { list: '1' };
-  const p = fAprof.value || '', s = fSerie.value || '', q = (fQ.value || '').trim();
-  if (p) params.aprofundamento = p;   // ✅ filtro compatível com backend
-  if (s) params.serie = s;
-  if (q) params.q = q;
-  return authedGet(API, params, { signal: listController.signal });
-}
-
-/* ============ EXPORTS (respeita currentData) ============ */
-function exportToPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+/* ============ EXPORTS ============ */
+function exportToPDF(rows){ 
+  const { jsPDF } = window.jspdf; 
+  const doc = new jsPDF(); 
   doc.setFontSize(16);
   doc.text('Aprofundamentos 2025.2 - Inscrições', 14, 20);
   doc.setFontSize(10);
   doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
-
   const headers = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
-  const data = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ]);
-
-  doc.autoTable({
-    head: headers,
-    body: data,
-    startY: 40,
-    styles: { fontSize: 8, cellPadding: 2 },
-    headStyles: { fillColor: [76, 175, 80], textColor: 255 },
-    alternateRowStyles: { fillColor: [245, 245, 245] }
+  const body = rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id]);
+  doc.autoTable({ head: headers, body, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [76,175,80], textColor: 255 } });
+  doc.save(`aprofundamentos_${new Date().toISOString().split('T')[0]}.pdf`);
+}
+function exportToXLSX(rows){ 
+  const data = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'], ...rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id])];
+  const wb = XLSX.utils.book_new(); 
+  const ws = XLSX.utils.aoa_to_sheet(data); 
+  ws['!cols'] = [{ width: 20 }, { width: 30 }, { width: 16 }, { width: 40 }, { width: 18 }];
+  XLSX.utils.book_append_sheet(wb, ws, 'Inscrições'); 
+  XLSX.writeFile(wb, `aprofundamentos_${new Date().toISOString().split('T')[0]}.xlsx`);
+}
+function exportToDOC(rows){ 
+  let html = `<html><head><meta charset='utf-8'><title>Inscrições</title></head><body>`;
+  html += `<h1 style='text-align:center;color:#4CAF50'>Aprofundamentos 2025.2</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')}</p>`;
+  html += `<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Data/Hora</th><th>Nome</th><th>Série/Turma</th><th>Aprofundamento</th><th>ID</th></tr></thead><tbody>`;
+  rows.forEach(r => html += `<tr><td>${fmtDate(r.ts)}</td><td>${r.nome||''}</td><td>${r.serie||''}</td><td>${r.aprofundamento||''}</td><td>${r.id||''}</td></tr>`);
+  html += `</tbody></table></body></html>`; 
+  const blob = new Blob([html], { type:'application/msword' }); 
+  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.doc`);
+}
+function exportToCSV(rows){ 
+  const headers=['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']; 
+  const lines=[headers.join(';')];
+  rows.forEach(r => { 
+    const vals=[fmtDate(r.ts), r.nome||'', r.serie||'', r.aprofundamento||'', r.id||''].map(v=>String(v).replace(/"/g,'""')); 
+    lines.push(vals.map(v => (/[",\n;]/.test(v) ? `"${v}"` : v)).join(';')); 
   });
-
-  const filename = `aprofundamentos_${new Date().toISOString().split('T')[0]}.pdf`;
-  doc.save(filename);
+  const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' }); 
+  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.csv`);
 }
 
-function exportToXLSX() {
-  const data = [
-    ['Data/Hora', 'Nome', 'Série/Turma', 'Aprofundamento', 'ID'],
-    ...currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ])
-  ];
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{ width: 20 }, { width: 30 }, { width: 15 }, { width: 40 }, { width: 15 }];
-  XLSX.utils.book_append_sheet(wb, ws, 'Inscrições');
-  const filename = `aprofundamentos_${new Date().toISOString().split('T')[0]}.xlsx`;
-  XLSX.writeFile(wb, filename);
+/* ============ ADMIN ACTIONS (PRO) ============ */
+async function setLimit(aprof, limit){ return authedPost(API, { action:'setLimit', aprofundamento: aprof, limite: Number(limit) }); }
+async function transfer(id, novo){ return authedPost(API, { action:'transfer', id, novoAprofundamento: novo }); }
+async function removeById(id){ return authedPost(API, { action:'delete', id }); }
+
+/* ============ EVENT HANDLERS ============ */
+function wireCapacityButtons(){
+  document.querySelectorAll('.btSetLimit').forEach(btn => btn.addEventListener('click', async (e) => { 
+    const aprof=e.currentTarget.dataset.aprof;
+    const input = document.querySelector(`input.cap-limit[data-aprof="${CSS.escape(aprof)}"]`); 
+    const val = input ? Number(input.value) : NaN;
+    if(isNaN(val) || val<0) return alert('Informe um limite válido');
+    try{ 
+      await setLimit(aprof, val); 
+      showMessage($('#fltMsg'), 'Limite atualizado para "'+aprof+'"', 'success'); 
+      const s = await loadStats(); renderStats(s); 
+    }catch(err){ alert('Erro ao definir limite: '+err.message); }
+  }));
 }
 
-/* "DOC" compatível (HTML), sem DOCX real */
-function exportToDOCX() {
-  if (!currentData.length) {
-    showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-    return;
-  }
-
-  let html = `
-  <html>
-    <head>
-      <meta charset="utf-8">
-      <title>Aprofundamentos 2025.2 - Inscrições</title>
-      <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #4CAF50; text-align: center; }
-        .info { text-align: center; margin-bottom: 30px; color: #666; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #4CAF50; color: #fff; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-      </style>
-    </head>
-    <body>
-      <h1>Aprofundamentos 2025.2</h1>
-      <div class="info">
-        <p>Relatório de Inscrições</p>
-        <p>Gerado em: ${'${new Date().toLocaleString("pt-BR")}'}</p>
-        <p>Total de registros: ${'${currentData.length}'}</p>
-        <p>Ordenação: ${'${sortMode === "nome" ? "Nome (A→Z)" : "Data/Hora (mais recentes)"}'}</p>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Data/Hora</th>
-            <th>Nome</th>
-            <th>Série/Turma</th>
-            <th>Aprofundamento</th>
-            <th>ID</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
-  currentData.forEach(r => {
-    html += `
-      <tr>
-        <td>${'${fmtDate(r.ts)}'}</td>
-        <td>${'${r.nome || ""}'}</td>
-        <td>${'${r.serie || ""}'}</td>
-        <td>${'${r.aprofundamento || ""}'}</td>
-        <td>${'${r.id || ""}'}</td>
-      </tr>`;
-  });
-
-  html += `
-        </tbody>
-      </table>
-    </body>
-  </html>`;
-
-  const blob = new Blob([html], { type: 'application/msword' });
-  const filename = `aprofundamentos_${new Date().toISOString().split('T')[0]}.doc`;
-  saveAs(blob, filename);
-  showMessage($('#fltMsg'), 'DOC gerado com sucesso!', 'success');
+function openTransfer(ev){ 
+  const b=ev.currentTarget; const id=b.dataset.id; const nome=b.dataset.nome; const from=b.dataset.from;
+  mAluno.textContent = nome; mId.textContent = id; mFrom.textContent = from; mMsg.classList.add('hide');
+  // opções destino
+  mTo.innerHTML = capacidade.map(c => `<option value="${c.aprofundamento}" ${from===c.aprofundamento?'disabled':''}>${c.aprofundamento} (${c.restantes} vagas)</option>`).join('');
+  modalBackdrop.classList.remove('hide'); 
 }
 
-function exportToCSV() {
-  if (!currentData.length) {
-    showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-    return;
-  }
-  const headers = ['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'];
-  const rows = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ]);
-  const csv = [headers, ...rows].map(arr => arr.map(v => {
-    const s = (v ?? '').toString().replace(/"/g, '""');
-    return /[",\n;]/.test(s) ? `"${s}"` : s;
-  }).join(';')).join('\n');
-  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-  const filename = `aprofundamentos_${new Date().toISOString().split('T')[0]}.csv`;
-  saveAs(blob, filename);
-  showMessage($('#fltMsg'), 'CSV exportado com sucesso!', 'success');
+async function deleteRow(ev){ 
+  const b=ev.currentTarget; const id=b.dataset.id; const from=b.dataset.from;
+  if(!confirm('Confirmar exclusão da inscrição '+id+'? A vaga de "'+from+'" será devolvida.')) return;
+  try{ 
+    await removeById(id); 
+    showMessage($('#fltMsg'), 'Inscrição removida com sucesso.', 'success'); 
+    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
+    renderStats(s); baseData=l.rows||[]; refreshTable(); 
+  } catch(err){ alert('Erro ao excluir: '+err.message); }
 }
 
-/* ============ EVENTOS ============ */
-document.addEventListener('DOMContentLoaded', async () => {
-  API = await resolveApi();
-  apiEl.value = API;
-  apiInfo.textContent = 'API detectada: ' + API;
+btDoTransfer.addEventListener('click', async () => { 
+  const id=mId.textContent; const novo = mTo.value;
+  try{ 
+    await transfer(id, novo); 
+    showMessage(mMsg, 'Transferência concluída!', 'success'); 
+    setTimeout(()=>{ modalBackdrop.classList.add('hide'); }, 700);
+    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
+    renderStats(s); baseData=l.rows||[]; refreshTable();
+  }catch(err){ showMessage(mMsg, 'Erro: '+err.message, 'error'); }
+});
+btCancelTransfer.addEventListener('click', () => modalBackdrop.classList.add('hide'));
+window.openTransfer = openTransfer; window.deleteRow = deleteRow;
 
-  if (restoreSession()) {
-    API = API || sessionStorage.getItem('aprof_api');
-    enterBtn.click();
-  }
+/* ============ TABLE FLOW ============ */
+function refreshTable(){ filteredData = applyClientFilters(baseData); const pageData = paginate(filteredData); renderTable(pageData); wireCapacityButtons(); }
+
+/* ============ BOOT ============ */
+document.addEventListener('DOMContentLoaded', () => { 
+  apiInfo.textContent = 'Detectando API...'; 
+  apiEditor.classList.add('hide');
+  (async () => { 
+    try{ 
+      const detected = await withTimeout(resolveApi(), 2000); 
+      API = detected || DEFAULT_API; 
+      apiEl.value = API; 
+      apiInfo.textContent = 'API detectada: '+API+' — clique em ⚙️ para alterar.'; 
+    }
+    catch(e){ 
+      API = getQueryParam('api') || localStorage.getItem('aprof_api') || DEFAULT_API; 
+      apiEl.value = API; 
+      apiInfo.textContent = 'Não foi possível detectar automaticamente. Informe a URL abaixo.'; 
+      apiEditor.classList.remove('hide'); 
+      setTimeout(()=>apiEl.focus(),0); 
+    }
+    if (restoreSession()) { API = API || sessionStorage.getItem('aprof_api'); enterBtn.click(); }
+  })();
 });
 
-toggleApiBtn.addEventListener('click', () => {
-  apiEditor.classList.toggle('hide');
-});
+toggleApiBtn.addEventListener('click', () => apiEditor.classList.toggle('hide'));
 
-enterBtn.addEventListener('click', async () => {
-  if (!apiEditor.classList.contains('hide')) {
-    API = (apiEl.value || '').trim() || API;
-  }
-  TOKEN = (pwdEl.value || '').trim();
-  if (!API) { showMessage(loginMsg, 'API não resolvida. Configure manualmente.', 'error'); return; }
-  if (!TOKEN) { showMessage(loginMsg, 'Informe a senha.', 'error'); return; }
-
-  enterBtn.disabled = true;
-  enterBtn.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Validando...';
-  showMessage(loginMsg, 'Validando credenciais...', 'warning');
-
-  try {
-    const stats = await loadStats();
-    setSession(API, TOKEN);
+enterBtn.addEventListener('click', async () => { 
+  API = (apiEl.value||'').trim() || API; 
+  TOKEN = (pwdEl.value||'').trim();
+  if(!API) return showMessage(loginMsg, 'Informe a URL da API.', 'error');
+  if(!TOKEN) return showMessage(loginMsg, 'Informe a senha.', 'error');
+  enterBtn.disabled = true; enterBtn.textContent = 'Validando...'; showMessage(loginMsg, 'Validando credenciais...', 'warn');
+  try{ 
+    const stats = await loadStats(); 
+    setSession(API, TOKEN); 
     localStorage.setItem('aprof_api', API);
-
     loginCard.classList.add('hide'); 
-    dash.classList.remove('hide');
+    dash.classList.remove('hide'); 
     renderStats(stats);
-
     loading.classList.remove('hide'); 
     tblWrap.classList.add('hide');
-    const lst = await loadList();
-    renderRows(lst.rows || []);
+    const lst = await loadList({}); 
+    baseData = lst.rows || []; 
+    refreshTable();
     loading.classList.add('hide'); 
     tblWrap.classList.remove('hide'); 
     hideMessage(loginMsg);
-    showMessage(loginMsg, 'Login realizado com sucesso!', 'success');
-  } catch(err) {
-    showMessage(loginMsg, 'Falha no acesso: ' + err.message, 'error');
-  } finally {
-    enterBtn.disabled = false;
-    enterBtn.innerHTML = '<span>🚀</span>Entrar';
-  }
-});
-
-btFiltrar.addEventListener('click', async () => {
-  btFiltrar.disabled = true;
-  btFiltrar.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Atualizando...';
-  showMessage($('#fltMsg'), 'Aplicando filtros...', 'warning');
-
-  try {
-    const [s, l] = await Promise.all([loadStats(), loadList()]);
-    renderStats(s); 
-    renderRows(l.rows || []);
-    showMessage($('#fltMsg'), 'Filtros aplicados com sucesso!', 'success');
-  } catch(err) {
-    showMessage($('#fltMsg'), 'Erro: ' + err.message, 'error');
-  } finally {
-    btFiltrar.disabled = false;
-    btFiltrar.innerHTML = '<span>🔄</span>Aplicar Filtros';
-  }
-});
-
-/* Ordenação: alterna Data/Hora ⇄ Nome e re-renderiza (impacta exportações) */
-btSort.addEventListener('click', () => {
-  sortMode = (sortMode === 'ts') ? 'nome' : 'ts';
-  btSort.innerHTML = sortMode === 'ts' 
-    ? '<span>📋</span>Ordenar: Data/Hora' 
-    : '<span>📋</span>Ordenar: Nome (A→Z)';
-  renderRows(baseData);
-});
-
-/* Exportação (respeita currentData) */
-btPDF.addEventListener('click', () => {
-  if (!currentData.length) return showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-  btPDF.disabled = true; 
-  btPDF.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Gerando...';
-  try { 
-    exportToPDF(); 
-    showMessage($('#fltMsg'), 'PDF gerado com sucesso!', 'success'); 
-  } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar PDF: ' + err.message, 'error'); 
+  }catch(err){ 
+    showMessage(loginMsg, 'Falha no acesso: '+err.message, 'error'); 
   } finally { 
-    btPDF.disabled = false; 
-    btPDF.innerHTML = '<span>📄</span>PDF'; 
+    enterBtn.disabled = false; 
+    enterBtn.textContent = 'Entrar'; 
   }
 });
 
-btXLSX.addEventListener('click', () => {
-  if (!currentData.length) return showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-  btXLSX.disabled = true; 
-  btXLSX.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Gerando...';
-  try { 
-    exportToXLSX(); 
-    showMessage($('#fltMsg'), 'XLSX gerado com sucesso!', 'success'); 
-  } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar XLSX: ' + err.message, 'error'); 
+btFiltrar.addEventListener('click', async () => { 
+  btFiltrar.disabled = true; btFiltrar.textContent = 'Atualizando...';
+  try{ 
+    const [s,l] = await Promise.all([loadStats(), loadList({ aprofundamento:fAprof.value||'', serie:fSerie.value||'', q:(fQ.value||'').trim() })]); 
+    renderStats(s); baseData=l.rows||[]; refreshTable(); 
+    showMessage($('#fltMsg'), 'Filtros aplicados!', 'success'); 
+  }catch(err){ 
+    showMessage($('#fltMsg'), 'Erro: '+err.message, 'error'); 
   } finally { 
-    btXLSX.disabled = false; 
-    btXLSX.innerHTML = '<span>📊</span>XLSX'; 
+    btFiltrar.disabled = false; 
+    btFiltrar.textContent = 'Aplicar'; 
   }
 });
+btSort.addEventListener('click', () => { sortMode = sortMode==='ts' ? 'nome' : 'ts'; btSort.innerHTML = sortMode==='ts' ? '<span>📋</span> Ordenar: Data/Hora' : '<span>📋</span> Ordenar: Nome (A→Z)'; refreshTable(); });
+pageSizeEl.addEventListener('change', () => { currentPage=1; refreshTable(); });
+prevPage.addEventListener('click', () => { if(currentPage>1){ currentPage--; refreshTable(); } });
+nextPage.addEventListener('click', () => { currentPage++; refreshTable(); });
 
-btDOCX.addEventListener('click', () => {
-  if (!currentData.length) return showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-  btDOCX.disabled = true; 
-  btDOCX.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Gerando...';
-  try { 
-    exportToDOCX(); 
-  } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar DOC: ' + err.message, 'error'); 
-  } finally { 
-    btDOCX.disabled = false; 
-    btDOCX.innerHTML = '<span>📝</span>DOC'; 
-  }
-});
+btPDF.addEventListener('click', () => exportToPDF(filteredData));
+btXLSX.addEventListener('click', () => exportToXLSX(filteredData));
+btDOCX.addEventListener('click', () => exportToDOC(filteredData));
+btCSV.addEventListener('click', () => exportToCSV(filteredData));
 
-btCSV.addEventListener('click', () => {
-  if (!currentData.length) return showMessage($('#fltMsg'), 'Nenhum dado para exportar', 'warning');
-  btCSV.disabled = true; 
-  btCSV.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0 10px 0 0;"></div>Exportando...';
-  try { 
-    exportToCSV(); 
-  } finally { 
-    setTimeout(() => { 
-      btCSV.disabled = false; 
-      btCSV.innerHTML = '<span>📋</span>CSV'; 
-    }, 600); 
-  }
-});
+pwdEl.addEventListener('keydown', e => { if(e.key==='Enter') enterBtn.click(); });
+fQ.addEventListener('keydown', e => { if(e.key==='Enter') btFiltrar.click(); });
 
-/* Teclas rápidas */
-pwdEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') enterBtn.click(); });
-fQ.addEventListener('keydown', (e) => { if (e.key === 'Enter') btFiltrar.click(); });
-
-/* Logout */
-btLogout?.addEventListener('click', () => {
+btLogout?.addEventListener('click', () => { 
   sessionStorage.removeItem('aprof_api'); 
-  sessionStorage.removeItem('aprof_token');
-  TOKEN = ''; 
+  sessionStorage.removeItem('aprof_token'); 
+  TOKEN=''; 
   dash.classList.add('hide'); 
-  loginCard.classList.remove('hide');
-  showMessage(loginMsg, 'Sessão encerrada.', 'success');
-  // mantém localStorage.aprof_api para reuso futuro
+  loginCard.classList.remove('hide'); 
+  showMessage(loginMsg, 'Sessão encerrada.', 'success'); 
 });
 </script>
 </body>
