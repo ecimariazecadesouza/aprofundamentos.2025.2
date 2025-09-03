@@ -5,14 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Admin PRO • Aprofundamentos 2025.2</title>
 
-<!-- Bibliotecas (export de tabela/gráfico) -->
+<!-- Bibliotecas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <style>
-  :root{--bg:#0b0e17;--card:#131a2b;--card-2:#0f1526;--card-hover:#19223a;--txt:#ecf1f6;--muted:#9aa3b2;--accent:#4CAF50;--accent-2:#2fd180;--error:#ff6b7a;--warn:#ffa726;--line:#1f2740;--shadow:rgba(0,0,0,.25);--gradient:linear-gradient(135deg,var(--accent),#66BB6A)}
+  :root { 
+    --bg:#0b0e17; --card:#131a2b; --card-2:#0f1526; --card-hover:#19223a;
+    --txt:#ecf1f6; --muted:#9aa3b2; --accent:#4CAF50; --accent-2:#2fd180;
+    --error:#ff6b7a; --warn:#ffa726; --line:#1f2740; --shadow:rgba(0,0,0,.25);
+    --gradient:linear-gradient(135deg, var(--accent), #66BB6A);
+  }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:radial-gradient(1200px 600px at 10% -10%, rgba(76,175,80,.07), transparent), linear-gradient(120deg,#0a0d14,#0e1322 45%,#0a1230); color:var(--txt); font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
   .container{max-width:1300px;margin:0 auto;padding:28px 20px}
@@ -56,17 +61,9 @@
   .progress>div{height:8px;background:var(--gradient)}
   .pagination{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .pill{background:#0e1631;border:1px solid var(--line);padding:4px 10px;border-radius:999px}
-
-  /* Relatórios */
-  .tabbar{display:flex;gap:8px;align-items:center;margin:6px 0 10px}
-  .tabbar .btn.secondary.active{background:linear-gradient(135deg,#2b354f,#394469);border-color:#44507a}
-  .chart-wrap{position:relative;width:100%;aspect-ratio: 16/9; background:#0e1631;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center}
-  canvas{width:100%;height:100%}
-  .tbl-mini thead th{font-size:.75rem}
-  .tbl-mini td{font-size:.95rem}
-  .legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
-  .legend .pill{display:inline-flex;align-items:center;gap:6px}
-  .legend .dot{width:10px;height:10px;border-radius:50%}
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000}
+  .modal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:560px;width:calc(100% - 24px)}
 </style>
 </head>
 <body>
@@ -220,44 +217,6 @@
       <div class="card-title"><span>📊</span> Capacidade dos Aprofundamentos</div>
       <div id="capGrid" class="capacity-grid"></div>
     </div>
-
-    <!-- Relatórios -->
-    <div class="card" style="margin-top:16px;">
-      <div class="card-title"><span>📈</span> Relatórios</div>
-      <div class="tabbar">
-        <button class="btn small secondary active" data-tab="serie" id="tabSerie">Por Série</button>
-        <button class="btn small secondary" data-tab="aprof" id="tabAprof">Por Aprofundamento</button>
-        <button class="btn small secondary" data-tab="cap" id="tabCap">Capacidade × Inscritos</button>
-        <div class="spacer"></div>
-        <button id="btChartPNG" class="btn small"><span>🖼️</span> PNG</button>
-        <button id="btChartPDF" class="btn small"><span>📄</span> PDF</button>
-      </div>
-
-      <div class="legend" id="legend"></div>
-
-      <div class="chart-wrap">
-        <canvas id="chartSerie"></canvas>
-        <canvas id="chartAprof" class="hide"></canvas>
-        <canvas id="chartCap" class="hide"></canvas>
-      </div>
-
-      <div class="grid grid-2" style="margin-top:12px;">
-        <div>
-          <div class="card-title" style="margin-top:6px;"><span>🧮</span> Por Série</div>
-          <table class="tbl-mini" id="tblSerie">
-            <thead><tr><th>Série/Turma</th><th>Inscrições</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div>
-          <div class="card-title" style="margin-top:6px;"><span>📚</span> Aprofundamentos (Top 10)</div>
-          <table class="tbl-mini" id="tblAprof">
-            <thead><tr><th>Aprofundamento</th><th>Inscrições</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -293,6 +252,7 @@
 
 <script>
 /* ============ CONFIG / API AUTODETECT ============ */
+/* URL correta, usada se não houver config.json ou query ?api=... */
 const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwY-3n6D5VXIeXEanzdikpQxBN8LGC1-FoIKnPytWp5qzItkA3FWaLFspf0wNfZBeZ6/exec";
 function withTimeout(promise, ms){return new Promise((res,rej)=>{const t=setTimeout(()=>rej(new Error('timeout')),ms);promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)})})}
 function getQueryParam(name){const u=new URL(location.href);const v=u.searchParams.get(name);return v&&v.trim()?v.trim():null}
@@ -313,18 +273,12 @@ const totEl=$('#tot'), esgotEl=$('#esgot'), lastEl=$('#last');
 const loading=$('#loading'), tblWrap=$('#tblWrap'), tbody=$('#tbody'), count=$('#count');
 const btPDF=$('#btPDF'), btXLSX=$('#btXLSX'), btDOCX=$('#btDOCX'), btCSV=$('#btCSV');
 const capGrid=$('#capGrid');
-/* Reports */
-const tabSerie=$('#tabSerie'), tabAprof=$('#tabAprof'), tabCap=$('#tabCap');
-const chartSerie=$('#chartSerie'), chartAprof=$('#chartAprof'), chartCap=$('#chartCap');
-const btChartPNG=$('#btChartPNG'), btChartPDF=$('#btChartPDF'), legend=$('#legend');
-const tblSerie=$('#tblSerie tbody'), tblAprof=$('#tblAprof tbody');
 // modal
 const modalBackdrop=$('#modalBackdrop'), mAluno=$('#mAluno'), mId=$('#mId'), mFrom=$('#mFrom'), mTo=$('#mTo'), mMsg=$('#mMsg'), btDoTransfer=$('#btDoTransfer'), btCancelTransfer=$('#btCancelTransfer');
 
 /* ============ STATE ============ */
 let TOKEN='', API=''; let baseData=[], filteredData=[], currentPage=1, sortMode='ts', capacidade=[];
 let listController, statsController;
-let lastStats=null, activeChart='serie';
 
 /* ============ SESSION ============ */
 function setSession(a,t){sessionStorage.setItem('aprof_api',a);sessionStorage.setItem('aprof_token',t)}
@@ -350,7 +304,7 @@ async function authedGet(url, params={}, extra={}){
 }
 async function authedPost(url, body={}, extra={}){
   const u=new URL(url); u.searchParams.append('key', TOKEN);
-  // 'text/plain' evita preflight; o GAS lê JSON de e.postData.contents
+  // text/plain evita preflight no Apps Script; o backend lê JSON do e.postData.contents
   const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body), signal: extra.signal });
   const text=await res.text();
   let json; try{json=JSON.parse(text)}catch(e){throw new Error('Resposta não-JSON: '+text.substring(0,150))}
@@ -368,7 +322,7 @@ async function loadList(params={}){ if(listController) listController.abort(); l
   return authedGet(API,q,{signal:listController.signal});
 }
 
-/* ============ RENDERERS GERAIS ============ */
+/* ============ RENDERERS ============ */
 function renderStats(s){
   totEl.textContent = s.totalInscricoes || 0;
   lastEl.textContent = new Date().toLocaleTimeString('pt-BR');
@@ -380,7 +334,7 @@ function renderStats(s){
     .map(c => `<option value="${c.aprofundamento}">${c.aprofundamento} (${c.restantes} restantes)</option>`)
     .join('');
 
-  // grid de capacidade
+  // grid capacidade
   capGrid.innerHTML = '';
   capacidade.forEach(c=>{
     const pct = c.limite>0 ? Math.min((c.inscritos/c.limite)*100, 100) : 0;
@@ -403,182 +357,59 @@ function renderStats(s){
     capGrid.appendChild(div);
   });
   wireCapacityButtons();
-
-  // relatórios
-  renderReports(s);
 }
 
-/* ============ RELATÓRIOS (CHARTS + TABELAS) ============ */
-function asSortedPairs(obj){
-  const pairs = Object.keys(obj||{}).map(k=>[k, Number(obj[k])||0]);
-  pairs.sort((a,b)=> b[1]-a[1]); // desc
-  return pairs;
-}
-function setActiveChart(tab){
-  activeChart = tab;
-  [tabSerie,tabAprof,tabCap].forEach(b=>b.classList.remove('active'));
-  if(tab==='serie'){ tabSerie.classList.add('active'); chartSerie.classList.remove('hide'); chartAprof.classList.add('hide'); chartCap.classList.add('hide'); }
-  if(tab==='aprof'){ tabAprof.classList.add('active'); chartSerie.classList.add('hide'); chartAprof.classList.remove('hide'); chartCap.classList.add('hide'); }
-  if(tab==='cap'){ tabCap.classList.add('active'); chartSerie.classList.add('hide'); chartAprof.classList.add('hide'); chartCap.classList.remove('hide'); }
-  updateLegend();
-}
-function updateLegend(){
-  legend.innerHTML = '';
-  if(activeChart==='cap'){
-    legend.innerHTML = `
-      <span class="pill"><span class="dot" style="background:#7c5cff"></span> Inscritos</span>
-      <span class="pill"><span class="dot" style="background:#2fd180"></span> Limite</span>`;
-  }
-}
-function clearCanvas(canvas){
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = Math.floor(rect.width * dpr);
-  canvas.height = Math.floor(rect.height * dpr);
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0); // para desenhar em px CSS
-  ctx.clearRect(0,0,rect.width,rect.height);
-  return { ctx, w: rect.width, h: rect.height };
-}
-function niceMax(v){ // arredonda topo do eixo Y
-  if(v<=5) return 5;
-  const pow = Math.pow(10, Math.floor(Math.log10(v)));
-  const n = Math.ceil(v/pow);
-  return n*pow;
-}
-function drawBars(ctx, w, h, labels, values, opts={}){
-  const padding = 28, bottom = 40, left = 60, top = 20, right = 20;
-  const cw = w - left - right, ch = h - top - bottom;
-  const max = niceMax(Math.max(1, ...values));
-  // Eixos
-  ctx.strokeStyle = '#334'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(left, top); ctx.lineTo(left, top+ch); ctx.lineTo(left+cw, top+ch); ctx.stroke();
-  // grid horizontal
-  ctx.fillStyle = '#9aa3b2'; ctx.font = '12px system-ui';
-  const steps = 5;
-  ctx.strokeStyle = 'rgba(255,255,255,.08)';
-  for(let i=0;i<=steps;i++){
-    const y = top + ch - (i/steps)*ch;
-    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left+cw, y); ctx.stroke();
-    const val = Math.round((i/steps)*max);
-    ctx.fillStyle = '#9aa3b2'; ctx.textAlign='right'; ctx.fillText(String(val), left-8, y+4);
-  }
-  // barras
-  const n = labels.length;
-  const gap = 12;
-  const bw = Math.max(6, (cw - gap*(n+1))/n);
-  labels.forEach((lab, i)=>{
-    const v = values[i]||0;
-    const bh = (v/max)*ch;
-    const x = left + gap + i*(bw+gap);
-    const y = top + ch - bh;
-    ctx.fillStyle = 'linear-gradient'; // placeholder
-    // barra com gradiente
-    const grd = ctx.createLinearGradient(0, y, 0, y+bh);
-    grd.addColorStop(0,'#7c5cff');
-    grd.addColorStop(1,'#4c82ff');
-    ctx.fillStyle = grd;
-    ctx.fillRect(x, y, bw, bh);
-    // valor
-    ctx.fillStyle = '#ecf1f6'; ctx.textAlign='center';
-    if (bh > 18) ctx.fillText(String(v), x + bw/2, y - 4);
-    // label (quebra simples)
-    ctx.fillStyle = '#9aa3b2'; ctx.textAlign='right';
-    const labelMax = Math.max(8, Math.floor(bw/7)); // chars aproximados
-    const shortLab = lab.length>labelMax ? lab.slice(0,labelMax-1)+'…' : lab;
-    ctx.save(); ctx.translate(x + bw/2, top+ch+14); ctx.rotate(-Math.PI/8);
-    ctx.textAlign='center'; ctx.fillText(shortLab, 0, 0); ctx.restore();
+function applyClientFilters(rows){
+  const q=(fQ.value||'').trim().toLowerCase(), serie=fSerie.value||'', aprof=fAprof.value||'';
+  const from=parseDateOnly(fFrom.value), to=parseDateOnly(fTo.value);
+  let data=rows.filter(r=>{
+    if(aprof && r.aprofundamento!==aprof) return false;
+    if(serie && r.serie!==serie) return false;
+    if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
+    if(!inDateRange(r.ts,from,to)) return false;
+    return true;
   });
+  if(sortMode==='nome'){ data.sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR',{sensitivity:'base'})); }
+  else { data.sort((a,b)=> (a.ts<b.ts?1:-1)); }
+  return data;
 }
-function drawGroupedBars(ctx, w, h, labels, serieA, serieB, colorA='#7c5cff', colorB='#2fd180'){
-  const padding = 28, bottom = 48, left = 60, top = 20, right = 20;
-  const cw = w - left - right, ch = h - top - bottom;
-  const max = niceMax(Math.max(1, ...serieA, ...serieB));
-  // Eixos
-  ctx.strokeStyle = '#334'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(left, top); ctx.lineTo(left, top+ch); ctx.lineTo(left+cw, top+ch); ctx.stroke();
-  // grid
-  ctx.fillStyle='#9aa3b2'; ctx.font='12px system-ui';
-  ctx.strokeStyle = 'rgba(255,255,255,.08)';
-  const steps=5;
-  for(let i=0;i<=steps;i++){
-    const y=top+ch-(i/steps)*ch;
-    ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(left+cw,y); ctx.stroke();
-    const val=Math.round((i/steps)*max);
-    ctx.fillStyle='#9aa3b2'; ctx.textAlign='right'; ctx.fillText(String(val), left-8, y+4);
-  }
-  // barras agrupadas
-  const n=labels.length, groupGap=16, barGap=6;
-  const groupW = (cw - groupGap*(n+1)) / n;
-  const bw = (groupW - barGap)/2;
-  labels.forEach((lab,i)=>{
-    const v1 = serieA[i]||0, v2 = serieB[i]||0;
-    const h1=(v1/max)*ch, h2=(v2/max)*ch;
-    const gx = left + groupGap + i*(groupW+groupGap);
-    const y1 = top + ch - h1, y2 = top + ch - h2;
-    // A (inscritos)
-    const g1=ctx.createLinearGradient(0,y1,0,y1+h1); g1.addColorStop(0,colorA); g1.addColorStop(1,'#4c82ff');
-    ctx.fillStyle=g1; ctx.fillRect(gx, y1, bw, h1);
-    // B (limite)
-    const g2=ctx.createLinearGradient(0,y2,0,y2+h2); g2.addColorStop(0,colorB); g2.addColorStop(1,'#45e29f');
-    ctx.fillStyle=g2; ctx.fillRect(gx+bw+barGap, y2, bw, h2);
-    // valores (só se barras razoáveis)
-    ctx.fillStyle='#ecf1f6'; ctx.textAlign='center';
-    if(h1>18) ctx.fillText(String(v1), gx + bw/2, y1 - 4);
-    if(h2>18) ctx.fillText(String(v2), gx + bw + barGap + bw/2, y2 - 4);
-    // label
-    ctx.fillStyle='#9aa3b2'; ctx.textAlign='center';
-    const labelMax=Math.max(10, Math.floor(groupW/7));
-    const shortLab=lab.length>labelMax?lab.slice(0,labelMax-1)+'…':lab;
-    ctx.fillText(shortLab, gx + groupW/2, top+ch+18);
+
+function renderTable(paged){
+  tbody.innerHTML='';
+  const frag=document.createDocumentFragment();
+  paged.forEach(r=>{
+    const tr=document.createElement('tr');
+    const tds=[
+      fmtDate(r.ts),
+      `<strong>${r.nome||''}</strong>`,
+      r.serie||'',
+      r.aprofundamento||'',
+      `<code class="badge">${r.id||''}</code>`,
+      `<div class="table-actions">
+         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
+         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
+       </div>`
+    ];
+    tds.forEach(html=>{const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td);});
+    frag.appendChild(tr);
   });
-  updateLegend();
+  tbody.appendChild(frag);
 }
 
-function renderReports(stats){
-  lastStats = stats || lastStats || { bySerie:{}, byAprof:{}, capacidade:[] };
-
-  // ---- Tabelas ----
-  // Por série
-  const seriePairs = asSortedPairs(lastStats.bySerie);
-  tblSerie.innerHTML = seriePairs.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="2">—</td></tr>';
-
-  // Por aprofundamento (Top 10)
-  const aprofPairs = asSortedPairs(lastStats.byAprof).slice(0,10);
-  tblAprof.innerHTML = aprofPairs.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="2">—</td></tr>';
-
-  // ---- Gráficos ----
-  drawAllCharts();
+function paginate(data){
+  const size=parseInt(pageSizeEl.value,10)||50; const total=data.length; const pages=Math.max(1,Math.ceil(total/size));
+  currentPage=Math.min(currentPage,pages);
+  const start=(currentPage-1)*size, end=Math.min(start+size,total);
+  const pageData=data.slice(start,end);
+  pageInfo.textContent=`Página ${currentPage}/${pages}`;
+  count.textContent=`${total} registro(s)`;
+  prevPage.disabled=(currentPage<=1); nextPage.disabled=(currentPage>=pages);
+  return pageData;
 }
 
-function drawAllCharts(){
-  // Série
-  const series = asSortedPairs(lastStats.bySerie).reverse(); // crescente por visual
-  const serieLabels = series.map(p=>p[0]);
-  const serieVals = series.map(p=>p[1]);
-  let c = clearCanvas(chartSerie);
-  drawBars(c.ctx, c.w, c.h, serieLabels, serieVals);
-
-  // Aprofundamento (Top 12 para caber melhor)
-  const aprofPairs = asSortedPairs(lastStats.byAprof).slice(0,12).reverse();
-  const aLabels = aprofPairs.map(p=>p[0]);
-  const aVals = aprofPairs.map(p=>p[1]);
-  c = clearCanvas(chartAprof);
-  drawBars(c.ctx, c.w, c.h, aLabels, aVals);
-
-  // Capacidade × Inscritos
-  const caps = (lastStats.capacidade||[]).slice().sort((a,b)=> (a.aprofundamento||'').localeCompare(b.aprofundamento||'','pt-BR'));
-  const capLabels = caps.map(c=>c.aprofundamento);
-  const capInscr = caps.map(c=>Number(c.inscritos)||0);
-  const capLimit = caps.map(c=>Number(c.limite)||0);
-  c = clearCanvas(chartCap);
-  drawGroupedBars(c.ctx, c.w, c.h, capLabels, capInscr, capLimit);
-}
-
-/* ============ EXPORT (TABELA/GRÁFICO) ============ */
+/* ============ EXPORTS ============ */
 function exportToPDF(rows){
-  const { jsPDF } = window.jspdf;
-  const doc=new jsPDF();
+  const { jsPDF } = window.jspdf; const doc=new jsPDF();
   doc.setFontSize(16); doc.text('Aprofundamentos 2025.2 - Inscrições',14,20);
   doc.setFontSize(10); doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`,14,30);
   const headers=[['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
@@ -607,24 +438,6 @@ function exportToCSV(rows){
     lines.push(vals.map(v=>(/[",\n;]/.test(v)?`"${v}"`:v)).join(';'));
   });
   const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'}); saveAs(blob,`aprofundamentos_${new Date().toISOString().split('T')[0]}.csv`);
-}
-function exportVisibleChartAsPNG(){
-  const canvas = activeChart==='serie' ? chartSerie : activeChart==='aprof' ? chartAprof : chartCap;
-  canvas.toBlob(blob => saveAs(blob, `relatorio_${activeChart}_${new Date().toISOString().slice(0,10)}.png`));
-}
-function exportVisibleChartAsPDF(){
-  const { jsPDF } = window.jspdf;
-  const canvas = activeChart==='serie' ? chartSerie : activeChart==='aprof' ? chartAprof : chartCap;
-  const img = canvas.toDataURL('image/png');
-  const doc = new jsPDF('l','pt','a4');
-  // centraliza na página
-  const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
-  const imgW = pageW*0.9, imgH = pageH*0.7;
-  const x = (pageW - imgW)/2, y = (pageH - imgH)/2;
-  doc.setFontSize(16);
-  doc.text(`Relatório: ${activeChart==='serie'?'Por Série':activeChart==='aprof'?'Por Aprofundamento':'Capacidade × Inscritos'}`, 40, 40);
-  doc.addImage(img, 'PNG', x, y, imgW, imgH);
-  doc.save(`relatorio_${activeChart}_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 /* ============ ADMIN ACTIONS (PRO) ============ */
@@ -678,52 +491,7 @@ btDoTransfer.addEventListener('click', async ()=>{
 btCancelTransfer.addEventListener('click',()=>modalBackdrop.classList.add('hide'));
 window.openTransfer=openTransfer; window.deleteRow=deleteRow;
 
-/* TABLE FLOW */
-function applyClientFilters(rows){
-  const q=(fQ.value||'').trim().toLowerCase(), serie=fSerie.value||'', aprof=fAprof.value||'';
-  const from=parseDateOnly(fFrom.value), to=parseDateOnly(fTo.value);
-  let data=rows.filter(r=>{
-    if(aprof && r.aprofundamento!==aprof) return false;
-    if(serie && r.serie!==serie) return false;
-    if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
-    if(!inDateRange(r.ts,from,to)) return false;
-    return true;
-  });
-  if(sortMode==='nome'){ data.sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR',{sensitivity:'base'})); }
-  else { data.sort((a,b)=> (a.ts<b.ts?1:-1)); }
-  return data;
-}
-function paginate(data){
-  const size=parseInt(pageSizeEl.value,10)||50; const total=data.length; const pages=Math.max(1,Math.ceil(total/size));
-  currentPage=Math.min(currentPage,pages);
-  const start=(currentPage-1)*size, end=Math.min(start+size,total);
-  const pageData=data.slice(start,end);
-  pageInfo.textContent=`Página ${currentPage}/${pages}`;
-  count.textContent=`${total} registro(s)`;
-  prevPage.disabled=(currentPage<=1); nextPage.disabled=(currentPage>=pages);
-  return pageData;
-}
-function renderTable(paged){
-  tbody.innerHTML='';
-  const frag=document.createDocumentFragment();
-  paged.forEach(r=>{
-    const tr=document.createElement('tr');
-    const tds=[
-      fmtDate(r.ts),
-      `<strong>${r.nome||''}</strong>`,
-      r.serie||'',
-      r.aprofundamento||'',
-      `<code class="badge">${r.id||''}</code>`,
-      `<div class="table-actions">
-         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
-         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
-       </div>`
-    ];
-    tds.forEach(html=>{const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td);});
-    frag.appendChild(tr);
-  });
-  tbody.appendChild(frag);
-}
+/* ============ TABLE FLOW ============ */
 function refreshTable(){ filteredData=applyClientFilters(baseData); const pageData=paginate(filteredData); renderTable(pageData); }
 
 /* ============ BOOT ============ */
@@ -735,6 +503,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       API = detected || DEFAULT_API;
       apiEl.value = API;
       apiInfo.textContent = 'API detectada: '+API;
+      // editor só aparece se falhar — aqui não falhou: mantém escondido
     }catch(e){
       API = getQueryParam('api') || DEFAULT_API;
       apiEl.value = API;
@@ -746,6 +515,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 enterBtn.addEventListener('click', async ()=>{
+  // se o editor estiver visível (falhou detecção), use URL digitada
   if(!apiEditor.classList.contains('hide')) API = (apiEl.value||'').trim() || API;
   TOKEN=(pwdEl.value||'').trim();
   if(!API) return showMessage(loginMsg,'Informe a URL da API.','error');
@@ -785,22 +555,11 @@ btCSV.addEventListener('click',()=> exportToCSV(filteredData));
 
 pwdEl.addEventListener('keydown',e=>{ if(e.key==='Enter') enterBtn.click(); });
 fQ.addEventListener('keydown',e=>{ if(e.key==='Enter') btFiltrar.click(); });
+
 btLogout?.addEventListener('click',()=>{
   sessionStorage.removeItem('aprof_api'); sessionStorage.removeItem('aprof_token'); TOKEN='';
   dash.classList.add('hide'); loginCard.classList.remove('hide'); showMessage(loginMsg,'Sessão encerrada.','success');
 });
-
-/* Tabs Relatórios */
-[tabSerie, tabAprof, tabCap].forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    setActiveChart(btn.dataset.tab);
-    // redesenha para garantir nitidez após resize/tab
-    drawAllCharts();
-  });
-});
-window.addEventListener('resize', ()=>{ if(lastStats){ drawAllCharts(); } });
-btChartPNG.addEventListener('click', exportVisibleChartAsPNG);
-btChartPDF.addEventListener('click', exportVisibleChartAsPDF);
 </script>
 </body>
 </html>
