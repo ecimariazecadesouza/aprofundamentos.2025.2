@@ -61,6 +61,10 @@
   .progress > div { height:8px; background:var(--gradient); }
   .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
+
+  /* Modal simples */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index: 50; }
+  .modal { width: min(640px, 92vw); background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 12px 40px var(--shadow); }
 </style>
 </head>
 <body>
@@ -249,7 +253,7 @@
 
 <script>
 /* ============ CONFIG / API AUTODETECT ============ */
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwY-3n6D5VXIeXEanzdikpQxBN8LGC1-FoIKnPytWp5qzItkA3FWaLFspf0wNfZBeZ6/exec";
+const DEFAULT_API = "https://script.google.com/macros/s/AKfycbxvbEjnVkHAslEQmj6ZwioEVSyQXzqAaVIEY3FOGDIX7HhS38qaGQ3SwfxaIrRPtLef/exec";
 function withTimeout(promise, ms) { return new Promise((res, rej) => { const t=setTimeout(()=>rej(new Error('timeout')), ms); promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)}); }); }
 function getQueryParam(name) { const u = new URL(location.href); const v = u.searchParams.get(name); return v && v.trim() ? v.trim() : null; }
 async function resolveApi() {
@@ -289,16 +293,38 @@ function parseDateOnly(val){ if(!val) return null; const d = new Date(val + 'T00
 function inDateRange(tsIso, from, to){ if(!from && !to) return true; const t = tsIso ? new Date(tsIso) : null; if(!t) return false; if(from && t < from) return false; if(to){ const end = new Date(to); end.setHours(23,59,59,999); if(t > end) return false; } return true; }
 
 /* ============ FETCH HELPERS ============ */
-async function authedGet(url, params={}, extra={}){ const u=new URL(url); Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { signal: extra.signal }); const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
-async function authedPost(url, body={}, extra={}){ const u=new URL(url); u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: extra.signal });
-  const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
+async function authedGet(url, params={}, extra={}){ 
+  const u=new URL(url); 
+  Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); 
+  u.searchParams.append('key', TOKEN);
+  const res=await fetch(u.toString(), { signal: extra.signal }); 
+  const text=await res.text(); 
+  let json; 
+  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
+  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
+  return json; 
+}
+async function authedPost(url, body={}, extra={}){ 
+  const u=new URL(url); 
+  u.searchParams.append('key', TOKEN);
+  // text/plain evita preflight CORS no Apps Script
+  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body), signal: extra.signal });
+  const text=await res.text(); 
+  let json; 
+  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
+  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
+  return json; 
+}
 
 /* ============ LOADERS ============ */
 async function loadStats(){ if(statsController) statsController.abort(); statsController = new AbortController(); return authedGet(API, { stats:'1' }, { signal: statsController.signal }); }
-async function loadList(params={}){ if(listController) listController.abort(); listController = new AbortController();
-  const q={ list:'1' }; if(params.aprofundamento) q.aprofundamento=params.aprofundamento; if(params.serie) q.serie=params.serie; if(params.q) q.q=params.q;
+async function loadList(params={}){ 
+  if(listController) listController.abort(); 
+  listController = new AbortController();
+  const q={ list:'1' }; 
+  if(params.aprofundamento) q.aprofundamento=params.aprofundamento; 
+  if(params.serie) q.serie=params.serie; 
+  if(params.q) q.q=params.q;
   return authedGet(API, q, { signal: listController.signal });
 }
 
