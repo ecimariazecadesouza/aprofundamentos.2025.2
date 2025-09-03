@@ -396,8 +396,8 @@ function renderStats(s) {
 
   cap.forEach(c => {
     const o = document.createElement('option');
-    o.value = c.pratica; // backend expõe como "pratica"
-    o.textContent = `${c.pratica} (${(+c.restantes || 0)} restantes)`;
+    o.value = c.aprofundamento; // ✅ usa o campo correto vindo da API
+    o.textContent = `${c.aprofundamento} (${(+c.restantes || 0)} restantes)`;
     fAprof.appendChild(o);
   });
 
@@ -414,7 +414,7 @@ function renderStats(s) {
 
     const nm = document.createElement('div'); 
     nm.className = 'capacity-name'; 
-    nm.textContent = c.pratica;
+    nm.textContent = c.aprofundamento; // ✅
 
     const nums = document.createElement('div'); 
     nums.className = 'capacity-numbers';
@@ -468,7 +468,7 @@ function renderRows(rows) {
     tr.appendChild(tdNome);
 
     tr.appendChild(safeCell(r.serie));
-    tr.appendChild(safeCell(r.pratica)); // coluna exibe “Aprofundamento” mas vem de r.pratica
+    tr.appendChild(safeCell(r.aprofundamento)); // ✅ coluna Aprofundamento exibe r.aprofundamento
 
     const tdId = document.createElement('td');
     const code = document.createElement('code');
@@ -495,7 +495,7 @@ async function loadList() {
   listController = new AbortController();
   const params = { list: '1' };
   const p = fAprof.value || '', s = fSerie.value || '', q = (fQ.value || '').trim();
-  if (p) params.pratica = p;   // filtro por "pratica" (compatível com backend)
+  if (p) params.aprofundamento = p;   // ✅ filtro compatível com backend
   if (s) params.serie = s;
   if (q) params.q = q;
   return authedGet(API, params, { signal: listController.signal });
@@ -511,7 +511,7 @@ function exportToPDF() {
   doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
 
   const headers = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
-  const data = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.pratica, row.id ]);
+  const data = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ]);
 
   doc.autoTable({
     head: headers,
@@ -529,7 +529,7 @@ function exportToPDF() {
 function exportToXLSX() {
   const data = [
     ['Data/Hora', 'Nome', 'Série/Turma', 'Aprofundamento', 'ID'],
-    ...currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.pratica, row.id ])
+    ...currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ])
   ];
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(data);
@@ -588,7 +588,7 @@ function exportToDOCX() {
         <td>${fmtDate(r.ts)}</td>
         <td>${r.nome || ''}</td>
         <td>${r.serie || ''}</td>
-        <td>${r.pratica || ''}</td>
+        <td>${r.aprofundamento || ''}</td>
         <td>${r.id || ''}</td>
       </tr>`;
   });
@@ -611,7 +611,7 @@ function exportToCSV() {
     return;
   }
   const headers = ['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'];
-  const rows = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.pratica, row.id ]);
+  const rows = currentData.map(row => [ fmtDate(row.ts), row.nome, row.serie, row.aprofundamento, row.id ]);
   const csv = [headers, ...rows].map(arr => arr.map(v => {
     const s = (v ?? '').toString().replace(/"/g, '""');
     return /[",\n;]/.test(s) ? `"${s}"` : s;
@@ -711,7 +711,7 @@ btPDF.addEventListener('click', () => {
     exportToPDF(); 
     showMessage($('#fltMsg'), 'PDF gerado com sucesso!', 'success'); 
   } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar PDF: ' + err.message, 'error'); 
+    showMessage($('#fltMsg'), 'Erro ao gerar PDF: ' + err.message', 'error'); 
   } finally { 
     btPDF.disabled = false; 
     btPDF.innerHTML = '<span>📄</span>PDF'; 
@@ -726,7 +726,7 @@ btXLSX.addEventListener('click', () => {
     exportToXLSX(); 
     showMessage($('#fltMsg'), 'XLSX gerado com sucesso!', 'success'); 
   } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar XLSX: ' + err.message, 'error'); 
+    showMessage($('#fltMsg'), 'Erro ao gerar XLSX: ' + err.message', 'error'); 
   } finally { 
     btXLSX.disabled = false; 
     btXLSX.innerHTML = '<span>📊</span>XLSX'; 
@@ -740,7 +740,7 @@ btDOCX.addEventListener('click', () => {
   try { 
     exportToDOCX(); 
   } catch(err){ 
-    showMessage($('#fltMsg'), 'Erro ao gerar DOC: ' + err.message, 'error'); 
+    showMessage($('#fltMsg'), 'Erro ao gerar DOC: ' + err.message', 'error'); 
   } finally { 
     btDOCX.disabled = false; 
     btDOCX.innerHTML = '<span>📝</span>DOC'; 
