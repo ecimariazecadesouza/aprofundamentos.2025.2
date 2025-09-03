@@ -62,9 +62,9 @@
   .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
 
-  /* Modal simples */
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index: 50; }
-  .modal { width: min(640px, 92vw); background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 12px 40px var(--shadow); }
+  /* Modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index: 999; }
+  .modal { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; width: min(680px, 92vw); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
 </style>
 </head>
 <body>
@@ -285,6 +285,12 @@ let listController, statsController;
 function setSession(a,t){ sessionStorage.setItem('aprof_api', a); sessionStorage.setItem('aprof_token', t); }
 function restoreSession(){ const a=sessionStorage.getItem('aprof_api'), t=sessionStorage.getItem('aprof_token'); if(a && t){ API=a; TOKEN=t; return true; } return false; }
 
+/* ============ NORMALIZADORES ============ */
+// Normaliza o nome do aprofundamento vindo do backend (aceita 'aprofundamento' ou 'pratica' ou 'nome')
+const getAprName = (obj) => (obj && (obj.aprofundamento ?? obj.pratica ?? obj.nome ?? '')).toString();
+// Para linhas da lista (rows)
+const getRowApr = (r) => (r && (r.aprofundamento ?? r.pratica ?? '')) + '';
+
 /* ============ UI HELPERS ============ */
 function showMessage(el, text, type='error'){ el.textContent=text; el.className = 'message ' + (type==='success'?'success':type==='warn'?'warn':'error'); el.classList.remove('hide'); if(type==='success'){ setTimeout(()=>el.classList.add('hide'), 2500);} }
 function hideMessage(el){ el.classList.add('hide'); }
@@ -293,38 +299,16 @@ function parseDateOnly(val){ if(!val) return null; const d = new Date(val + 'T00
 function inDateRange(tsIso, from, to){ if(!from && !to) return true; const t = tsIso ? new Date(tsIso) : null; if(!t) return false; if(from && t < from) return false; if(to){ const end = new Date(to); end.setHours(23,59,59,999); if(t > end) return false; } return true; }
 
 /* ============ FETCH HELPERS ============ */
-async function authedGet(url, params={}, extra={}){ 
-  const u=new URL(url); 
-  Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); 
-  u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { signal: extra.signal }); 
-  const text=await res.text(); 
-  let json; 
-  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
-  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
-  return json; 
-}
-async function authedPost(url, body={}, extra={}){ 
-  const u=new URL(url); 
-  u.searchParams.append('key', TOKEN);
-  // text/plain evita preflight CORS no Apps Script
-  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body), signal: extra.signal });
-  const text=await res.text(); 
-  let json; 
-  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
-  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
-  return json; 
-}
+async function authedGet(url, params={}, extra={}){ const u=new URL(url); Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); u.searchParams.append('key', TOKEN);
+  const res=await fetch(u.toString(), { signal: extra.signal }); const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
+async function authedPost(url, body={}, extra={}){ const u=new URL(url); u.searchParams.append('key', TOKEN);
+  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: extra.signal });
+  const text=await res.text(); let json; try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); return json; }
 
 /* ============ LOADERS ============ */
 async function loadStats(){ if(statsController) statsController.abort(); statsController = new AbortController(); return authedGet(API, { stats:'1' }, { signal: statsController.signal }); }
-async function loadList(params={}){ 
-  if(listController) listController.abort(); 
-  listController = new AbortController();
-  const q={ list:'1' }; 
-  if(params.aprofundamento) q.aprofundamento=params.aprofundamento; 
-  if(params.serie) q.serie=params.serie; 
-  if(params.q) q.q=params.q;
+async function loadList(params={}){ if(listController) listController.abort(); listController = new AbortController();
+  const q={ list:'1' }; if(params.aprofundamento) q.aprofundamento=params.aprofundamento; if(params.serie) q.serie=params.serie; if(params.q) q.q=params.q;
   return authedGet(API, q, { signal: listController.signal });
 }
 
@@ -333,39 +317,55 @@ function renderStats(s){
   totEl.textContent = s.totalInscricoes || 0; 
   lastEl.textContent = new Date().toLocaleTimeString('pt-BR'); 
   capacidade = s.capacidade || []; 
+
+  // esgotados
   esgotEl.textContent = capacidade.filter(c => (+c.restantes||0)===0).length;
 
   // select de aprofundamentos
-  fAprof.innerHTML = '<option value=\"\">Todos</option>' + capacidade.map(c => `<option value="${c.aprofundamento}">${c.aprofundamento} (${c.restantes} restantes)</option>`).join('');
+  fAprof.innerHTML = '<option value="">Todos</option>' + capacidade.map(c => {
+    const apr = getAprName(c);
+    const rest = +c.restantes || 0;
+    return `<option value="${apr}">${apr} (${rest} restantes)</option>`;
+  }).join('');
 
   // grid de capacidade com edição de limite
   capGrid.innerHTML = '';
   capacidade.forEach(c => { 
-    const pct = c.limite>0 ? Math.min((c.inscritos/c.limite)*100, 100) : 0;
+    const apr = getAprName(c);
+    const limite = +c.limite || 0;
+    const inscritos = +c.inscritos || 0;
+    const restantes = Math.max(limite - inscritos, 0);
+    const pct = limite>0 ? Math.min((inscritos/limite)*100, 100) : 0;
+
     const div=document.createElement('div'); 
     div.className='cap-item';
-    div.innerHTML = `<div style="display:flex; align-items:center; gap:8px; justify-content:space-between;">
-        <strong>${c.aprofundamento}</strong>
-        <span class="pill">${c.inscritos}/${c.limite} · ${c.restantes} vagas</span>
+    div.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px; justify-content:space-between;">
+        <strong>${apr}</strong>
+        <span class="pill">${inscritos}/${limite} · ${restantes} vagas</span>
       </div>
       <div class="progress" style="margin:8px 0 10px;"><div style="width:${pct}%"></div></div>
       <div class="flex">
         <div class="inline">
           <label>Limite</label>
-          <input type="number" min="0" value="${c.limite}" style="width:120px" data-aprof="${c.aprofundamento}" class="cap-limit"/>
+          <input type="number" min="0" value="${limite}" style="width:120px" data-aprof="${apr}" class="cap-limit"/>
         </div>
         <div class="spacer"></div>
-        <button class="btn small success btSetLimit" data-aprof="${c.aprofundamento}">Salvar limite</button>
+        <button class="btn small success btSetLimit" data-aprof="${apr}">Salvar limite</button>
       </div>`;
     capGrid.appendChild(div);
   });
+
+  // Após renderizar a grid, conectar os botões de "Salvar limite"
+  wireCapacityButtons();
 }
 
 function applyClientFilters(rows){
   const q = (fQ.value||'').trim().toLowerCase(); const serie = fSerie.value||''; const aprof = fAprof.value||'';
   const from = parseDateOnly(fFrom.value); const to = parseDateOnly(fTo.value);
   let data = rows.filter(r => {
-    if(aprof && r.aprofundamento !== aprof) return false;
+    const apr = getRowApr(r);
+    if(aprof && apr !== aprof) return false;
     if(serie && r.serie !== serie) return false;
     if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
     if(!inDateRange(r.ts, from, to)) return false;
@@ -381,16 +381,17 @@ function renderTable(paged){
   tbody.innerHTML = '';
   const frag = document.createDocumentFragment();
   paged.forEach(r => {
+    const apr = getRowApr(r);
     const tr = document.createElement('tr');
     const tds = [
       fmtDate(r.ts),
       `<strong>${r.nome||''}</strong>`,
       r.serie||'',
-      r.aprofundamento||'',
+      apr || '',
       `<code class="badge">${r.id||''}</code>`,
       `<div class="table-actions">
-         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
-         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
+         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${apr}" onclick="openTransfer(event)">🔁 Transferir</button>
+         <button class="btn small danger" data-id="${r.id}" data-from="${apr}" onclick="deleteRow(event)">🗑️ Excluir</button>
        </div>`
     ];
     tds.forEach(html => { const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td); });
@@ -419,12 +420,12 @@ function exportToPDF(rows){
   doc.setFontSize(10);
   doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
   const headers = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
-  const body = rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id]);
+  const body = rows.map(r => [fmtDate(r.ts), r.nome || '', r.serie || '', getRowApr(r), r.id || '']);
   doc.autoTable({ head: headers, body, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [76,175,80], textColor: 255 } });
   doc.save(`aprofundamentos_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 function exportToXLSX(rows){ 
-  const data = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'], ...rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id])];
+  const data = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'], ...rows.map(r => [fmtDate(r.ts), r.nome || '', r.serie || '', getRowApr(r), r.id || ''])];
   const wb = XLSX.utils.book_new(); 
   const ws = XLSX.utils.aoa_to_sheet(data); 
   ws['!cols'] = [{ width: 20 }, { width: 30 }, { width: 16 }, { width: 40 }, { width: 18 }];
@@ -435,7 +436,7 @@ function exportToDOC(rows){
   let html = `<html><head><meta charset='utf-8'><title>Inscrições</title></head><body>`;
   html += `<h1 style='text-align:center;color:#4CAF50'>Aprofundamentos 2025.2</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')}</p>`;
   html += `<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Data/Hora</th><th>Nome</th><th>Série/Turma</th><th>Aprofundamento</th><th>ID</th></tr></thead><tbody>`;
-  rows.forEach(r => html += `<tr><td>${fmtDate(r.ts)}</td><td>${r.nome||''}</td><td>${r.serie||''}</td><td>${r.aprofundamento||''}</td><td>${r.id||''}</td></tr>`);
+  rows.forEach(r => html += `<tr><td>${fmtDate(r.ts)}</td><td>${r.nome||''}</td><td>${r.serie||''}</td><td>${getRowApr(r)}</td><td>${r.id||''}</td></tr>`);
   html += `</tbody></table></body></html>`; 
   const blob = new Blob([html], { type:'application/msword' }); 
   saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.doc`);
@@ -444,7 +445,7 @@ function exportToCSV(rows){
   const headers=['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']; 
   const lines=[headers.join(';')];
   rows.forEach(r => { 
-    const vals=[fmtDate(r.ts), r.nome||'', r.serie||'', r.aprofundamento||'', r.id||''].map(v=>String(v).replace(/"/g,'""')); 
+    const vals=[fmtDate(r.ts), r.nome||'', r.serie||'', getRowApr(r), r.id||''].map(v=>String(v).replace(/"/g,'""')); 
     lines.push(vals.map(v => (/[",\n;]/.test(v) ? `"${v}"` : v)).join(';')); 
   });
   const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' }); 
@@ -474,8 +475,12 @@ function wireCapacityButtons(){
 function openTransfer(ev){ 
   const b=ev.currentTarget; const id=b.dataset.id; const nome=b.dataset.nome; const from=b.dataset.from;
   mAluno.textContent = nome; mId.textContent = id; mFrom.textContent = from; mMsg.classList.add('hide');
-  // opções destino
-  mTo.innerHTML = capacidade.map(c => `<option value="${c.aprofundamento}" ${from===c.aprofundamento?'disabled':''}>${c.aprofundamento} (${c.restantes} vagas)</option>`).join('');
+  // opções destino (normaliza)
+  mTo.innerHTML = capacidade.map(c => {
+    const apr = getAprName(c);
+    const rest = +c.restantes || 0;
+    return `<option value="${apr}" ${from===apr?'disabled':''}>${apr} (${rest} vagas)</option>`;
+  }).join('');
   modalBackdrop.classList.remove('hide'); 
 }
 
@@ -504,7 +509,7 @@ btCancelTransfer.addEventListener('click', () => modalBackdrop.classList.add('hi
 window.openTransfer = openTransfer; window.deleteRow = deleteRow;
 
 /* ============ TABLE FLOW ============ */
-function refreshTable(){ filteredData = applyClientFilters(baseData); const pageData = paginate(filteredData); renderTable(pageData); wireCapacityButtons(); }
+function refreshTable(){ filteredData = applyClientFilters(baseData); const pageData = paginate(filteredData); renderTable(pageData); }
 
 /* ============ BOOT ============ */
 document.addEventListener('DOMContentLoaded', () => { 
