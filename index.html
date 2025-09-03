@@ -335,7 +335,7 @@
     <header>
       <h1>🎓 Aprofundamentos 2025.2</h1>
       <p class="sub">Preencha o formulário abaixo para garantir sua vaga.<br>
-      <strong>Cada aprofundamento tem limite de 29 vagas</strong> - não perca tempo!</p>
+      <strong>2° ano: 29 vagas | 3° ano: 37 vagas</strong> - não perca tempo!</p>
     </header>
 
     <form id="form">
@@ -408,12 +408,12 @@
         "Mundo do trabalho"
       ],
       "3° A": [
-        "Impactos Ambientais de um Telefone Celular",
-        "Mundo do trabalho"
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
       ],
       "3° B": [
-        "Impactos Ambientais de um Telefone Celular",
-        "Mundo do trabalho"
+        "Construindo Oportunidades: os desafios do amanhã",
+        "Solos: conhecer e entender para conservar e restaurar"
       ]
     };
 
@@ -452,7 +452,9 @@
       
       aprofundamentosDisponiveis.forEach(aprofundamento => {
         const item = items.find(it => it.pratica === aprofundamento);
-        const rem = item ? (+item.restantes || 0) : 29; // Default 29 se não encontrar
+        // Definir vagas padrão baseado na série
+        const vagasPadrao = serieAtual.startsWith('3°') ? 37 : 29;
+        const rem = item ? (+item.restantes || 0) : vagasPadrao;
         
         const o = document.createElement("option"); 
         o.value = aprofundamento; 
@@ -482,7 +484,10 @@
       
       aprofundamentosParaMostrar.forEach(aprofundamento => {
         const item = items.find(it => it.pratica === aprofundamento);
-        const r = item ? (+item.restantes || 0) : 29; // Default 29 se não encontrar
+        // Definir vagas padrão baseado no aprofundamento (se for dos 3° anos, usar 37, senão 29)
+        const eh3Ano = ["Construindo Oportunidades: os desafios do amanhã", "Solos: conhecer e entender para conservar e restaurar"].includes(aprofundamento);
+        const vagasPadrao = eh3Ano ? 37 : 29;
+        const r = item ? (+item.restantes || 0) : vagasPadrao;
         
         const s = document.createElement("span"); 
         s.className = "pill"; 
