@@ -325,6 +325,13 @@
       }
     }
 
+    // ===== Validação específica para aprofundamento por série =====
+    function validateAprofundamentoPorSerie(serie, aprofundamento) {
+      // Verifica se o aprofundamento está disponível para a série selecionada
+      const aprofundamentosDaSerie = APROFUNDAMENTOS_POR_SERIE[serie] || [];
+      return aprofundamentosDaSerie.includes(aprofundamento);
+    }
+
     // ===== Eventos =====
     selSerie.addEventListener('change', function() {
       if (this.value !== lastSerieSelected) {
@@ -357,6 +364,13 @@
       const serie = selSerie.value;
       const aprofundamento = selAprofundamento.value;
 
+      // Validação adicional: verifica se o aprofundamento é válido para a série
+      if (!validateAprofundamentoPorSerie(serie, aprofundamento)) {
+        showError("❌ Este aprofundamento não está disponível para sua série. Escolha outra opção.");
+        selAprofundamento.classList.add('error');
+        return;
+      }
+
       btn.disabled = true;
       btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span><span>Enviando inscrição...</span>';
 
@@ -376,6 +390,9 @@
           await loadAvailability();
         } else if (json.full) {
           showError("😔 Esse aprofundamento esgotou as vagas. Escolha outra opção disponível.");
+          await loadAvailability();
+        } else if (json.error && json.error.includes("não está disponível")) {
+          showError("❌ " + json.error + " Escolha outra opção.");
           await loadAvailability();
         } else {
           showError("❌ Erro: " + (json.error || "não foi possível concluir a inscrição."));
