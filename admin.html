@@ -113,11 +113,8 @@
       <option value="1° A">1° A</option>
       <option value="1° B">1° B</option>
       <option value="1° C">1° C</option>
-      <option value="1° D">1° D</option>
-      <option value="1° E">1° E</option>
       <option value="2° A">2° A</option>
       <option value="2° B">2° B</option>
-      <option value="2° C">2° C</option>
       <option value="3° A">3° A</option>
       <option value="3° B">3° B</option>
     </select>
@@ -153,6 +150,29 @@
 
   <script>
     // Função para carregar os dados de inscrições com base nos filtros
+    const carregarAprofundamentos = async () => {
+      const filtroSerie = document.getElementById("filtroSerie").value;
+      const filtroAprofundamentoSelect = document.getElementById("filtroAprofundamento");
+
+      // Limpar opções anteriores
+      filtroAprofundamentoSelect.innerHTML = "<option value=''>Selecione um Aprofundamento</option>";
+
+      if (filtroSerie) {
+        // Buscar os aprofundamentos disponíveis para a série selecionada
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec?serie=${filtroSerie}`);
+        const data = await response.json();
+
+        // Preencher as opções de aprofundamento
+        data.aprofundamentos.forEach(aprofundamento => {
+          const option = document.createElement("option");
+          option.value = aprofundamento;
+          option.textContent = aprofundamento;
+          filtroAprofundamentoSelect.appendChild(option);
+        });
+      }
+    };
+
+    // Função para carregar as inscrições com base nos filtros
     const carregarInscricoes = async () => {
       const filtroAprofundamento = document.getElementById("filtroAprofundamento").value;
       const filtroSerie = document.getElementById("filtroSerie").value;
@@ -193,24 +213,22 @@
 
     // Função para exportar as inscrições para PDF
     const exportarParaPDF = () => {
-      // Implementar função para exportar para PDF
       alert("Exportando para PDF...");
     };
 
     // Função para exportar as inscrições para XLSX
     const exportarParaXLSX = () => {
-      // Implementar função para exportar para XLSX
       alert("Exportando para XLSX...");
     };
 
     // Função para exportar as inscrições para DOCX
     const exportarParaDOCX = () => {
-      // Implementar função para exportar para DOCX
       alert("Exportando para DOCX...");
     };
 
     // Carregar os dados e configurar os eventos
     document.getElementById("aplicarFiltros").addEventListener("click", carregarInscricoes);
+    document.getElementById("filtroSerie").addEventListener("change", carregarAprofundamentos);
     document.getElementById("exportarPDF").addEventListener("click", exportarParaPDF);
     document.getElementById("exportarXLSX").addEventListener("click", exportarParaXLSX);
     document.getElementById("exportarDOCX").addEventListener("click", exportarParaDOCX);
