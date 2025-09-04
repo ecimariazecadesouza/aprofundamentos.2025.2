@@ -159,7 +159,7 @@
 
       const url = "https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec";
       const params = {
-        method: "GET",
+        method: "POST",
         body: new URLSearchParams({
           filtroAprofundamento: filtroAprofundamento,
           filtroSerie: filtroSerie
@@ -194,16 +194,19 @@
     // Função para exportar as inscrições para PDF
     const exportarParaPDF = () => {
       // Implementar função para exportar para PDF
+      alert("Exportando para PDF...");
     };
 
     // Função para exportar as inscrições para XLSX
     const exportarParaXLSX = () => {
       // Implementar função para exportar para XLSX
+      alert("Exportando para XLSX...");
     };
 
     // Função para exportar as inscrições para DOCX
     const exportarParaDOCX = () => {
       // Implementar função para exportar para DOCX
+      alert("Exportando para DOCX...");
     };
 
     // Carregar os dados e configurar os eventos
