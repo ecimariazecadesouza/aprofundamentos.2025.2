@@ -1,619 +1,216 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin PRO • Aprofundamentos 2025.2</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área Administrativa - Gestão de Inscrições</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
 
-<!-- Bibliotecas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 1000px;
+    }
 
-<style>
-  :root { 
-    --bg: #0b0e17; --card: #131a2b; --card-2:#0f1526; --card-hover: #19223a;
-    --txt: #ecf1f6; --muted: #9aa3b2; --accent: #4CAF50; --accent-2:#2fd180;
-    --error:#ff6b7a; --warn:#ffa726; --line:#1f2740; --shadow: rgba(0,0,0,.25);
-    --gradient: linear-gradient(135deg, var(--accent), #66BB6A);
-  }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body { background: radial-gradient(1200px 600px at 10% -10%, rgba(76,175,80,.07), transparent), linear-gradient(120deg,#0a0d14,#0e1322 45%,#0a1230); color:var(--txt); font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; }
-  .container { max-width: 1300px; margin:0 auto; padding:28px 20px; }
-  .header h1 { font-size: 2.2rem; font-weight: 800; margin:0 0 8px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .header p { color:var(--muted); }
-  .row { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 8px 30px var(--shadow); }
-  .card:hover { background:var(--card-hover); }
-  .card-title { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:10px; }
-  .muted { color:var(--muted); }
-  label { font-size:.95rem; font-weight:700; }
-  input, select, button { background:#0f1426; color:var(--txt); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font:inherit; }
-  input:focus,select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(76,175,80,.15); }
-  .btn { background:var(--gradient); border:none; font-weight:800; cursor:pointer; }
-  .btn.secondary { background:#1a2138; }
-  .btn.small { padding:8px 10px; border-radius:10px; font-size:.9rem; }
-  .btn.danger { background:linear-gradient(135deg,#ff4757,#ff6b7a); }
-  .btn.warn { background:linear-gradient(135deg,#ffa726,#ffb74d); }
-  .btn.success { background:linear-gradient(135deg,#2ed573,#2fd180); }
-  .grid { display:grid; gap:14px; }
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr; }
-  @media (min-width: 860px) { .grid-2 { grid-template-columns: 1fr 1fr; } .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
-  table { width:100%; border-collapse: collapse; }
-  th, td { padding:14px 12px; border-bottom: 1px solid var(--line); }
-  th { text-align:left; font-size:.85rem; letter-spacing:.5px; text-transform:uppercase; background:rgba(76,175,80,.06); position: sticky; top:0; }
-  tr:hover td { background:rgba(76,175,80,.07); }
-  code.badge { background:#0e1631; border:1px solid var(--line); padding:2px 6px; border-radius:8px; }
-  .message { padding:10px 12px; border-radius:12px; margin:8px 0; display:flex; align-items:center; gap:8px; }
-  .message.success { color:#2fd180; background:rgba(47,209,128,.12); border:1px solid rgba(47,209,128,.35); }
-  .message.error { color:#ff6b7a; background:rgba(255,107,122,.12); border:1px solid rgba(255,107,122,.35); }
-  .message.warn { color:#ffa726; background:rgba(255,167,38,.12); border:1px solid rgba(255,167,38,.35); }
-  .hide { display:none !important; }
-  .table-actions { display:flex; gap:8px; flex-wrap:wrap; }
-  .flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .spacer { flex:1; }
-  .inline { display:inline-flex; align-items:center; gap:8px; }
-  .capacity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:14px; }
-  .cap-item { background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:14px; }
-  .progress { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
-  .progress > div { height:8px; background:var(--gradient); }
-  .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-  .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-  /* Modal */
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
-  .modal { background: var(--card); border:1px solid var(--line); border-radius: 16px; padding: 16px; width: min(560px, 100%); box-shadow: 0 20px 50px rgba(0,0,0,.4); }
-</style>
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    select, button {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 14px;
+      color: green;
+      text-align: center;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .table-container {
+      margin-top: 30px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    .export-buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>🔐 Admin PRO • Aprofundamentos 2025.2</h1>
-    <p class="muted">Gestão de inscrições, capacidade e exportações.</p>
-  </div>
 
-  <!-- Login -->
-  <div id="loginCard" class="card">
-    <div class="card-title"><span>🔒</span> Acesso</div>
-    <div class="muted" id="apiInfo">Detectando API...</div>
+  <div class="container">
+    <h2>Área Administrativa - Gestão de Inscrições</h2>
 
-    <div id="apiEditor" class="grid grid-2 hide" style="margin-top:10px;">
-      <div>
-        <label for="api">🌐 URL da API</label>
-        <input id="api" placeholder="https://script.google.com/macros/s/....../exec" />
-        <small class="muted">Você pode alterar a URL detectada aqui.</small>
-      </div>
+    <!-- Filtros -->
+    <label for="filtroAprofundamento">Filtro por Aprofundamento:</label>
+    <select id="filtroAprofundamento">
+      <option value="">Selecione um Aprofundamento</option>
+      <!-- Será preenchido dinamicamente -->
+    </select>
+
+    <label for="filtroSerie">Filtro por Série/Turma:</label>
+    <select id="filtroSerie">
+      <option value="">Selecione uma Série/Turma</option>
+      <option value="1° A">1° A</option>
+      <option value="1° B">1° B</option>
+      <option value="1° C">1° C</option>
+      <option value="1° D">1° D</option>
+      <option value="1° E">1° E</option>
+      <option value="2° A">2° A</option>
+      <option value="2° B">2° B</option>
+      <option value="2° C">2° C</option>
+      <option value="3° A">3° A</option>
+      <option value="3° B">3° B</option>
+    </select>
+
+    <button id="aplicarFiltros">Aplicar Filtros</button>
+
+    <div id="message" class="message"></div>
+
+    <!-- Tabela de Inscrições -->
+    <div class="table-container">
+      <table id="tabelaInscricoes">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Série/Turma</th>
+            <th>Aprofundamento</th>
+            <th>Data de Inscrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dados serão preenchidos dinamicamente -->
+        </tbody>
+      </table>
     </div>
 
-    <div class="grid grid-2" style="margin-top:14px;">
-      <div>
-        <label for="pwd">🔑 Senha</label>
-        <input id="pwd" type="password" placeholder="••••••••" />
-        <small class="muted">Use a senha admin definida no GAS.</small>
-      </div>
-    </div>
-
-    <div class="flex" style="margin-top:12px;">
-      <button id="btEnter" class="btn"><span>🚀</span> Entrar</button>
-      <button id="toggleApi" class="btn secondary"><span>⚙️</span> Configurar API</button>
-      <span id="loginMsg" class="message hide" role="status" aria-live="polite"></span>
-    </div>
-  </div>
-
-  <!-- Dashboard -->
-  <div id="dash" class="hide">
-    <div class="flex" style="justify-content:flex-end; margin-bottom:10px;">
-      <button id="btLogout" class="btn secondary"><span>👋</span> Sair</button>
-    </div>
-
-    <!-- Stats -->
-    <div class="row">
-      <div class="card" style="flex:1; min-width:260px;">
-        <div class="card-title"><span>📊</span> Estatísticas</div>
-        <div class="grid grid-3">
-          <div class="card">
-            <div class="muted">Total de Inscrições</div>
-            <div id="tot" style="font-size:2rem; font-weight:800;">-</div>
-          </div>
-          <div class="card">
-            <div class="muted">Esgotados</div>
-            <div id="esgot" style="font-size:2rem; font-weight:800;">-</div>
-          </div>
-          <div class="card">
-            <div class="muted">Última Atualização</div>
-            <div id="last" style="font-weight:800;">-</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="flex:1.5; min-width:320px;">
-        <div class="card-title"><span>🔍</span> Filtros</div>
-        <div class="grid grid-3">
-          <div>
-            <label for="fAprof">📚 Aprofundamento</label>
-            <select id="fAprof"><option value="">Todos</option></select>
-          </div>
-          <div>
-            <label for="fSerie">🏫 Série/Turma</label>
-            <select id="fSerie">
-              <option value="">Todas</option>
-              <option>1° A</option><option>1° B</option><option>1° C</option><option>1° D</option><option>1° E</option>
-              <option>2° A</option><option>2° B</option><option>2° C</option>
-              <option>3° A</option><option>3° B</option>
-            </select>
-          </div>
-          <div>
-            <label for="fQ">🔎 Buscar por nome</label>
-            <input id="fQ" placeholder="Digite um nome..." />
-          </div>
-        </div>
-        <div class="grid grid-3" style="margin-top:10px;">
-          <div>
-            <label for="fFrom">🗓️ De</label>
-            <input id="fFrom" type="date" />
-          </div>
-          <div>
-            <label for="fTo">🗓️ Até</label>
-            <input id="fTo" type="date" />
-          </div>
-          <div style="display:flex; align-items:flex-end; gap:10px;">
-            <button id="btFiltrar" class="btn"><span>🔄</span> Aplicar</button>
-            <button id="btSort" class="btn secondary" title="Alternar ordenação"><span>📋</span> Ordenar: Data/Hora</button>
-          </div>
-        </div>
-        <div id="fltMsg" class="message hide"></div>
-        <div class="flex" style="margin-top:10px;">
-          <div class="inline">
-            <label for="pageSize">Linhas por página</label>
-            <select id="pageSize">
-              <option>25</option><option selected>50</option><option>100</option><option>200</option>
-            </select>
-          </div>
-          <div class="spacer"></div>
-          <div class="inline">
-            <button id="btPDF" class="btn small"><span>📄</span> PDF</button>
-            <button id="btXLSX" class="btn small success"><span>📊</span> XLSX</button>
-            <button id="btDOCX" class="btn small warn"><span>📝</span> DOC</button>
-            <button id="btCSV" class="btn small secondary"><span>📋</span> CSV</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabela -->
-    <div class="card" style="margin-top:16px;">
-      <div class="flex">
-        <div class="card-title"><span>📋</span> Inscrições</div>
-        <div class="spacer"></div>
-        <div class="pagination">
-          <button id="prevPage" class="btn secondary small">◀</button>
-          <span class="pill"><span id="pageInfo">Página 1/1</span></span>
-          <button id="nextPage" class="btn secondary small">▶</button>
-          <span class="pill"><span id="count">-</span></span>
-        </div>
-      </div>
-      <div class="loading" id="loading" style="padding:50px; text-align:center;">
-        <div>Carregando dados…</div>
-      </div>
-      <div class="hide" id="tblWrap">
-        <table id="tbl">
-          <thead>
-            <tr>
-              <th>🕒 Data/Hora</th>
-              <th>👤 Nome</th>
-              <th>🏫 Série/Turma</th>
-              <th>📚 Aprofundamento</th>
-              <th>🆔 ID</th>
-              <th style="width:260px;">⚙️ Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Capacidade -->
-    <div class="card" style="margin-top:16px;">
-      <div class="card-title"><span>📊</span> Capacidade dos Aprofundamentos</div>
-      <div id="capGrid" class="capacity-grid"></div>
+    <!-- Botões de Exportação -->
+    <div class="export-buttons">
+      <button id="exportarPDF">Exportar para PDF</button>
+      <button id="exportarXLSX">Exportar para XLSX</button>
+      <button id="exportarDOCX">Exportar para DOCX</button>
     </div>
   </div>
-</div>
 
-<!-- Modal Transferência -->
-<div id="modalBackdrop" class="modal-backdrop hide">
-  <div class="modal">
-    <div class="card-title"><span>🔁</span> Transferir Inscrição</div>
-    <div class="grid grid-2">
-      <div>
-        <label>Aluno</label>
-        <div id="mAluno" class="pill"></div>
-      </div>
-      <div>
-        <label>ID</label>
-        <div id="mId" class="pill"></div>
-      </div>
-      <div>
-        <label>De</label>
-        <div id="mFrom" class="pill"></div>
-      </div>
-      <div>
-        <label>Para</label>
-        <select id="mTo"></select>
-      </div>
-    </div>
-    <div class="flex" style="margin-top:12px;">
-      <button id="btDoTransfer" class="btn"><span>✅</span> Confirmar</button>
-      <button id="btCancelTransfer" class="btn secondary"><span>✖</span> Cancelar</button>
-      <span id="mMsg" class="message hide"></span>
-    </div>
-  </div>
-</div>
+  <script>
+    // Função para carregar os dados de inscrições com base nos filtros
+    const carregarInscricoes = async () => {
+      const filtroAprofundamento = document.getElementById("filtroAprofundamento").value;
+      const filtroSerie = document.getElementById("filtroSerie").value;
 
-<script>
-/* ============ CONFIG / API AUTODETECT ============ */
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycby-PtWhRXWqjGykZwXQXwr42ceUPeRgTICYu1ZnSHCV9s4KQt1ikm_zESuEvw_cHUqs/exec";
-function withTimeout(promise, ms) { return new Promise((res, rej) => { const t=setTimeout(()=>rej(new Error('timeout')), ms); promise.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)}); }); }
-function getQueryParam(name) { const u = new URL(location.href); const v = u.searchParams.get(name); return v && v.trim() ? v.trim() : null; }
-async function resolveApi() {
-  const qp = getQueryParam('api'); if (qp) return qp;
-  const ls = localStorage.getItem('aprof_api'); if (ls) return ls;
-  try { const r = await fetch('config.json', { cache:'no-store' }); if (r.ok) { const cfg = await r.json(); if (cfg && cfg.api) return String(cfg.api); } } catch(_){}
-  return DEFAULT_API;
-}
+      const url = "https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec";
+      const params = {
+        method: "GET",
+        body: new URLSearchParams({
+          filtroAprofundamento: filtroAprofundamento,
+          filtroSerie: filtroSerie
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      };
 
-/* ============ ELEMENTS ============ */
-const $ = s => document.querySelector(s);
-const apiInfo=$('#apiInfo'), apiEditor=$('#apiEditor'), apiEl=$('#api'); const toggleApiBtn=$('#toggleApi');
-const pwdEl=$('#pwd'), enterBtn=$('#btEnter'), loginCard=$('#loginCard'), loginMsg=$('#loginMsg'), dash=$('#dash');
-const fAprof=$('#fAprof'), fSerie=$('#fSerie'), fQ=$('#fQ'), fFrom=$('#fFrom'), fTo=$('#fTo');
-const pageSizeEl=$('#pageSize'), prevPage=$('#prevPage'), nextPage=$('#nextPage'), pageInfo=$('#pageInfo');
-const btFiltrar=$('#btFiltrar'), btSort=$('#btSort'), btLogout=$('#btLogout');
-const totEl=$('#tot'), esgotEl=$('#esgot'), lastEl=$('#last');
-const loading=$('#loading'), tblWrap=$('#tblWrap'), tbody=$('#tbody'), count=$('#count');
-const btPDF=$('#btPDF'), btXLSX=$('#btXLSX'), btDOCX=$('#btDOCX'), btCSV=$('#btCSV');
-const capGrid=$('#capGrid');
-// modal
-const modalBackdrop=$('#modalBackdrop'); const mAluno=$('#mAluno'); const mId=$('#mId'); const mFrom=$('#mFrom'); const mTo=$('#mTo'); const mMsg=$('#mMsg'); const btDoTransfer=$('#btDoTransfer'); const btCancelTransfer=$('#btCancelTransfer');
+      try {
+        const response = await fetch(url, params);
+        const result = await response.json();
 
-/* ============ STATE ============ */
-let TOKEN='', API=''; let baseData=[], filteredData=[], currentPage=1, sortMode='ts', capacidade=[];
-let listController, statsController;
+        // Limpar dados da tabela
+        const tabela = document.getElementById("tabelaInscricoes").getElementsByTagName('tbody')[0];
+        tabela.innerHTML = "";
 
-/* ============ SESSION ============ */
-function setSession(a,t){ sessionStorage.setItem('aprof_api', a); sessionStorage.setItem('aprof_token', t); }
-function restoreSession(){ const a=sessionStorage.getItem('aprof_api'), t=sessionStorage.getItem('aprof_token'); if(a && t){ API=a; TOKEN=t; return true; } return false; }
+        result.data.forEach((inscricao) => {
+          const row = tabela.insertRow();
+          row.insertCell(0).textContent = inscricao.nome;
+          row.insertCell(1).textContent = inscricao.serie;
+          row.insertCell(2).textContent = inscricao.aprofundamento;
+          row.insertCell(3).textContent = inscricao.data;
+        });
 
-/* ============ UI HELPERS ============ */
-function showMessage(el, text, type='error'){ el.textContent=text; el.className = 'message ' + (type==='success'?'success':type==='warn'?'warn':'error'); el.classList.remove('hide'); if(type==='success'){ setTimeout(()=>el.classList.add('hide'), 2500);} }
-function hideMessage(el){ el.classList.add('hide'); }
-function fmtDate(iso){ try{ return new Date(iso).toLocaleString('pt-BR'); } catch(_){ return iso||''; } }
-function parseDateOnly(val){ if(!val) return null; const d = new Date(val + 'T00:00:00'); return isNaN(+d) ? null : d; }
-function inDateRange(tsIso, from, to){ if(!from && !to) return true; const t = tsIso ? new Date(tsIso) : null; if(!t) return false; if(from && t < from) return false; if(to){ const end = new Date(to); end.setHours(23,59,59,999); if(t > end) return false; } return true; }
+      } catch (error) {
+        document.getElementById("message").textContent = "Erro ao carregar as inscrições. Tente novamente.";
+        document.getElementById("message").className = "error";
+      }
+    };
 
-/* ============ FETCH HELPERS ============ */
-async function authedGet(url, params={}, extra={}){ 
-  const u=new URL(url); Object.keys(params).forEach(k=>{ const v=params[k]; if(v!=null && v!=='') u.searchParams.append(k,v); }); 
-  u.searchParams.append('key', TOKEN);
-  const res=await fetch(u.toString(), { signal: extra.signal });
-  const text=await res.text(); let json; 
-  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
-  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
-  return json; 
-}
-async function authedPost(url, body={}, extra={}){ 
-  const u=new URL(url); u.searchParams.append('key', TOKEN);
-  // text/plain para evitar preflight CORS em Apps Script
-  const res=await fetch(u.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body), signal: extra.signal });
-  const text=await res.text(); let json; 
-  try{ json=JSON.parse(text); }catch(e){ throw new Error('Resposta não-JSON: '+text.substring(0,120)); } 
-  if(!res.ok || json.ok===false) throw new Error(json.error || ('HTTP '+res.status)); 
-  return json; 
-}
+    // Função para exportar as inscrições para PDF
+    const exportarParaPDF = () => {
+      // Implementar função para exportar para PDF
+    };
 
-/* ============ LOADERS ============ */
-async function loadStats(){ if(statsController) statsController.abort(); statsController = new AbortController(); return authedGet(API, { stats:'1' }, { signal: statsController.signal }); }
-async function loadList(params={}){ 
-  if(listController) listController.abort(); listController = new AbortController();
-  const q={ list:'1' };
-  if(params.aprofundamento) q.aprofundamento=params.aprofundamento;
-  if(params.serie) q.serie=params.serie;
-  if(params.q) q.q=params.q;
-  if(params.from) q.from=params.from;
-  if(params.to) q.to=params.to;
-  return authedGet(API, q, { signal: listController.signal });
-}
+    // Função para exportar as inscrições para XLSX
+    const exportarParaXLSX = () => {
+      // Implementar função para exportar para XLSX
+    };
 
-/* ============ RENDERERS ============ */
-function renderStats(s){ 
-  totEl.textContent = s.totalInscricoes || 0; 
-  lastEl.textContent = new Date().toLocaleTimeString('pt-BR'); 
-  capacidade = s.capacidade || []; 
-  esgotEl.textContent = capacidade.filter(c => (+c.restantes||0)===0).length;
+    // Função para exportar as inscrições para DOCX
+    const exportarParaDOCX = () => {
+      // Implementar função para exportar para DOCX
+    };
 
-  // select de aprofundamentos
-  fAprof.innerHTML = '<option value="">Todos</option>' + capacidade
-    .map(c => `<option value="${c.aprofundamento}">${c.aprofundamento} (${c.restantes} restantes)</option>`)
-    .join('');
-
-  // grid de capacidade com edição de limite
-  capGrid.innerHTML = '';
-  capacidade.forEach(c => { 
-    const pct = c.limite>0 ? Math.min((c.inscritos/c.limite)*100, 100) : 0;
-    const div=document.createElement('div'); 
-    div.className='cap-item';
-    div.innerHTML = `<div style="display:flex; align-items:center; gap:8px; justify-content:space-between;">
-        <strong>${c.aprofundamento}</strong>
-        <span class="pill">${c.inscritos}/${c.limite} · ${c.restantes} vagas</span>
-      </div>
-      <div class="progress" style="margin:8px 0 10px;"><div style="width:${pct}%"></div></div>
-      <div class="flex">
-        <div class="inline">
-          <label>Limite</label>
-          <input type="number" min="0" value="${c.limite}" style="width:120px" data-aprof="${c.aprofundamento}" class="cap-limit"/>
-        </div>
-        <div class="spacer"></div>
-        <button class="btn small success btSetLimit" data-aprof="${c.aprofundamento}">Salvar limite</button>
-      </div>`;
-    capGrid.appendChild(div);
-  });
-}
-
-function applyClientFilters(rows){
-  const q = (fQ.value||'').trim().toLowerCase(); const serie = fSerie.value||''; const aprof = fAprof.value||'';
-  const from = parseDateOnly(fFrom.value); const to = parseDateOnly(fTo.value);
-  let data = rows.filter(r => {
-    if(aprof && r.aprofundamento !== aprof) return false;
-    if(serie && r.serie !== serie) return false;
-    if(q && !String(r.nome||'').toLowerCase().includes(q)) return false;
-    if(!inDateRange(r.ts, from, to)) return false;
-    return true;
-  });
-  // sort
-  if(sortMode==='nome'){ data.sort((a,b)=> (a.nome||'').localeCompare(b.nome||'', 'pt-BR', { sensitivity:'base' })); }
-  else { data.sort((a,b)=> (a.ts<b.ts?1:-1)); }
-  return data;
-}
-
-function renderTable(paged){
-  tbody.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  paged.forEach(r => {
-    const tr = document.createElement('tr');
-    const tds = [
-      fmtDate(r.ts),
-      `<strong>${r.nome||''}</strong>`,
-      r.serie||'',
-      r.aprofundamento||'',
-      `<code class="badge">${r.id||''}</code>`,
-      `<div class="table-actions">
-         <button class="btn small" data-id="${r.id}" data-nome="${r.nome}" data-from="${r.aprofundamento}" onclick="openTransfer(event)">🔁 Transferir</button>
-         <button class="btn small danger" data-id="${r.id}" data-from="${r.aprofundamento}" onclick="deleteRow(event)">🗑️ Excluir</button>
-       </div>`
-    ];
-    tds.forEach(html => { const td=document.createElement('td'); td.innerHTML=html; tr.appendChild(td); });
-    frag.appendChild(tr);
-  });
-  tbody.appendChild(frag);
-}
-
-function paginate(data){
-  const size = parseInt(pageSizeEl.value,10)||50; const total = data.length; const pages = Math.max(1, Math.ceil(total/size));
-  currentPage = Math.min(currentPage, pages);
-  const start = (currentPage-1)*size; const end = Math.min(start+size, total);
-  const pageData = data.slice(start, end);
-  pageInfo.textContent = `Página ${currentPage}/${pages}`;
-  count.textContent = `${total} registro(s)`;
-  prevPage.disabled = (currentPage<=1); nextPage.disabled = (currentPage>=pages);
-  return pageData;
-}
-
-/* ============ EXPORTS ============ */
-function exportToPDF(rows){ 
-  const { jsPDF } = window.jspdf; 
-  const doc = new jsPDF(); 
-  doc.setFontSize(16);
-  doc.text('Aprofundamentos 2025.2 - Inscrições', 14, 20);
-  doc.setFontSize(10);
-  doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
-  const headers = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']];
-  const body = rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id]);
-  doc.autoTable({ head: headers, body, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [76,175,80], textColor: 255 } });
-  doc.save(`aprofundamentos_${new Date().toISOString().split('T')[0]}.pdf`);
-}
-function exportToXLSX(rows){ 
-  const data = [['Data/Hora','Nome','Série/Turma','Aprofundamento','ID'], ...rows.map(r => [fmtDate(r.ts), r.nome, r.serie, r.aprofundamento, r.id])];
-  const wb = XLSX.utils.book_new(); 
-  const ws = XLSX.utils.aoa_to_sheet(data); 
-  ws['!cols'] = [{ width: 20 }, { width: 30 }, { width: 16 }, { width: 40 }, { width: 18 }];
-  XLSX.utils.book_append_sheet(wb, ws, 'Inscrições'); 
-  XLSX.writeFile(wb, `aprofundamentos_${new Date().toISOString().split('T')[0]}.xlsx`);
-}
-function exportToDOC(rows){ 
-  let html = `<html><head><meta charset='utf-8'><title>Inscrições</title>
-  <style>table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px}</style></head><body>`;
-  html += `<h1 style='text-align:center;color:#4CAF50'>Aprofundamentos 2025.2</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')}</p>`;
-  html += `<table><thead><tr><th>Data/Hora</th><th>Nome</th><th>Série/Turma</th><th>Aprofundamento</th><th>ID</th></tr></thead><tbody>`;
-  rows.forEach(r => html += `<tr><td>${fmtDate(r.ts)}</td><td>${r.nome||''}</td><td>${r.serie||''}</td><td>${r.aprofundamento||''}</td><td>${r.id||''}</td></tr>`);
-  html += `</tbody></table></body></html>`; 
-  const blob = new Blob([html], { type:'application/msword' }); 
-  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.doc`);
-}
-function exportToCSV(rows){ 
-  const headers=['Data/Hora','Nome','Série/Turma','Aprofundamento','ID']; 
-  const lines=[headers.join(';')];
-  rows.forEach(r => { 
-    const vals=[fmtDate(r.ts), r.nome||'', r.serie||'', r.aprofundamento||'', r.id||''].map(v=>String(v).replace(/"/g,'""')); 
-    lines.push(vals.map(v => (/[",\n;]/.test(v) ? `"${v}"` : v)).join(';')); 
-  });
-  const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' }); 
-  saveAs(blob, `aprofundamentos_${new Date().toISOString().split('T')[0]}.csv`);
-}
-
-/* ============ ADMIN ACTIONS (PRO) ============ */
-async function setLimit(aprof, limit){ return authedPost(API, { action:'setLimit', aprofundamento: aprof, limite: Number(limit) }); }
-async function transfer(id, novo){ return authedPost(API, { action:'transfer', id, novoAprofundamento: novo }); }
-async function removeById(id){ return authedPost(API, { action:'delete', id }); }
-
-/* ============ EVENT HANDLERS ============ */
-function wireCapacityButtons(){
-  document.querySelectorAll('.btSetLimit').forEach(btn => btn.addEventListener('click', async (e) => { 
-    const aprof=e.currentTarget.dataset.aprof;
-    const input = document.querySelector(`input.cap-limit[data-aprof="${CSS.escape(aprof)}"]`); 
-    const val = input ? Number(input.value) : NaN;
-    if(isNaN(val) || val<0) return alert('Informe um limite válido');
-    try{ 
-      await setLimit(aprof, val); 
-      showMessage($('#fltMsg'), 'Limite atualizado para "'+aprof+'"', 'success'); 
-      const s = await loadStats(); renderStats(s); 
-    }catch(err){ alert('Erro ao definir limite: '+err.message); }
-  }));
-}
-
-function openTransfer(ev){ 
-  const b=ev.currentTarget; const id=b.dataset.id; const nome=b.dataset.nome; const from=b.dataset.from;
-  mAluno.textContent = nome; mId.textContent = id; mFrom.textContent = from; mMsg.classList.add('hide');
-  // opções destino
-  mTo.innerHTML = capacidade
-    .map(c => `<option value="${c.aprofundamento}" ${from===c.aprofundamento?'disabled':''}>${c.aprofundamento} (${c.restantes} vagas)</option>`)
-    .join('');
-  modalBackdrop.classList.remove('hide'); 
-}
-
-async function deleteRow(ev){ 
-  const b=ev.currentTarget; const id=b.dataset.id; const from=b.dataset.from;
-  if(!confirm('Confirmar exclusão da inscrição '+id+'? A vaga de "'+from+'" será devolvida.')) return;
-  try{ 
-    await removeById(id); 
-    showMessage($('#fltMsg'), 'Inscrição removida com sucesso.', 'success'); 
-    const [s,l] = await Promise.all([loadStats(), loadList({ 
-      aprofundamento:fAprof.value||'', 
-      serie:fSerie.value||'', 
-      q:(fQ.value||'').trim(),
-      from:fFrom.value||'',
-      to:fTo.value||''
-    })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable(); 
-  } catch(err){ alert('Erro ao excluir: '+err.message); }
-}
-
-btDoTransfer.addEventListener('click', async () => { 
-  const id=mId.textContent; const novo = mTo.value;
-  try{ 
-    await transfer(id, novo); 
-    showMessage(mMsg, 'Transferência concluída!', 'success'); 
-    setTimeout(()=>{ modalBackdrop.classList.add('hide'); }, 700);
-    const [s,l] = await Promise.all([loadStats(), loadList({ 
-      aprofundamento:fAprof.value||'', 
-      serie:fSerie.value||'', 
-      q:(fQ.value||'').trim(),
-      from:fFrom.value||'',
-      to:fTo.value||''
-    })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable();
-  }catch(err){ showMessage(mMsg, 'Erro: '+err.message, 'error'); }
-});
-btCancelTransfer.addEventListener('click', () => modalBackdrop.classList.add('hide'));
-window.openTransfer = openTransfer; window.deleteRow = deleteRow;
-
-/* ============ TABLE FLOW ============ */
-function refreshTable(){ filteredData = applyClientFilters(baseData); const pageData = paginate(filteredData); renderTable(pageData); wireCapacityButtons(); }
-
-/* ============ BOOT ============ */
-document.addEventListener('DOMContentLoaded', () => { 
-  apiInfo.textContent = 'Detectando API...'; 
-  apiEditor.classList.add('hide');
-  (async () => { 
-    try{ 
-      const detected = await withTimeout(resolveApi(), 2000); 
-      API = detected || DEFAULT_API; 
-      apiEl.value = API; 
-      apiInfo.textContent = 'API detectada: '+API+' — clique em ⚙️ para alterar.'; 
-    }
-    catch(e){ 
-      API = getQueryParam('api') || localStorage.getItem('aprof_api') || DEFAULT_API; 
-      apiEl.value = API; 
-      apiInfo.textContent = 'Não foi possível detectar automaticamente. Informe a URL abaixo.'; 
-      apiEditor.classList.remove('hide'); 
-      setTimeout(()=>apiEl.focus(),0); 
-    }
-    if (restoreSession()) { API = API || sessionStorage.getItem('aprof_api'); enterBtn.click(); }
-  })();
-});
-
-toggleApiBtn.addEventListener('click', () => apiEditor.classList.toggle('hide'));
-
-enterBtn.addEventListener('click', async () => { 
-  API = (apiEl.value||'').trim() || API; 
-  TOKEN = (pwdEl.value||'').trim();
-  if(!API) return showMessage(loginMsg, 'Informe a URL da API.', 'error');
-  if(!TOKEN) return showMessage(loginMsg, 'Informe a senha.', 'error');
-  enterBtn.disabled = true; enterBtn.textContent = 'Validando...'; showMessage(loginMsg, 'Validando credenciais...', 'warn');
-  try{ 
-    const stats = await loadStats(); 
-    setSession(API, TOKEN); 
-    localStorage.setItem('aprof_api', API);
-    loginCard.classList.add('hide'); 
-    dash.classList.remove('hide'); 
-    renderStats(stats);
-    loading.classList.remove('hide'); 
-    tblWrap.classList.add('hide');
-    const lst = await loadList({}); 
-    baseData = lst.rows || []; 
-    refreshTable();
-    loading.classList.add('hide'); 
-    tblWrap.classList.remove('hide'); 
-    hideMessage(loginMsg);
-  }catch(err){ 
-    showMessage(loginMsg, 'Falha no acesso: '+err.message, 'error'); 
-  } finally { 
-    enterBtn.disabled = false; 
-    enterBtn.textContent = 'Entrar'; 
-  }
-});
-
-btFiltrar.addEventListener('click', async () => { 
-  btFiltrar.disabled = true; btFiltrar.textContent = 'Atualizando...';
-  try{ 
-    const [s,l] = await Promise.all([loadStats(), loadList({ 
-      aprofundamento:fAprof.value||'', 
-      serie:fSerie.value||'', 
-      q:(fQ.value||'').trim(),
-      from:fFrom.value||'',
-      to:fTo.value||''
-    })]); 
-    renderStats(s); baseData=l.rows||[]; refreshTable(); 
-    showMessage($('#fltMsg'), 'Filtros aplicados!', 'success'); 
-  }catch(err){ 
-    showMessage($('#fltMsg'), 'Erro: '+err.message, 'error'); 
-  } finally { 
-    btFiltrar.disabled = false; 
-    btFiltrar.textContent = 'Aplicar'; 
-  }
-});
-btSort.addEventListener('click', () => { sortMode = sortMode==='ts' ? 'nome' : 'ts'; btSort.innerHTML = sortMode==='ts' ? '<span>📋</span> Ordenar: Data/Hora' : '<span>📋</span> Ordenar: Nome (A→Z)'; refreshTable(); });
-pageSizeEl.addEventListener('change', () => { currentPage=1; refreshTable(); });
-prevPage.addEventListener('click', () => { if(currentPage>1){ currentPage--; refreshTable(); } });
-nextPage.addEventListener('click', () => { currentPage++; refreshTable(); });
-
-btPDF.addEventListener('click', () => exportToPDF(filteredData));
-btXLSX.addEventListener('click', () => exportToXLSX(filteredData));
-btDOCX.addEventListener('click', () => exportToDOC(filteredData));
-btCSV.addEventListener('click', () => exportToCSV(filteredData));
-
-pwdEl.addEventListener('keydown', e => { if(e.key==='Enter') enterBtn.click(); });
-fQ.addEventListener('keydown', e => { if(e.key==='Enter') btFiltrar.click(); });
-
-btLogout?.addEventListener('click', () => { 
-  sessionStorage.removeItem('aprof_api'); 
-  sessionStorage.removeItem('aprof_token'); 
-  TOKEN=''; 
-  dash.classList.add('hide'); 
-  loginCard.classList.remove('hide'); 
-  showMessage(loginMsg, 'Sessão encerrada.', 'success'); 
-});
-</script>
+    // Carregar os dados e configurar os eventos
+    document.getElementById("aplicarFiltros").addEventListener("click", carregarInscricoes);
+    document.getElementById("exportarPDF").addEventListener("click", exportarParaPDF);
+    document.getElementById("exportarXLSX").addEventListener("click", exportarParaXLSX);
+    document.getElementById("exportarDOCX").addEventListener("click", exportarParaDOCX);
+  </script>
 </body>
 </html>
