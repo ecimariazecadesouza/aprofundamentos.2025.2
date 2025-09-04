@@ -5,177 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Área Administrativa - Gestão de Inscrições</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100vh;
+    :root { 
+      --bg: #0b0e17; --card: #131a2b; --card-2:#0f1526; --card-hover: #19223a;
+      --txt: #ecf1f6; --muted: #9aa3b2; --accent: #4CAF50; --accent-2:#2fd180;
+      --error:#ff6b7a; --warn:#ffa726; --line:#1f2740; --shadow: rgba(0,0,0,.25);
+      --gradient: linear-gradient(135deg, var(--accent), #66BB6A);
     }
-
-    .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 1000px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-
-    select, button {
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-size: 14px;
-      color: green;
-      text-align: center;
-    }
-
-    .error {
-      color: red;
-    }
-
-    .table-container {
-      margin-top: 30px;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #f4f4f4;
-    }
-
-    .export-buttons {
-      margin-top: 20px;
-      text-align: center;
-    }
-
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { background: radial-gradient(1200px 600px at 10% -10%, rgba(76,175,80,.07), transparent), linear-gradient(120deg,#0a0d14,#0e1322 45%,#0a1230); color:var(--txt); font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; }
+    .container { max-width: 1300px; margin:0 auto; padding:28px 20px; }
+    .header h1 { font-size: 2.2rem; font-weight: 800; margin:0 0 8px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .header p { color:var(--muted); }
+    .row { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 8px 30px var(--shadow); }
+    .card:hover { background:var(--card-hover); }
+    .card-title { display:flex; align-items:center; gap:10px; font-weight:800; margin-bottom:10px; }
+    .muted { color:var(--muted); }
+    label { font-size:.95rem; font-weight:700; }
+    input, select, button { background:#0f1426; color:var(--txt); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font:inherit; }
+    input:focus,select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(76,175,80,.15); }
+    .btn { background:var(--gradient); border:none; font-weight:800; cursor:pointer; }
+    .btn.secondary { background:#1a2138; }
+    .btn.small { padding:8px 10px; border-radius:10px; font-size:.9rem; }
+    .btn.danger { background:linear-gradient(135deg,#ff4757,#ff6b7a); }
+    .btn.warn { background:linear-gradient(135deg,#ffa726,#ffb74d); }
+    .btn.success { background:linear-gradient(135deg,#2ed573,#2fd180); }
+    .grid { display:grid; gap:14px; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    @media (min-width: 860px) { .grid-2 { grid-template-columns: 1fr 1fr; } .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding:14px 12px; border-bottom: 1px solid var(--line); }
+    th { text-align:left; font-size:.85rem; letter-spacing:.5px; text-transform:uppercase; background:rgba(76,175,80,.06); position: sticky; top:0; }
+    tr:hover td { background:rgba(76,175,80,.07); }
+    code.badge { background:#0e1631; border:1px solid var(--line); padding:2px 6px; border-radius:8px; }
+    .message { padding:10px 12px; border-radius:12px; margin:8px 0; display:flex; align-items:center; gap:8px; }
+    .message.success { color:#2fd180; background:rgba(47,209,128,.12); border:1px solid rgba(47,209,128,.35); }
+    .message.error { color:#ff6b7a; background:rgba(255,107,122,.12); border:1px solid rgba(255,107,122,.35); }
+    .message.warn { color:#ffa726; background:rgba(255,167,38,.12); border:1px solid rgba(255,167,38,.35); }
+    .hide { display:none !important; }
+    .table-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .spacer { flex:1; }
+    .inline { display:inline-flex; align-items:center; gap:8px; }
+    .capacity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:14px; }
+    .cap-item { background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .progress { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+    .progress > div { height:8px; background:var(--gradient); }
+    .pagination { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .pill { background:#0e1631; border:1px solid var(--line); padding:4px 10px; border-radius:999px; }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h2>Área Administrativa - Gestão de Inscrições</h2>
-
-    <!-- Filtros -->
-    <label for="filtroAprofundamento">Filtro por Aprofundamento:</label>
-    <select id="filtroAprofundamento">
-      <option value="">Selecione um Aprofundamento</option>
-      <!-- Será preenchido dinamicamente -->
-    </select>
-
-    <label for="filtroSerie">Filtro por Série/Turma:</label>
-    <select id="filtroSerie">
-      <option value="">Selecione uma Série/Turma</option>
-      <option value="1° A">1° A</option>
-      <option value="1° B">1° B</option>
-      <option value="1° C">1° C</option>
-      <option value="2° A">2° A</option>
-      <option value="2° B">2° B</option>
-      <option value="3° A">3° A</option>
-      <option value="3° B">3° B</option>
-    </select>
-
-    <button id="aplicarFiltros">Aplicar Filtros</button>
-
-    <div id="message" class="message"></div>
-
-    <!-- Tabela de Inscrições -->
-    <div class="table-container">
-      <table id="tabelaInscricoes">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Série/Turma</th>
-            <th>Aprofundamento</th>
-            <th>Data de Inscrição</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dados serão preenchidos dinamicamente -->
-        </tbody>
-      </table>
+    <div class="header">
+      <h1>🔐 Admin PRO • Aprofundamentos 2025.2</h1>
+      <p class="muted">Gestão avançada de inscrições, capacidade e exportações.</p>
     </div>
 
-    <!-- Botões de Exportação -->
-    <div class="export-buttons">
-      <button id="exportarPDF">Exportar para PDF</button>
-      <button id="exportarXLSX">Exportar para XLSX</button>
-      <button id="exportarDOCX">Exportar para DOCX</button>
+    <!-- Filtros -->
+    <div class="row">
+      <div class="card">
+        <div class="card-title"><span>🔍</span> Filtros</div>
+        <label for="fAprof">📚 Aprofundamento</label>
+        <select id="fAprof">
+          <option value="">Todos</option>
+          <!-- Será preenchido dinamicamente -->
+        </select>
+
+        <label for="fSerie">🏫 Série/Turma</label>
+        <select id="fSerie">
+          <option value="">Todas</option>
+          <option value="1° A">1° A</option>
+          <option value="1° B">1° B</option>
+          <option value="1° C">1° C</option>
+          <option value="2° A">2° A</option>
+          <option value="2° B">2° B</option>
+          <option value="3° A">3° A</option>
+          <option value="3° B">3° B</option>
+        </select>
+
+        <label for="fQ">🔎 Buscar por nome</label>
+        <input id="fQ" placeholder="Digite um nome..." />
+
+        <button id="btFiltrar" class="btn success"><span>🔄</span> Aplicar Filtros</button>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="row">
+      <div class="card">
+        <div class="card-title"><span>📋</span> Inscrições</div>
+        <table id="tabelaInscricoes">
+          <thead>
+            <tr>
+              <th>🕒 Data/Hora</th>
+              <th>👤 Nome</th>
+              <th>🏫 Série/Turma</th>
+              <th>📚 Aprofundamento</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- Os dados serão preenchidos dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Capacidade -->
+    <div class="row">
+      <div class="card">
+        <div class="card-title"><span>📊</span> Capacidade dos Aprofundamentos</div>
+        <div id="capGrid" class="capacity-grid">
+          <!-- Será preenchido dinamicamente -->
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Função para carregar os dados de inscrições com base nos filtros
-    const carregarAprofundamentos = async () => {
-      const filtroSerie = document.getElementById("filtroSerie").value;
-      const filtroAprofundamentoSelect = document.getElementById("filtroAprofundamento");
-
-      // Limpar opções anteriores
-      filtroAprofundamentoSelect.innerHTML = "<option value=''>Selecione um Aprofundamento</option>";
-
-      if (filtroSerie) {
-        // Buscar os aprofundamentos disponíveis para a série selecionada
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec?serie=${filtroSerie}`);
-        const data = await response.json();
-
-        // Preencher as opções de aprofundamento
-        data.aprofundamentos.forEach(aprofundamento => {
-          const option = document.createElement("option");
-          option.value = aprofundamento;
-          option.textContent = aprofundamento;
-          filtroAprofundamentoSelect.appendChild(option);
-        });
-      }
-    };
-
-    // Função para carregar as inscrições com base nos filtros
+    // Carregar os dados de inscrições com base nos filtros
     const carregarInscricoes = async () => {
-      const filtroAprofundamento = document.getElementById("filtroAprofundamento").value;
-      const filtroSerie = document.getElementById("filtroSerie").value;
+      const filtroAprofundamento = document.getElementById("fAprof").value;
+      const filtroSerie = document.getElementById("fSerie").value;
 
       const url = "https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec";
       const params = {
@@ -199,39 +157,42 @@
 
         result.data.forEach((inscricao) => {
           const row = tabela.insertRow();
-          row.insertCell(0).textContent = inscricao.nome;
-          row.insertCell(1).textContent = inscricao.serie;
-          row.insertCell(2).textContent = inscricao.aprofundamento;
-          row.insertCell(3).textContent = inscricao.data;
+          row.insertCell(0).textContent = inscricao.data;
+          row.insertCell(1).textContent = inscricao.nome;
+          row.insertCell(2).textContent = inscricao.serie;
+          row.insertCell(3).textContent = inscricao.aprofundamento;
         });
 
       } catch (error) {
-        document.getElementById("message").textContent = "Erro ao carregar as inscrições. Tente novamente.";
-        document.getElementById("message").className = "error";
+        console.error("Erro ao carregar as inscrições:", error);
       }
     };
 
-    // Função para exportar as inscrições para PDF
-    const exportarParaPDF = () => {
-      alert("Exportando para PDF...");
+    // Carregar os aprofundamentos quando a série for selecionada
+    const carregarAprofundamentos = async () => {
+      const filtroSerie = document.getElementById("fSerie").value;
+      const filtroAprofundamentoSelect = document.getElementById("fAprof");
+
+      // Limpar opções anteriores
+      filtroAprofundamentoSelect.innerHTML = "<option value=''>Todos</option>";
+
+      if (filtroSerie) {
+        // Buscar os aprofundamentos disponíveis para a série selecionada
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyM5w52jlrcX84vjRbd117w75x99G5SWqJoY2QS8mvnJw3OL_lg4re2yQkyiL7euTsp/exec?serie=${filtroSerie}`);
+        const data = await response.json();
+
+        // Preencher as opções de aprofundamento
+        data.aprofundamentos.forEach(aprofundamento => {
+          const option = document.createElement("option");
+          option.value = aprofundamento;
+          option.textContent = aprofundamento;
+          filtroAprofundamentoSelect.appendChild(option);
+        });
+      }
     };
 
-    // Função para exportar as inscrições para XLSX
-    const exportarParaXLSX = () => {
-      alert("Exportando para XLSX...");
-    };
-
-    // Função para exportar as inscrições para DOCX
-    const exportarParaDOCX = () => {
-      alert("Exportando para DOCX...");
-    };
-
-    // Carregar os dados e configurar os eventos
-    document.getElementById("aplicarFiltros").addEventListener("click", carregarInscricoes);
-    document.getElementById("filtroSerie").addEventListener("change", carregarAprofundamentos);
-    document.getElementById("exportarPDF").addEventListener("click", exportarParaPDF);
-    document.getElementById("exportarXLSX").addEventListener("click", exportarParaXLSX);
-    document.getElementById("exportarDOCX").addEventListener("click", exportarParaDOCX);
+    document.getElementById("fSerie").addEventListener("change", carregarAprofundamentos);
+    document.getElementById("btFiltrar").addEventListener("click", carregarInscricoes);
   </script>
 </body>
 </html>
