@@ -328,6 +328,37 @@
       border-left-color: #ffc107;
     }
 
+    .alert-info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border-left-color: #17a2b8;
+    }
+
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-connected {
+      background-color: #28a745;
+    }
+
+    .status-disconnected {
+      background-color: #dc3545;
+    }
+
     @media (max-width: 1024px) {
       .main-grid {
         grid-template-columns: 1fr;
@@ -371,6 +402,15 @@
       <p class="subtitle">Gestão de Inscrições • Aprofundamentos 2025.2</p>
     </div>
 
+    <!-- Status de Conexão -->
+    <div class="connection-status">
+      <span class="status-indicator" id="statusIndicator"></span>
+      <span id="statusText">Verificando conexão...</span>
+      <button id="btnTestConnection" class="btn btn-primary" style="margin-left: auto; padding: 5px 10px; font-size: 12px;">
+        <i class="fas fa-sync-alt"></i> Testar Conexão
+      </button>
+    </div>
+
     <!-- Estatísticas -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -391,10 +431,20 @@
       </div>
     </div>
 
-    <!-- Alerta de configuração -->
+    <!-- Alertas -->
     <div id="alertConfig" class="alert alert-warning" style="display: none;">
       <i class="fas fa-exclamation-triangle"></i>
       <strong>Atenção:</strong> Configure a URL do Google Apps Script no código antes de usar o sistema.
+    </div>
+
+    <div id="alertConnection" class="alert alert-danger" style="display: none;">
+      <i class="fas fa-unlink"></i>
+      <strong>Erro de conexão:</strong> Não foi possível conectar ao servidor. Verifique sua conexão de internet.
+    </div>
+
+    <div id="alertScriptError" class="alert alert-danger" style="display: none;">
+      <i class="fas fa-exclamation-circle"></i>
+      <strong>Erro no script:</strong> <span id="errorDetails"></span>
     </div>
 
     <!-- Grid Principal -->
@@ -537,6 +587,12 @@
     const btnExportPDF = document.getElementById("btnExportPDF");
     const btnExportExcel = document.getElementById("btnExportExcel");
     const alertConfig = document.getElementById("alertConfig");
+    const alertConnection = document.getElementById("alertConnection");
+    const alertScriptError = document.getElementById("alertScriptError");
+    const errorDetails = document.getElementById("errorDetails");
+    const statusIndicator = document.getElementById("statusIndicator");
+    const statusText = document.getElementById("statusText");
+    const btnTestConnection = document.getElementById("btnTestConnection");
     
     // Elementos de estatísticas
     const totalInscricoes = document.getElementById("totalInscricoes");
@@ -560,7 +616,47 @@
       return true;
     }
 
-    // Função para fazer requisições ao Google Apps Script
+    // Atualizar status da conexão
+    function atualizarStatusConexao(conectado, mensagem) {
+      if (conectado) {
+        statusIndicator.className = 'status-indicator status-connected';
+        statusText.textContent = 'Conectado ao servidor';
+        alertConnection.style.display = 'none';
+      } else {
+        statusIndicator.className = 'status-indicator status-disconnected';
+        statusText.textContent = mensagem || 'Desconectado';
+        alertConnection.style.display = 'block';
+      }
+    }
+
+    // Função para testar a conexão com o servidor
+    async function testarConexao() {
+      try {
+        statusText.textContent = 'Testando conexão...';
+        
+        const response = await fetch(URL_SCRIPT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'getAprofundamentos' })
+        });
+        
+        if (response.ok) {
+          atualizarStatusConexao(true, 'Conectado ao servidor');
+          return true;
+        } else {
+          atualizarStatusConexao(false, 'Erro no servidor: ' + response.status);
+          return false;
+        }
+      } catch (error) {
+        console.error('Erro de conexão:', error);
+        atualizarStatusConexao(false, 'Falha na conexão: ' + error.message);
+        return false;
+      }
+    }
+
+       // Função para fazer requisições ao Google Apps Script
     async function fazerRequisicao(action, dados = {}) {
       if (!verificarConfiguracao()) {
         throw new Error("URL do Google Apps Script não configurada");
@@ -578,7 +674,9 @@
         });
 
         if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
+          // Tenta obter mais informações do erro
+          const errorText = await response.text();
+          throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
         }
 
         const result = await response.json();
@@ -590,6 +688,16 @@
         return result.data;
       } catch (error) {
         console.error("Erro na requisição:", error);
+        throw new Error(`Failed to fetch: ${error.message}`);
+      }
+    }
+
+        // Se chegou aqui, a conexão está funcionando
+        atualizarStatusConexao(true);
+        return result.data;
+      } catch (error) {
+        console.error("Erro na requisição:", error);
+        atualizarStatusConexao(false, error.message);
         throw new Error(`Failed to fetch: ${error.message}`);
       }
     }
@@ -620,7 +728,7 @@
       
       if (termo) {
         inscricoesFiltradas = inscricoesData.filter(item => 
-          item.nome.toLowerCase().includes(termo)
+          item.nome && item.nome.toLowerCase().includes(termo)
         );
       } else {
         inscricoesFiltradas = [...inscricoesData];
@@ -651,9 +759,9 @@
         html += `
           <tr>
             <td>${formatarData(item.data)}</td>
-            <td>${item.nome}</td>
-            <td>${item.serie}</td>
-            <td>${item.aprofundamento}</td>
+            <td>${item.nome || 'N/A'}</td>
+            <td>${item.serie || 'N/A'}</td>
+            <td>${item.aprofundamento || 'N/A'}</td>
           </tr>
         `;
       });
@@ -731,18 +839,18 @@
 
       let html = "";
       capacidadeData.forEach(item => {
-        const percentual = Math.round((item.inscritos / item.vagas) * 100);
+        const percentual = item.vagas > 0 ? Math.round((item.inscritos / item.vagas) * 100) : 0;
         const corBarra = percentual >= 90 ? '#e74c3c' : percentual >= 70 ? '#f39c12' : '#27ae60';
         
         html += `
           <div class="capacity-card">
-            <h3>${item.aprofundamento}</h3>
+            <h3>${item.aprofundamento || 'N/A'}</h3>
             <div class="capacity-info">
-              <span><i class="fas fa-users"></i> ${item.serie}</span>
-              <span><strong>${item.inscritos}/${item.vagas}</strong></span>
+              <span><i class="fas fa-users"></i> ${item.serie || 'N/A'}</span>
+              <span><strong>${item.inscritos || 0}/${item.vagas || 0}</strong></span>
             </div>
             <div class="capacity-info">
-              <span>Status: <strong>${item.status}</strong></span>
+              <span>Status: <strong>${item.status || 'N/A'}</strong></span>
               <span><strong>${percentual}%</strong></span>
             </div>
             <div class="progress-bar">
@@ -762,12 +870,14 @@
         
         filtroAprofundamento.innerHTML = "<option value=''>Todos os aprofundamentos</option>";
         
-        dados.forEach(aprof => {
-          const option = document.createElement("option");
-          option.value = aprof;
-          option.textContent = aprof;
-          filtroAprofundamento.appendChild(option);
-        });
+        if (dados && dados.length > 0) {
+          dados.forEach(aprof => {
+            const option = document.createElement("option");
+            option.value = aprof;
+            option.textContent = aprof;
+            filtroAprofundamento.appendChild(option);
+          });
+        }
         
       } catch (error) {
         console.error("Erro ao carregar aprofundamentos:", error);
@@ -782,10 +892,12 @@
       totalAprofundamentos.textContent = aprofundamentosUnicos.size;
       
       if (capacidadeData.length > 0) {
-        const totalVagas = capacidadeData.reduce((sum, item) => sum + item.vagas, 0);
-        const totalInscritos = capacidadeData.reduce((sum, item) => sum + item.inscritos, 0);
+        const totalVagas = capacidadeData.reduce((sum, item) => sum + (item.vagas || 0), 0);
+        const totalInscritos = capacidadeData.reduce((sum, item) => sum + (item.inscritos || 0), 0);
         const percentual = totalVagas > 0 ? Math.round((totalInscritos / totalVagas) * 100) : 0;
         vagasPreenchidas.textContent = `${percentual}%`;
+      } else {
+        vagasPreenchidas.textContent = '0%';
       }
       
       ultimaAtualizacao.textContent = new Date().toLocaleTimeString('pt-BR');
@@ -793,14 +905,20 @@
 
     // Função para formatar data
     function formatarData(dataString) {
-      const data = new Date(dataString);
-      return data.toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      if (!dataString) return 'N/A';
+      
+      try {
+        const data = new Date(dataString);
+        return data.toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return dataString;
+      }
     }
 
     // Função para exportar PDF
@@ -825,9 +943,9 @@
         head: [['Data/Hora', 'Nome', 'Série', 'Aprofundamento']],
         body: inscricoesFiltradas.map(item => [
           formatarData(item.data),
-          item.nome,
-          item.serie,
-          item.aprofundamento
+          item.nome || 'N/A',
+          item.serie || 'N/A',
+          item.aprofundamento || 'N/A'
         ]),
         styles: { fontSize: 8 },
         headStyles: { fillColor: [52, 152, 219] }
@@ -845,9 +963,9 @@
 
       const dadosExport = inscricoesFiltradas.map(item => ({
         'Data/Hora': formatarData(item.data),
-        'Nome': item.nome,
-        'Série/Turma': item.serie,
-        'Aprofundamento': item.aprofundamento
+        'Nome': item.nome || 'N/A',
+        'Série/Turma': item.serie || 'N/A',
+        'Aprofundamento': item.aprofundamento || 'N/A'
       }));
       
       const worksheet = XLSX.utils.json_to_sheet(dadosExport);
@@ -858,11 +976,15 @@
 
     // Função para carregar todos os dados
     async function carregarTodosDados() {
-      await Promise.all([
-        carregarInscricoes(),
-        carregarCapacidade(),
-        carregarOpcoesAprofundamento()
-      ]);
+      try {
+        await Promise.all([
+          carregarInscricoes(),
+          carregarCapacidade(),
+          carregarOpcoesAprofundamento()
+        ]);
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      }
     }
 
     // Event Listeners
@@ -887,15 +1009,32 @@
 
     btnExportPDF.addEventListener("click", exportarPDF);
     btnExportExcel.addEventListener("click", exportarExcel);
+    
+    btnTestConnection.addEventListener("click", async () => {
+      const conectado = await testarConexao();
+      if (conectado) {
+        carregarTodosDados();
+      }
+    });
 
     // Inicialização
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       verificarConfiguracao();
-      carregarTodosDados();
+      
+      // Testar conexão primeiro
+      const conectado = await testarConexao();
+      
+      if (conectado) {
+        carregarTodosDados();
+      }
     });
 
     // Auto-refresh a cada 5 minutos
-    setInterval(carregarTodosDados, 5 * 60 * 1000);
+    setInterval(() => {
+      if (statusIndicator.classList.contains('status-connected')) {
+        carregarTodosDados();
+      }
+    }, 5 * 60 * 1000);
   </script>
 </body>
 </html>
