@@ -1,189 +1,349 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulário de Inscrição</title>
+  <title>Formulário de Inscrição - Aprofundamentos 2025.2</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
-      padding: 0;
+      padding: 20px;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
 
     .container {
       background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
     }
 
     h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 16px;
     }
 
     label {
       display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
+      margin: 20px 0 8px;
+      font-weight: 600;
+      color: #555;
+      font-size: 15px;
     }
 
-    select, input[type="text"], button {
+    select, input[type="text"] {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 2px solid #e1e5e9;
       box-sizing: border-box;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+    }
+
+    select:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background-color: white;
+    }
+
+    select:hover, input[type="text"]:hover {
+      border-color: #c1c7cd;
     }
 
     button {
-      background-color: #4CAF50;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 10px;
     }
 
     button:hover {
-      background-color: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .message {
       margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
       font-size: 14px;
-      color: green;
       text-align: center;
+      font-weight: 500;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
     }
 
     .error {
-      color: red;
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 30px 20px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h2>Formulário de Inscrição</h2>
+    <h2><i class="fas fa-graduation-cap"></i> Inscrição em Aprofundamentos</h2>
+    <p class="subtitle">Período 2025.2 • Selecione seu aprofundamento preferido</p>
+    
     <form id="inscricaoForm">
-      <label for="nome">Nome Completo</label>
-      <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+      <div class="form-group">
+        <label for="nome"><i class="fas fa-user"></i> Nome Completo</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+      </div>
 
-      <label for="serie">Série/Turma</label>
-      <select id="serie" name="serie" required>
-        <option value="">Selecione sua Série/Turma</option>
-        <option value="1° A">1° A</option>
-        <option value="1° B">1° B</option>
-        <option value="1° C">1° C</option>
-        <option value="1° D">1° D</option>
-        <option value="1° E">1° E</option>
-        <option value="2° A">2° A</option>
-        <option value="2° B">2° B</option>
-        <option value="2° C">2° C</option>
-        <option value="3° A">3° A</option>
-        <option value="3° B">3° B</option>
-      </select>
+      <div class="form-group">
+        <label for="serie"><i class="fas fa-school"></i> Série/Turma</label>
+        <select id="serie" name="serie" required>
+          <option value="">Selecione sua Série/Turma</option>
+          <option value="1° A">1° A</option>
+          <option value="1° B">1° B</option>
+          <option value="1° C">1° C</option>
+          <option value="1° D">1° D</option>
+          <option value="1° E">1° E</option>
+          <option value="2° A">2° A</option>
+          <option value="2° B">2° B</option>
+          <option value="2° C">2° C</option>
+          <option value="3° A">3° A</option>
+          <option value="3° B">3° B</option>
+        </select>
+      </div>
 
-      <label for="aproveitamento">Aprofundamento</label>
-      <select id="aproveitamento" name="aproveitamento" required>
-        <option value="">Selecione o Aprofundamento</option>
-        <!-- As opções de aprofundamento serão preenchidas dinamicamente -->
-      </select>
+      <div class="form-group">
+        <label for="aprofundamento"><i class="fas fa-book"></i> Aprofundamento</label>
+        <select id="aprofundamento" name="aprofundamento" required>
+          <option value="">Primeiro selecione sua série</option>
+        </select>
+      </div>
 
-      <button type="submit">Enviar Inscrição</button>
-      <div id="message" class="message"></div>
+      <button type="submit" id="btnSubmit">
+        <i class="fas fa-paper-plane"></i> Enviar Inscrição
+      </button>
+      
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Processando sua inscrição...</p>
+      </div>
+      
+      <div id="message" class="message" style="display: none;"></div>
     </form>
   </div>
 
   <script>
+    // IMPORTANTE: Substitua esta URL pela URL do seu Google Apps Script
+    const URL_SCRIPT = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI";
+    
     const serieSelect = document.getElementById("serie");
-    const aproveitamentoSelect = document.getElementById("aproveitamento");
+    const aprofundamentoSelect = document.getElementById("aprofundamento");
     const form = document.getElementById("inscricaoForm");
     const messageDiv = document.getElementById("message");
+    const loadingDiv = document.getElementById("loading");
+    const btnSubmit = document.getElementById("btnSubmit");
+
+    // Mapeamento de aprofundamentos por série
+    const aprofundamentosPorSerie = {
+      "1° A": [
+        "Cinearte", 
+        "Cultura e Diversidade na Paraíba", 
+        "GameLab", 
+        "Muros Invisíveis: liberdade e desafios nas ruas", 
+        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
+      ],
+      "1° B": [
+        "Cinearte", 
+        "Cultura e Diversidade na Paraíba", 
+        "GameLab", 
+        "Muros Invisíveis: liberdade e desafios nas ruas", 
+        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
+      ],
+      "1° C": [
+        "Cinearte", 
+        "Cultura e Diversidade na Paraíba", 
+        "GameLab", 
+        "Muros Invisíveis: liberdade e desafios nas ruas", 
+        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
+      ],
+      "1° D": [
+        "Cinearte", 
+        "Cultura e Diversidade na Paraíba", 
+        "GameLab", 
+        "Muros Invisíveis: liberdade e desafios nas ruas", 
+        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
+      ],
+      "1° E": [
+        "Cinearte", 
+        "Cultura e Diversidade na Paraíba", 
+        "GameLab", 
+        "Muros Invisíveis: liberdade e desafios nas ruas", 
+        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
+      ],
+      "2° A": [
+        "Educação ambiental: Justiça socioambiental e cidadania", 
+        "Impactos Ambientais de um Telefone Celular", 
+        "Mundo do trabalho"
+      ],
+      "2° B": [
+        "Educação ambiental: Justiça socioambiental e cidadania", 
+        "Impactos Ambientais de um Telefone Celular", 
+        "Mundo do trabalho"
+      ],
+      "2° C": [
+        "Educação ambiental: Justiça socioambiental e cidadania", 
+        "Impactos Ambientais de um Telefone Celular", 
+        "Mundo do trabalho"
+      ],
+      "3° A": [
+        "Construindo Oportunidades: os desafios do amanhã", 
+        "Solos: conhecer e entender para conservar e restaurar"
+      ],
+      "3° B": [
+        "Construindo Oportunidades: os desafios do amanhã", 
+        "Solos: conhecer e entender para conservar e restaurar"
+      ]
+    };
 
     // Função para carregar os aprofundamentos de acordo com a série selecionada
     const carregarAprofundamentos = () => {
       const serie = serieSelect.value;
-      const aprofundamentos = {
-        "1° A": [
-          "Cinearte", 
-          "Cultura e Diversidade na Paraíba", 
-          "GameLab", 
-          "Muros Invisíveis: liberdade e desafios nas ruas", 
-          "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-        ],
-        "1° B": [
-          "Cinearte", 
-          "Cultura e Diversidade na Paraíba", 
-          "GameLab", 
-          "Muros Invisíveis: liberdade e desafios nas ruas", 
-          "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-        ],
-        "1° C": [
-          "Cinearte", 
-          "Cultura e Diversidade na Paraíba", 
-          "GameLab", 
-          "Muros Invisíveis: liberdade e desafios nas ruas", 
-          "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-        ],
-        "1° D": [
-          "Cinearte", 
-          "Cultura e Diversidade na Paraíba", 
-          "GameLab", 
-          "Muros Invisíveis: liberdade e desafios nas ruas", 
-          "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-        ],
-        "1° E": [
-          "Cinearte", 
-          "Cultura e Diversidade na Paraíba", 
-          "GameLab", 
-          "Muros Invisíveis: liberdade e desafios nas ruas", 
-          "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-        ],
-        "2° A": [
-          "Educação ambiental: Justiça socioambiental e cidadania", 
-          "Impactos Ambientais de um Telefone Celular", 
-          "Mundo do trabalho"
-        ],
-        "2° B": [
-          "Educação ambiental: Justiça socioambiental e cidadania", 
-          "Impactos Ambientais de um Telefone Celular", 
-          "Mundo do trabalho"
-        ],
-        "2° C": [
-          "Educação ambiental: Justiça socioambiental e cidadania", 
-          "Impactos Ambientais de um Telefone Celular", 
-          "Mundo do trabalho"
-        ],
-        "3° A": [
-          "Construindo Oportunidades: os desafios do amanhã", 
-          "Solos: conhecer e entender para conservar e restaurar"
-        ],
-        "3° B": [
-          "Construindo Oportunidades: os desafios do amanhã", 
-          "Solos: conhecer e entender para conservar e restaurar"
-        ]
-      };
-
+      
       // Limpar opções anteriores
-      aproveitamentoSelect.innerHTML = "<option value=''>Selecione o Aprofundamento</option>";
+      aprofundamentoSelect.innerHTML = "<option value=''>Selecione o Aprofundamento</option>";
       
       // Carregar novas opções com base na série selecionada
-      if (serie in aprofundamentos) {
-        aprofundamentos[serie].forEach((item) => {
+      if (serie && aprofundamentosPorSerie[serie]) {
+        aprofundamentosPorSerie[serie].forEach((item) => {
           const option = document.createElement("option");
           option.value = item;
           option.textContent = item;
-          aproveitamentoSelect.appendChild(option);
+          aprofundamentoSelect.appendChild(option);
         });
+      } else {
+        aprofundamentoSelect.innerHTML = "<option value=''>Primeiro selecione sua série</option>";
+      }
+    };
+
+    // Função para mostrar mensagem
+    const mostrarMensagem = (texto, tipo) => {
+      messageDiv.textContent = texto;
+      messageDiv.className = `message ${tipo}`;
+      messageDiv.style.display = 'block';
+      
+      // Auto-hide success messages after 5 seconds
+      if (tipo === 'success') {
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 5000);
+      }
+    };
+
+    // Função para mostrar/esconder loading
+    const mostrarLoading = (mostrar) => {
+      loadingDiv.style.display = mostrar ? 'block' : 'none';
+      btnSubmit.disabled = mostrar;
+      
+      if (mostrar) {
+        messageDiv.style.display = 'none';
       }
     };
 
@@ -191,50 +351,72 @@
     const enviarFormulario = async (event) => {
       event.preventDefault();
 
-      const nome = document.getElementById("nome").value;
+      const nome = document.getElementById("nome").value.trim();
       const serie = serieSelect.value;
-      const aprofundamento = aproveitamentoSelect.value;
+      const aprofundamento = aprofundamentoSelect.value;
 
-      if (!nome || !serie || !aproveitamento) {
-        messageDiv.textContent = "Todos os campos são obrigatórios.";
-        messageDiv.className = "error";
+      // Validações
+      if (!nome || !serie || !aprofundamento) {
+        mostrarMensagem("Todos os campos são obrigatórios.", "error");
         return;
       }
 
-      const url = "https://script.google.com/macros/s/AKfycbwOC6d4_FL2ZH3l5wUu6r2t2eaTsI8DN99ue0_7Nk3xCcSNvcvdpNMW40AP1Fq9Cxpe/exec";
-      const params = {
-        method: "POST",
-        body: new URLSearchParams({
-          nome: nome,
-          serie: serie,
-          aprofundamento: aprofundamento
-        }),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      };
+      if (nome.length < 3) {
+        mostrarMensagem("O nome deve ter pelo menos 3 caracteres.", "error");
+        return;
+      }
+
+      // Verificar se a URL do script foi configurada
+      if (URL_SCRIPT === "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI") {
+        mostrarMensagem("Erro: URL do Google Apps Script não configurada. Entre em contato com o administrador.", "error");
+        return;
+      }
+
+      mostrarLoading(true);
 
       try {
-        const response = await fetch(url, params);
+        const response = await fetch(URL_SCRIPT, {
+          method: "POST",
+          body: new URLSearchParams({
+            nome: nome,
+            serie: serie,
+            aprofundamento: aprofundamento
+          }),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
         const result = await response.json();
         
         if (result.success) {
-          messageDiv.textContent = "Inscrição realizada com sucesso!";
-          messageDiv.className = "message";
+          mostrarMensagem("✅ Inscrição realizada com sucesso! Você receberá mais informações em breve.", "success");
           form.reset();
+          carregarAprofundamentos(); // Reset aprofundamento options
         } else {
-          messageDiv.textContent = "Erro ao enviar inscrição. Tente novamente.";
-          messageDiv.className = "error";
+          mostrarMensagem(`❌ ${result.error || "Erro ao processar inscrição. Tente novamente."}`, "error");
         }
       } catch (error) {
-        messageDiv.textContent = "Erro ao enviar inscrição. Tente novamente.";
-        messageDiv.className = "error";
+        console.error("Erro:", error);
+        mostrarMensagem("❌ Erro de conexão. Verifique sua internet e tente novamente.", "error");
+      } finally {
+        mostrarLoading(false);
       }
     };
 
-    // Inicializar o formulário e carregar os aprofundamentos de acordo com a série selecionada
+    // Event Listeners
     serieSelect.addEventListener("change", carregarAprofundamentos);
     form.addEventListener("submit", enviarFormulario);
+
+    // Inicialização
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarAprofundamentos();
+    });
   </script>
 </body>
 </html>
+
