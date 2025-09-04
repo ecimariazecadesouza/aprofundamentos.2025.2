@@ -359,6 +359,10 @@
       background-color: #dc3545;
     }
 
+    .status-checking {
+      background-color: #ffc107;
+    }
+
     @media (max-width: 1024px) {
       .main-grid {
         grid-template-columns: 1fr;
@@ -404,7 +408,7 @@
 
     <!-- Status de Conexão -->
     <div class="connection-status">
-      <span class="status-indicator" id="statusIndicator"></span>
+      <span class="status-indicator status-checking" id="statusIndicator"></span>
       <span id="statusText">Verificando conexão...</span>
       <button id="btnTestConnection" class="btn btn-primary" style="margin-left: auto; padding: 5px 10px; font-size: 12px;">
         <i class="fas fa-sync-alt"></i> Testar Conexão
@@ -608,7 +612,7 @@
 
     // Verificar se a URL foi configurada
     function verificarConfiguracao() {
-      if (URL_SCRIPT === "https://script.google.com/macros/s/SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI/exec") {
+      if (URL_SCRIPT.includes("SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI")) {
         alertConfig.style.display = 'block';
         return false;
       }
@@ -622,6 +626,7 @@
         statusIndicator.className = 'status-indicator status-connected';
         statusText.textContent = 'Conectado ao servidor';
         alertConnection.style.display = 'none';
+        alertScriptError.style.display = 'none';
       } else {
         statusIndicator.className = 'status-indicator status-disconnected';
         statusText.textContent = mensagem || 'Desconectado';
@@ -632,31 +637,51 @@
     // Função para testar a conexão com o servidor
     async function testarConexao() {
       try {
+        statusIndicator.className = 'status-indicator status-checking';
         statusText.textContent = 'Testando conexão...';
+        
+        // Timeout para evitar que a requisição fique travada
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
         
         const response = await fetch(URL_SCRIPT, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ action: 'getAprofundamentos' })
+          body: JSON.stringify({ action: 'getAprofundamentos' }),
+          signal: controller.signal
         });
         
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
-          atualizarStatusConexao(true, 'Conectado ao servidor');
-          return true;
+          const result = await response.json();
+          if (result && result.success) {
+            atualizarStatusConexao(true, 'Conectado ao servidor');
+            return true;
+          } else {
+            throw new Error(result.error || 'Erro no servidor');
+          }
         } else {
-          atualizarStatusConexao(false, 'Erro no servidor: ' + response.status);
-          return false;
+          throw new Error(`Erro HTTP: ${response.status}`);
         }
       } catch (error) {
         console.error('Erro de conexão:', error);
-        atualizarStatusConexao(false, 'Falha na conexão: ' + error.message);
+        let errorMsg = 'Falha na conexão: ';
+        
+        if (error.name === 'AbortError') {
+          errorMsg += 'Tempo limite excedido';
+        } else {
+          errorMsg += error.message;
+        }
+        
+        atualizarStatusConexao(false, errorMsg);
         return false;
       }
     }
 
-       // Função para fazer requisições ao Google Apps Script
+    // Função para fazer requisições ao Google Apps Script
     async function fazerRequisicao(action, dados = {}) {
       if (!verificarConfiguracao()) {
         throw new Error("URL do Google Apps Script não configurada");
@@ -665,18 +690,22 @@
       const payload = { action, ...dados };
       
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
         const response = await fetch(URL_SCRIPT, {
           method: "POST",
           body: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json"
-          }
+          },
+          signal: controller.signal
         });
 
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-          // Tenta obter mais informações do erro
-          const errorText = await response.text();
-          throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
+          throw new Error(`Erro HTTP: ${response.status}`);
         }
 
         const result = await response.json();
@@ -685,20 +714,21 @@
           throw new Error(result.error || "Erro desconhecido");
         }
 
-        return result.data;
-      } catch (error) {
-        console.error("Erro na requisição:", error);
-        throw new Error(`Failed to fetch: ${error.message}`);
-      }
-    }
-
         // Se chegou aqui, a conexão está funcionando
         atualizarStatusConexao(true);
         return result.data;
       } catch (error) {
         console.error("Erro na requisição:", error);
-        atualizarStatusConexao(false, error.message);
-        throw new Error(`Failed to fetch: ${error.message}`);
+        
+        let errorMsg = 'Erro de conexão: ';
+        if (error.name === 'AbortError') {
+          errorMsg += 'Tempo limite excedido';
+        } else {
+          errorMsg += error.message;
+        }
+        
+        atualizarStatusConexao(false, errorMsg);
+        throw new Error(errorMsg);
       }
     }
 
@@ -868,7 +898,10 @@
       try {
         const dados = await fazerRequisicao('getAprofundamentos');
         
-        filtroAprofundamento.innerHTML = "<option value=''>Todos os aprofundamentos</option>";
+        // Limpar options existentes, mantendo apenas o primeiro
+        while (filtroAprofundamento.options.length > 1) {
+          filtroAprofundamento.remove(1);
+        }
         
         if (dados && dados.length > 0) {
           dados.forEach(aprof => {
@@ -877,10 +910,13 @@
             option.textContent = aprof;
             filtroAprofundamento.appendChild(option);
           });
+        } else {
+          console.warn("Nenhum aprofundamento retornado pelo servidor.");
         }
         
       } catch (error) {
         console.error("Erro ao carregar aprofundamentos:", error);
+        // Não mostrar alerta aqui para não interferir com outros carregamentos
       }
     }
 
@@ -977,11 +1013,19 @@
     // Função para carregar todos os dados
     async function carregarTodosDados() {
       try {
-        await Promise.all([
+        // Usar Promise.allSettled para que um erro não impeça os outros de carregar
+        const results = await Promise.allSettled([
           carregarInscricoes(),
           carregarCapacidade(),
           carregarOpcoesAprofundamento()
         ]);
+        
+        // Verificar se algum falhou
+        results.forEach((result, index) => {
+          if (result.status === 'rejected') {
+            console.error(`Erro ao carregar dados ${index}:`, result.reason);
+          }
+        });
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
       }
@@ -1024,6 +1068,7 @@
       // Testar conexão primeiro
       const conectado = await testarConexao();
       
+      // Independente da conexão, tente carregar os dados (pode falhar, mas tenta)
       if (conectado) {
         carregarTodosDados();
       }
