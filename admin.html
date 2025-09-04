@@ -579,506 +579,76 @@
     // URL do Google Apps Script - CORRIGIDA
     const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzXHprKQvcenAfUQACWCPOXTzUhGg5Tb_Q5aOpdWKcVrNvxchWGtuZR3jM15brapExv/exec";
     
-    // Elementos da interface
-    const filtroAprofundamento = document.getElementById("filtroAprofundamento");
-    const filtroSerie = document.getElementById("filtroSerie");
-    const filtroNome = document.getElementById("filtroNome");
-    const btnFiltrar = document.getElementById("btnFiltrar");
-    const btnLimpar = document.getElementById("btnLimpar");
-    const btnAtualizar = document.getElementById("btnAtualizar");
-    const tabelaInscricoes = document.getElementById("tabelaInscricoes");
-    const capacidadeContainer = document.getElementById("capacidadeContainer");
-    const btnExportPDF = document.getElementById("btnExportPDF");
-    const btnExportExcel = document.getElementById("btnExportExcel");
-    const alertConfig = document.getElementById("alertConfig");
-    const alertConnection = document.getElementById("alertConnection");
-    const alertScriptError = document.getElementById("alertScriptError");
-    const errorDetails = document.getElementById("errorDetails");
-    const statusIndicator = document.getElementById("statusIndicator");
-    const statusText = document.getElementById("statusText");
-    const btnTestConnection = document.getElementById("btnTestConnection");
-    
-    // Elementos de estatísticas
-    const totalInscricoes = document.getElementById("totalInscricoes");
-    const totalAprofundamentos = document.getElementById("totalAprofundamentos");
-    const vagasPreenchidas = document.getElementById("vagasPreenchidas");
-    const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
-    const contadorInscricoes = document.getElementById("contadorInscricoes");
-
-    // Dados em cache
-    let inscricoesData = [];
-    let capacidadeData = [];
-    let inscricoesFiltradas = [];
-
-    // Verificar se a URL foi configurada
-    function verificarConfiguracao() {
-      if (URL_SCRIPT.includes("SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI")) {
-        alertConfig.style.display = 'block';
-        return false;
-      }
-      alertConfig.style.display = 'none';
-      return true;
-    }
-
-    // Atualizar status da conexão
-    function atualizarStatusConexao(conectado, mensagem) {
-      if (conectado) {
-        statusIndicator.className = 'status-indicator status-connected';
-        statusText.textContent = 'Conectado ao servidor';
-        alertConnection.style.display = 'none';
-        alertScriptError.style.display = 'none';
-      } else {
-        statusIndicator.className = 'status-indicator status-disconnected';
-        statusText.textContent = mensagem || 'Desconectado';
-        alertConnection.style.display = 'block';
-      }
-    }
-
-    // Função para testar a conexão com o servidor
+    // Função para testar a conexão
     async function testarConexao() {
       try {
-        statusIndicator.className = 'status-indicator status-checking';
-        statusText.textContent = 'Testando conexão...';
-        
-        // Timeout para evitar que a requisição fique travada
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
         const response = await fetch(URL_SCRIPT, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ action: 'getAprofundamentos' }),
-          signal: controller.signal
+          body: JSON.stringify({ action: 'getAprofundamentos' })
         });
-        
-        clearTimeout(timeoutId);
-        
+
         if (response.ok) {
-          const result = await response.json();
-          if (result && result.success) {
-            atualizarStatusConexao(true, 'Conectado ao servidor');
-            return true;
-          } else {
-            throw new Error(result.error || 'Erro no servidor');
+          const data = await response.json();
+          if (data && data.success) {
+            console.log('Conexão bem-sucedida!');
           }
         } else {
-          throw new Error(`Erro HTTP: ${response.status}`);
+          console.log('Falha na conexão:', response.status);
         }
-      } catch (error) {
-        console.error('Erro de conexão:', error);
-        let errorMsg = 'Falha na conexão: ';
-        
-        if (error.name === 'AbortError') {
-          errorMsg += 'Tempo limite excedido';
-        } else {
-          errorMsg += error.message;
-        }
-        
-        atualizarStatusConexao(false, errorMsg);
-        return false;
+      } catch (err) {
+        console.log('Erro ao testar a conexão:', err);
       }
     }
-
-    // Função para fazer requisições ao Google Apps Script
-    async function fazerRequisicao(action, dados = {}) {
-      if (!verificarConfiguracao()) {
-        throw new Error("URL do Google Apps Script não configurada");
-      }
-
-      const payload = { action, ...dados };
-      
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
-        const response = await fetch(URL_SCRIPT, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: {
-            "Content-Type": "application/json"
-          },
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
-        }
-
-        const result = await response.json();
-        
-        if (!result.success) {
-          throw new Error(result.error || "Erro desconhecido");
-        }
-
-        // Se chegou aqui, a conexão está funcionando
-        atualizarStatusConexao(true);
-        return result.data;
-      } catch (error) {
-        console.error("Erro na requisição:", error);
-        
-        let errorMsg = 'Erro de conexão: ';
-        if (error.name === 'AbortError') {
-          errorMsg += 'Tempo limite excedido';
-        } else {
-          errorMsg += error.message;
-        }
-        
-        atualizarStatusConexao(false, errorMsg);
-        throw new Error(errorMsg);
-      }
-    }
-
-    // Função para carregar inscrições
+    
+    // Função para carregar os dados de inscrições
     async function carregarInscricoes() {
       try {
-        mostrarLoadingTabela(true);
-        
-        const dados = await fazerRequisicao('getInscricoes', {
-          filtroAprofundamento: filtroAprofundamento.value,
-          filtroSerie: filtroSerie.value
+        const response = await fetch(URL_SCRIPT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'getInscricoes' })
         });
         
-        inscricoesData = dados || [];
-        aplicarFiltroNome();
-        atualizarEstatisticas();
-        
+        const result = await response.json();
+        if (result && result.success) {
+          console.log('Inscrições carregadas:', result.data);
+        }
       } catch (error) {
-        console.error("Erro ao carregar inscrições:", error);
-        mostrarErroTabela(error.message);
+        console.log('Erro ao carregar inscrições:', error);
       }
-    }
-
-    // Função para aplicar filtro de nome
-    function aplicarFiltroNome() {
-      const termo = filtroNome.value.toLowerCase().trim();
-      
-      if (termo) {
-        inscricoesFiltradas = inscricoesData.filter(item => 
-          item.nome && item.nome.toLowerCase().includes(termo)
-        );
-      } else {
-        inscricoesFiltradas = [...inscricoesData];
-      }
-      
-      preencherTabelaInscricoes();
-    }
-
-    // Função para preencher a tabela de inscrições
-    function preencherTabelaInscricoes() {
-      if (inscricoesFiltradas.length === 0) {
-        tabelaInscricoes.innerHTML = `
-          <tr>
-            <td colspan="4">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhuma inscrição encontrada</p>
-              </div>
-            </td>
-          </tr>
-        `;
-        contadorInscricoes.textContent = "";
-        return;
-      }
-
-      let html = "";
-      inscricoesFiltradas.forEach(item => {
-        html += `
-          <tr>
-            <td>${formatarData(item.data)}</td>
-            <td>${item.nome || 'N/A'}</td>
-            <td>${item.serie || 'N/A'}</td>
-            <td>${item.aprofundamento || 'N/A'}</td>
-          </tr>
-        `;
-      });
-
-      tabelaInscricoes.innerHTML = html;
-      contadorInscricoes.textContent = `(${inscricoesFiltradas.length} registros)`;
-    }
-
-    // Função para mostrar loading na tabela
-    function mostrarLoadingTabela(mostrar) {
-      if (mostrar) {
-        tabelaInscricoes.innerHTML = `
-          <tr>
-            <td colspan="4">
-              <div class="loading">
-                <div class="spinner"></div>
-                <p>Carregando dados...</p>
-              </div>
-            </td>
-          </tr>
-        `;
-      }
-    }
-
-    // Função para mostrar erro na tabela
-    function mostrarErroTabela(mensagem) {
-      tabelaInscricoes.innerHTML = `
-        <tr>
-          <td colspan="4">
-            <div class="empty-state">
-              <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-              <p>Erro: ${mensagem}</p>
-            </div>
-          </td>
-        </tr>
-      `;
     }
 
     // Função para carregar capacidade
     async function carregarCapacidade() {
       try {
-        capacidadeContainer.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <p>Carregando capacidades...</p>
-          </div>
-        `;
-        
-        const dados = await fazerRequisicao('getCapacidade');
-        capacidadeData = dados || [];
-        preencherCapacidade();
-        
-      } catch (error) {
-        console.error("Erro ao carregar capacidade:", error);
-        capacidadeContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-            <p>Erro ao carregar capacidades: ${error.message}</p>
-          </div>
-        `;
-      }
-    }
-
-    // Função para preencher capacidade
-    function preencherCapacidade() {
-      if (capacidadeData.length === 0) {
-        capacidadeContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-inbox"></i>
-            <p>Nenhum dado de capacidade disponível</p>
-          </div>
-        `;
-        return;
-      }
-
-      let html = "";
-      capacidadeData.forEach(item => {
-        const percentual = item.vagas > 0 ? Math.round((item.inscritos / item.vagas) * 100) : 0;
-        const corBarra = percentual >= 90 ? '#e74c3c' : percentual >= 70 ? '#f39c12' : '#27ae60';
-        
-        html += `
-          <div class="capacity-card">
-            <h3>${item.aprofundamento || 'N/A'}</h3>
-            <div class="capacity-info">
-              <span><i class="fas fa-users"></i> ${item.serie || 'N/A'}</span>
-              <span><strong>${item.inscritos || 0}/${item.vagas || 0}</strong></span>
-            </div>
-            <div class="capacity-info">
-              <span>Status: <strong>${item.status || 'N/A'}</strong></span>
-              <span><strong>${percentual}%</strong></span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${percentual}%; background-color: ${corBarra};"></div>
-            </div>
-          </div>
-        `;
-      });
-
-      capacidadeContainer.innerHTML = html;
-    }
-
-    // Função para carregar opções de aprofundamento
-    async function carregarOpcoesAprofundamento() {
-      try {
-        const dados = await fazerRequisicao('getAprofundamentos');
-        
-        // Limpar options existentes, mantendo apenas o primeiro
-        while (filtroAprofundamento.options.length > 1) {
-          filtroAprofundamento.remove(1);
-        }
-        
-        if (dados && dados.length > 0) {
-          dados.forEach(aprof => {
-            const option = document.createElement("option");
-            option.value = aprof;
-            option.textContent = aprof;
-            filtroAprofundamento.appendChild(option);
-          });
-        } else {
-          console.warn("Nenhum aprofundamento retornado pelo servidor.");
-        }
-        
-      } catch (error) {
-        console.error("Erro ao carregar aprofundamentos:", error);
-      }
-    }
-
-    // Função para atualizar estatísticas
-    function atualizarEstatisticas() {
-      totalInscricoes.textContent = inscricoesData.length;
-      
-      const aprofundamentosUnicos = new Set(inscricoesData.map(item => item.aprofundamento));
-      totalAprofundamentos.textContent = aprofundamentosUnicos.size;
-      
-      if (capacidadeData.length > 0) {
-        const totalVagas = capacidadeData.reduce((sum, item) => sum + (item.vagas || 0), 0);
-        const totalInscritos = capacidadeData.reduce((sum, item) => sum + (item.inscritos || 0), 0);
-        const percentual = totalVagas > 0 ? Math.round((totalInscritos / totalVagas) * 100) : 0;
-        vagasPreenchidas.textContent = `${percentual}%`;
-      } else {
-        vagasPreenchidas.textContent = '0%';
-      }
-      
-      ultimaAtualizacao.textContent = new Date().toLocaleTimeString('pt-BR');
-    }
-
-    // Função para formatar data
-    function formatarData(dataString) {
-      if (!dataString) return 'N/A';
-      
-      try {
-        const data = new Date(dataString);
-        return data.toLocaleString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+        const response = await fetch(URL_SCRIPT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'getCapacidade' })
         });
-      } catch (e) {
-        return dataString;
-      }
-    }
 
-    // Função para exportar PDF
-    function exportarPDF() {
-      if (inscricoesFiltradas.length === 0) {
-        alert("Não há dados para exportar");
-        return;
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      
-      doc.setFontSize(16);
-      doc.text("Relatório de Inscrições - Aprofundamentos 2025.2", 14, 15);
-      
-      doc.setFontSize(10);
-      doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 25);
-      doc.text(`Total de registros: ${inscricoesFiltradas.length}`, 14, 30);
-      
-      doc.autoTable({
-        startY: 35,
-        head: [['Data/Hora', 'Nome', 'Série', 'Aprofundamento']],
-        body: inscricoesFiltradas.map(item => [
-          formatarData(item.data),
-          item.nome || 'N/A',
-          item.serie || 'N/A',
-          item.aprofundamento || 'N/A'
-        ]),
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [52, 152, 219] }
-      });
-      
-      doc.save('inscricoes_aprofundamentos.pdf');
-    }
-
-    // Função para exportar Excel
-    function exportarExcel() {
-      if (inscricoesFiltradas.length === 0) {
-        alert("Não há dados para exportar");
-        return;
-      }
-
-      const dadosExport = inscricoesFiltradas.map(item => ({
-        'Data/Hora': formatarData(item.data),
-        'Nome': item.nome || 'N/A',
-        'Série/Turma': item.serie || 'N/A',
-        'Aprofundamento': item.aprofundamento || 'N/A'
-      }));
-      
-      const worksheet = XLSX.utils.json_to_sheet(dadosExport);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Inscrições");
-      XLSX.writeFile(workbook, "inscricoes_aprofundamentos.xlsx");
-    }
-
-    // Função para carregar todos os dados
-    async function carregarTodosDados() {
-      try {
-        // Usar Promise.allSettled para que um erro não impeça os outros de carregar
-        const results = await Promise.allSettled([
-          carregarInscricoes(),
-          carregarCapacidade(),
-          carregarOpcoesAprofundamento()
-        ]);
-        
-        // Verificar se algum falhou
-        results.forEach((result, index) => {
-          if (result.status === 'rejected') {
-            console.error(`Erro ao carregar dados ${index}:`, result.reason);
-          }
-        });
+        const result = await response.json();
+        if (result && result.success) {
+          console.log('Capacidade carregada:', result.data);
+        }
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
+        console.log('Erro ao carregar capacidade:', error);
       }
     }
 
-    // Event Listeners
-    btnFiltrar.addEventListener("click", carregarInscricoes);
-    
-    btnLimpar.addEventListener("click", () => {
-      filtroAprofundamento.value = "";
-      filtroSerie.value = "";
-      filtroNome.value = "";
-      carregarInscricoes();
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', async () => {
+      await testarConexao();
+      await carregarInscricoes();
+      await carregarCapacidade();
     });
-
-    btnAtualizar.addEventListener("click", carregarTodosDados);
-
-    filtroNome.addEventListener("input", aplicarFiltroNome);
-    
-    filtroNome.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        carregarInscricoes();
-      }
-    });
-
-    btnExportPDF.addEventListener("click", exportarPDF);
-    btnExportExcel.addEventListener("click", exportarExcel);
-    
-    btnTestConnection.addEventListener("click", async () => {
-      const conectado = await testarConexao();
-      if (conectado) {
-        carregarTodosDados();
-      }
-    });
-
-    // Inicialização
-    document.addEventListener("DOMContentLoaded", async () => {
-      verificarConfiguracao();
-      
-      // Testar conexão primeiro
-      const conectado = await testarConexao();
-      
-      // Independente da conexão, tente carregar os dados (pode falhar, mas tenta)
-      if (conectado) {
-        carregarTodosDados();
-      }
-    });
-
-    // Auto-refresh a cada 5 minutos
-    setInterval(() => {
-      if (statusIndicator.classList.contains('status-connected')) {
-        carregarTodosDados();
-      }
-    }, 5 * 60 * 1000);
   </script>
 </body>
 </html>
