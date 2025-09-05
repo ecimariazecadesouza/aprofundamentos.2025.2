@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
-      font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100% );
       margin: 0;
       padding: 20px;
@@ -29,7 +29,7 @@
     }
 
     .container::before {
-      content: \'\';
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
@@ -231,7 +231,7 @@
   </div>
 
   <script>
-    // IMPORTANTE: Substitua esta URL pela URL do seu Google Apps Script
+    // IMPORTANTE: URL do seu Google Apps Script
     const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby8twasW4a8QbjEBLcPMQrmkuILg-Eu6FbJ2iapq8JFmh6ZxMmtE5ZJDCsvB1vos9u2/exec";
     
     const serieSelect = document.getElementById("serie" );
@@ -241,80 +241,29 @@
     const loadingDiv = document.getElementById("loading");
     const btnSubmit = document.getElementById("btnSubmit");
 
-    // Mapeamento de aprofundamentos por série (ainda necessário para mapear aprofundamentos para séries)
+    // Mapeamento local de aprofundamentos por série
     const aprofundamentosPorSerieLocal = {
-      "1° A": [
-        "Cinearte", 
-        "Cultura e Diversidade na Paraíba", 
-        "GameLab", 
-        "Muros Invisíveis: liberdade e desafios nas ruas", 
-        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-      ],
-      "1° B": [
-        "Cinearte", 
-        "Cultura e Diversidade na Paraíba", 
-        "GameLab", 
-        "Muros Invisíveis: liberdade e desafios nas ruas", 
-        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-      ],
-      "1° C": [
-        "Cinearte", 
-        "Cultura e Diversidade na Paraíba", 
-        "GameLab", 
-        "Muros Invisíveis: liberdade e desafios nas ruas", 
-        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-      ],
-      "1° D": [
-        "Cinearte", 
-        "Cultura e Diversidade na Paraíba", 
-        "GameLab", 
-        "Muros Invisíveis: liberdade e desafios nas ruas", 
-        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-      ],
-      "1° E": [
-        "Cinearte", 
-        "Cultura e Diversidade na Paraíba", 
-        "GameLab", 
-        "Muros Invisíveis: liberdade e desafios nas ruas", 
-        "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"
-      ],
-      "2° A": [
-        "Educação ambiental: Justiça socioambiental e cidadania", 
-        "Impactos Ambientais de um Telefone Celular", 
-        "Mundo do trabalho"
-      ],
-      "2° B": [
-        "Educação ambiental: Justiça socioambiental e cidadania", 
-        "Impactos Ambientais de um Telefone Celular", 
-        "Mundo do trabalho"
-      ],
-      "2° C": [
-        "Educação ambiental: Justiça socioambiental e cidadania", 
-        "Impactos Ambientais de um Telefone Celular", 
-        "Mundo do trabalho"
-      ],
-      "3° A": [
-        "Construindo Oportunidades: os desafios do amanhã", 
-        "Solos: conhecer e entender para conservar e restaurar"
-      ],
-      "3° B": [
-        "Construindo Oportunidades: os desafios do amanhã", 
-        "Solos: conhecer e entender para conservar e restaurar"
-      ]
+      "1° A": ["Cinearte", "Cultura e Diversidade na Paraíba", "GameLab", "Muros Invisíveis: liberdade e desafios nas ruas", "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° B": ["Cinearte", "Cultura e Diversidade na Paraíba", "GameLab", "Muros Invisíveis: liberdade e desafios nas ruas", "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° C": ["Cinearte", "Cultura e Diversidade na Paraíba", "GameLab", "Muros Invisíveis: liberdade e desafios nas ruas", "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° D": ["Cinearte", "Cultura e Diversidade na Paraíba", "GameLab", "Muros Invisíveis: liberdade e desafios nas ruas", "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "1° E": ["Cinearte", "Cultura e Diversidade na Paraíba", "GameLab", "Muros Invisíveis: liberdade e desafios nas ruas", "Projeto Realidades Aumentadas: Meu Mundo em Camadas Digitais"],
+      "2° A": ["Educação ambiental: Justiça socioambiental e cidadania", "Impactos Ambientais de um Telefone Celular", "Mundo do trabalho"],
+      "2° B": ["Educação ambiental: Justiça socioambiental e cidadania", "Impactos Ambientais de um Telefone Celular", "Mundo do trabalho"],
+      "2° C": ["Educação ambiental: Justiça socioambiental e cidadania", "Impactos Ambientais de um Telefone Celular", "Mundo do trabalho"],
+      "3° A": ["Construindo Oportunidades: os desafios do amanhã", "Solos: conhecer e entender para conservar e restaurar"],
+      "3° B": ["Construindo Oportunidades: os desafios do amanhã", "Solos: conhecer e entender para conservar e restaurar"]
     };
 
     // Função para buscar aprofundamentos disponíveis do Google Apps Script
     const buscarAprofundamentosDisponiveis = async () => {
       try {
-        // Faz uma requisição GET para a ação \'getCapacidade\' no seu GAS
         const response = await fetch(`${URL_SCRIPT}?action=getCapacidade`);
         if (!response.ok) {
           throw new Error(`Erro HTTP: ${response.status}`);
         }
         const result = await response.json();
-        
         if (result.success) {
-          // Retorna apenas os nomes dos aprofundamentos disponíveis
           return result.data.map(item => item.aprofundamento);
         } else {
           console.error("Erro ao buscar aprofundamentos do GAS:", result.error);
@@ -329,26 +278,32 @@
     // Função para carregar os aprofundamentos de acordo com a série selecionada
     const carregarAprofundamentos = async () => {
       const serie = serieSelect.value;
-      
-      // Limpar opções anteriores
-      aprofundamentoSelect.innerHTML = "<option value=\'\'>Selecione o Aprofundamento</option>";
+      aprofundamentoSelect.innerHTML = "<option value=''>Primeiro selecione sua série</option>";
       
       if (serie) {
+        aprofundamentoSelect.innerHTML = "<option value=''>Carregando aprofundamentos...</option>";
         const aprofundamentosDisponiveisGAS = await buscarAprofundamentosDisponiveis();
-        
         const aprofundamentosDaSerie = aprofundamentosPorSerieLocal[serie] || [];
+        
+        aprofundamentoSelect.innerHTML = "<option value=''>Selecione o Aprofundamento</option>";
 
+        let aprofundamentosEncontrados = 0;
         aprofundamentosDaSerie.forEach((item) => {
-          // Adiciona a opção apenas se ela estiver na lista de aprofundamentos disponíveis do GAS
           if (aprofundamentosDisponiveisGAS.includes(item)) {
             const option = document.createElement("option");
             option.value = item;
             option.textContent = item;
             aprofundamentoSelect.appendChild(option);
+            aprofundamentosEncontrados++;
           }
         });
+
+        if (aprofundamentosEncontrados === 0) {
+            aprofundamentoSelect.innerHTML = "<option value=''>Nenhum aprofundamento disponível para esta turma</option>";
+        }
+
       } else {
-        aprofundamentoSelect.innerHTML = "<option value=\'\'>Primeiro selecione sua série</option>";
+        aprofundamentoSelect.innerHTML = "<option value=''>Primeiro selecione sua série</option>";
       }
     };
 
@@ -356,48 +311,34 @@
     const mostrarMensagem = (texto, tipo) => {
       messageDiv.textContent = texto;
       messageDiv.className = `message ${tipo}`;
-      messageDiv.style.display = \'block\';
-      
-      // Auto-hide success messages after 5 seconds
-      if (tipo === \'success\') {
-        setTimeout(() => {
-          messageDiv.style.display = \'none\';
-        }, 5000);
+      messageDiv.style.display = 'block';
+      if (tipo === 'success') {
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
       }
     };
 
     // Função para mostrar/esconder loading
     const mostrarLoading = (mostrar) => {
-      loadingDiv.style.display = mostrar ? \'block\' : \'none\';
+      loadingDiv.style.display = mostrar ? 'block' : 'none';
       btnSubmit.disabled = mostrar;
-      
       if (mostrar) {
-        messageDiv.style.display = \'none\';
+        messageDiv.style.display = 'none';
       }
     };
 
     // Função para enviar os dados ao Google Apps Script
     const enviarFormulario = async (event) => {
       event.preventDefault();
-
       const nome = document.getElementById("nome").value.trim();
       const serie = serieSelect.value;
       const aprofundamento = aprofundamentoSelect.value;
 
-      // Validações
       if (!nome || !serie || !aprofundamento) {
         mostrarMensagem("Todos os campos são obrigatórios.", "error");
         return;
       }
-
       if (nome.length < 3) {
         mostrarMensagem("O nome deve ter pelo menos 3 caracteres.", "error");
-        return;
-      }
-
-      // Verificar se a URL do script foi configurada
-      if (URL_SCRIPT === "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI") {
-        mostrarMensagem("Erro: URL do Google Apps Script não configurada. Entre em contato com o administrador.", "error");
         return;
       }
 
@@ -406,26 +347,16 @@
       try {
         const response = await fetch(URL_SCRIPT, {
           method: "POST",
-          body: new URLSearchParams({
-            nome: nome,
-            serie: serie,
-            aprofundamento: aprofundamento
-          }),
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
+          body: new URLSearchParams({ nome, serie, aprofundamento }),
+          headers: { "Content-Type": "application/x-www-form-urlencoded" }
         });
 
-        if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
 
         const result = await response.json();
-        
         if (result.success) {
           mostrarMensagem("✅ Inscrição realizada com sucesso! Você receberá mais informações em breve.", "success");
           form.reset();
-          // Não chame carregarAprofundamentos() aqui, pois já será chamado no submit do formulário
         } else {
           mostrarMensagem(`❌ ${result.error || "Erro ao processar inscrição. Tente novamente."}`, "error");
         }
@@ -434,19 +365,18 @@
         mostrarMensagem("❌ Erro de conexão. Verifique sua internet e tente novamente.", "error");
       } finally {
         mostrarLoading(false);
+        await carregarAprofundamentos(); // Recarrega as opções após o envio
       }
     };
 
     // Event Listeners
     serieSelect.addEventListener("change", carregarAprofundamentos);
-    form.addEventListener("submit", async (event) => {
-      await enviarFormulario(event);
-      await carregarAprofundamentos(); // Recarrega as opções após o envio do formulário
-    });
+    form.addEventListener("submit", enviarFormulario);
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", () => {
-      carregarAprofundamentos();
+      // Carrega os aprofundamentos quando a série é selecionada, não na inicialização
+      aprofundamentoSelect.innerHTML = "<option value=''>Primeiro selecione sua série</option>";
     });
   </script>
 </body>
