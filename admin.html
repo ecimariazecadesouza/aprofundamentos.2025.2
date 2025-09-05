@@ -195,9 +195,30 @@
       color: white;
     }
 
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid #3498db;
+      color: #3498db;
+    }
+
+    .btn-outline:hover {
+      background-color: #3498db;
+      color: white;
+    }
+
     .btn-block {
       width: 100%;
       justify-content: center;
+    }
+
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 12px;
     }
 
     /* Spinner para botões */
@@ -248,7 +269,7 @@
       letter-spacing: 0.5px;
     }
     
-    /* NOVO: Estilo para cabeçalhos ordenáveis */
+    /* Estilo para cabeçalhos ordenáveis */
     th.sortable {
       cursor: pointer;
       position: relative;
@@ -282,6 +303,55 @@
 
     tr:hover {
       background-color: #f8f9fa;
+    }
+
+    /* NOVO: Estilos para paginação */
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding: 15px 0;
+      border-top: 1px solid #e9ecef;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .pagination-info {
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .pagination-select select {
+      width: auto;
+      min-width: 80px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .pagination-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .pagination-buttons .btn {
+      margin: 0;
+      padding: 8px 12px;
+      font-size: 14px;
     }
 
     .capacity-grid {
@@ -421,6 +491,20 @@
         margin-right: 0;
         justify-content: center;
       }
+
+      .pagination-container {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .pagination-controls {
+        justify-content: center;
+      }
+
+      .pagination-buttons {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -503,8 +587,6 @@
             </label>
             <input type="text" id="filtroNome" placeholder="Digite um nome...">
           </div>
-          
-          <!-- Botão de Aplicar Filtros foi removido, pois agora é instantâneo -->
 
           <button id="btnLimpar" class="btn btn-warning btn-block">
             <i class="fas fa-eraser"></i> Limpar Filtros
@@ -539,7 +621,6 @@
             <table>
               <thead>
                 <tr>
-                  <!-- NOVO: Atributos para ordenação -->
                   <th class="sortable" data-sort="data"><i class="fas fa-clock"></i> Data/Hora</th>
                   <th class="sortable" data-sort="nome"><i class="fas fa-user"></i> Nome</th>
                   <th class="sortable" data-sort="serie"><i class="fas fa-school"></i> Série</th>
@@ -550,6 +631,42 @@
                 <!-- Conteúdo dinâmico -->
               </tbody>
             </table>
+          </div>
+
+          <!-- NOVO: Controles de Paginação -->
+          <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <div class="pagination-info" id="paginationInfo">
+              <!-- Informações da página atual -->
+            </div>
+            
+            <div class="pagination-controls">
+              <div class="pagination-select">
+                <label for="itemsPorPagina">Itens por página:</label>
+                <select id="itemsPorPagina">
+                  <option value="50">50</option>
+                  <option value="100" selected>100</option>
+                  <option value="150">150</option>
+                  <option value="200">200</option>
+                  <option value="300">300</option>
+                  <option value="400">400</option>
+                </select>
+              </div>
+              
+              <div class="pagination-buttons">
+                <button id="btnPrimeiraPagina" class="btn btn-outline btn-sm">
+                  <i class="fas fa-angle-double-left"></i> Primeira
+                </button>
+                <button id="btnPaginaAnterior" class="btn btn-outline btn-sm">
+                  <i class="fas fa-angle-left"></i> Anterior
+                </button>
+                <button id="btnProximaPagina" class="btn btn-outline btn-sm">
+                  Próxima <i class="fas fa-angle-right"></i>
+                </button>
+                <button id="btnUltimaPagina" class="btn btn-outline btn-sm">
+                  Última <i class="fas fa-angle-double-right"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -594,12 +711,29 @@
     const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
     const contadorInscricoes = document.getElementById("contadorInscricoes");
 
-    // --- NOVAS VARIÁVEIS DE ESTADO ---
+    // NOVO: Elementos de paginação
+    const paginationContainer = document.getElementById("paginationContainer");
+    const paginationInfo = document.getElementById("paginationInfo");
+    const itemsPorPagina = document.getElementById("itemsPorPagina");
+    const btnPrimeiraPagina = document.getElementById("btnPrimeiraPagina");
+    const btnPaginaAnterior = document.getElementById("btnPaginaAnterior");
+    const btnProximaPagina = document.getElementById("btnProximaPagina");
+    const btnUltimaPagina = document.getElementById("btnUltimaPagina");
+
+    // Variáveis de estado
     let allInscricoesData = []; // Armazena TODAS as inscrições, sem filtros
-    let filteredAndSortedData = []; // Armazena os dados filtrados e ordenados, prontos para exibição/exportação
+    let filteredAndSortedData = []; // Armazena os dados filtrados e ordenados
     let capacidadeData = [];
     let sortState = { column: 'data', direction: 'desc' }; // Estado inicial da ordenação
     let debounceTimer = null; // Timer para debounce da busca por nome
+
+    // NOVO: Variáveis de paginação
+    let paginationState = {
+      currentPage: 1,
+      itemsPerPage: 100,
+      totalPages: 1,
+      totalItems: 0
+    };
 
     // Verificar se a URL foi configurada
     function verificarConfiguracao() {
@@ -611,7 +745,7 @@
       return true;
     }
 
-    // Função para fazer requisições ao Google Apps Script (sem alterações)
+    // Função para fazer requisições ao Google Apps Script
     async function fazerRequisicao(action, dados = {}) {
       return new Promise((resolve, reject) => {
         if (!verificarConfiguracao()) {
@@ -635,7 +769,53 @@
       });
     }
 
-    // --- LÓGICA DE FILTRAGEM E ORDENAÇÃO (NOVO) ---
+    // NOVO: Funções de paginação
+    function calcularPaginacao() {
+      paginationState.totalItems = filteredAndSortedData.length;
+      paginationState.itemsPerPage = parseInt(itemsPorPagina.value);
+      paginationState.totalPages = Math.ceil(paginationState.totalItems / paginationState.itemsPerPage);
+      
+      // Ajustar página atual se necessário
+      if (paginationState.currentPage > paginationState.totalPages) {
+        paginationState.currentPage = Math.max(1, paginationState.totalPages);
+      }
+    }
+
+    function obterDadosPaginaAtual() {
+      const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
+      const endIndex = startIndex + paginationState.itemsPerPage;
+      return filteredAndSortedData.slice(startIndex, endIndex);
+    }
+
+    function atualizarInfoPaginacao() {
+      if (paginationState.totalItems === 0) {
+        paginationContainer.style.display = 'none';
+        return;
+      }
+
+      paginationContainer.style.display = 'flex';
+      
+      const startItem = (paginationState.currentPage - 1) * paginationState.itemsPerPage + 1;
+      const endItem = Math.min(paginationState.currentPage * paginationState.itemsPerPage, paginationState.totalItems);
+      
+      paginationInfo.textContent = `Mostrando ${startItem} a ${endItem} de ${paginationState.totalItems} registros (Página ${paginationState.currentPage} de ${paginationState.totalPages})`;
+      
+      // Atualizar estado dos botões
+      btnPrimeiraPagina.disabled = paginationState.currentPage === 1;
+      btnPaginaAnterior.disabled = paginationState.currentPage === 1;
+      btnProximaPagina.disabled = paginationState.currentPage === paginationState.totalPages;
+      btnUltimaPagina.disabled = paginationState.currentPage === paginationState.totalPages;
+    }
+
+    function irParaPagina(novaPagina) {
+      if (novaPagina >= 1 && novaPagina <= paginationState.totalPages) {
+        paginationState.currentPage = novaPagina;
+        preencherTabelaInscricoes();
+        atualizarInfoPaginacao();
+      }
+    }
+
+    // Lógica de filtragem e ordenação (modificada para incluir paginação)
     function processarDados() {
       // 1. Filtrar
       const aprofundamento = filtroAprofundamento.value;
@@ -670,22 +850,25 @@
 
       filteredAndSortedData = tempData;
 
-      // 3. Renderizar
+      // 3. Calcular paginação
+      calcularPaginacao();
+
+      // 4. Renderizar
       preencherTabelaInscricoes();
       atualizarUIOrdenacao();
+      atualizarInfoPaginacao();
     }
-
-    // --- FUNÇÕES DE RENDERIZAÇÃO E ATUALIZAÇÃO (MODIFICADAS) ---
 
     // Carrega TODAS as inscrições do servidor
     async function carregarTodasInscricoes() {
       try {
         mostrarLoadingTabela(true);
-        // A requisição agora não envia mais filtros, busca tudo
         const dados = await fazerRequisicao('getInscricoes');
         allInscricoesData = dados.data || [];
         
-        // Após carregar, processa (filtra/ordena) e exibe os dados
+        // Resetar para primeira página ao carregar novos dados
+        paginationState.currentPage = 1;
+        
         processarDados();
         atualizarEstatisticasGerais();
 
@@ -702,8 +885,11 @@
         return;
       }
 
+      // MODIFICADO: Usar dados da página atual
+      const dadosPaginaAtual = obterDadosPaginaAtual();
+      
       let html = "";
-      filteredAndSortedData.forEach(item => {
+      dadosPaginaAtual.forEach(item => {
         html += `
           <tr>
             <td>${formatarData(item.data)}</td>
@@ -744,8 +930,7 @@
       ultimaAtualizacao.textContent = new Date().toLocaleTimeString('pt-BR');
     }
 
-    // --- FUNÇÕES DE CARREGAMENTO E UTILITÁRIOS (Algumas modificadas) ---
-
+    // Funções de carregamento
     async function carregarCapacidade() {
       try {
         capacidadeContainer.innerHTML = `<div class="loading"><div class="spinner"></div><p>Carregando capacidades...</p></div>`;
@@ -812,15 +997,17 @@
       ]);
     }
 
-    // Funções de UI (loading, erro, formatação) - sem alterações
+    // Funções de UI
     function mostrarLoadingTabela(mostrar) { 
       if (mostrar) { 
         tabelaInscricoes.innerHTML = `<tr><td colspan="4"><div class="loading"><div class="spinner"></div><p>Carregando dados...</p></div></td></tr>`; 
+        paginationContainer.style.display = 'none';
       } 
     }
     
     function mostrarErroTabela(mensagem) { 
       tabelaInscricoes.innerHTML = `<tr><td colspan="4"><div class="empty-state"><i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i><p>Erro: ${mensagem}</p></div></td></tr>`; 
+      paginationContainer.style.display = 'none';
     }
     
     function formatarData(dataString) { 
@@ -834,8 +1021,7 @@
       }); 
     }
 
-    // --- FUNÇÕES DE EXPORTAÇÃO (MODIFICADAS) ---
-    // Agora usam `filteredAndSortedData`
+    // Funções de exportação (MODIFICADAS para usar todos os dados filtrados, não apenas a página atual)
     function exportarPDF() {
       if (filteredAndSortedData.length === 0) { 
         alert("Não há dados para exportar"); 
@@ -870,6 +1056,7 @@
         }
         doc.text(filtrosInfo, 14, 35);
         
+        // IMPORTANTE: Exporta TODOS os dados filtrados, não apenas a página atual
         doc.autoTable({
           startY: 40,
           head: [['Data/Hora', 'Nome', 'Série', 'Aprofundamento']],
@@ -899,6 +1086,7 @@
       btnExportExcel.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando Excel...';
       
       try {
+        // IMPORTANTE: Exporta TODOS os dados filtrados, não apenas a página atual
         const dadosExport = filteredAndSortedData.map(item => ({
           'Data/Hora': formatarData(item.data),
           'Nome': item.nome,
@@ -918,44 +1106,65 @@
       }
     }
 
-    // --- DEBOUNCE PARA BUSCA POR NOME (NOVO) ---
+    // Debounce para busca por nome
     function debounceProcessarDados() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
+        // Resetar para primeira página ao aplicar novos filtros
+        paginationState.currentPage = 1;
         processarDados();
-      }, 300); // 300ms de delay
+      }, 300);
     }
 
-    // --- EVENT LISTENERS (MODIFICADOS E NOVOS) ---
+    // Event Listeners
     
     // Filtros instantâneos
-    filtroAprofundamento.addEventListener("change", processarDados);
-    filtroSerie.addEventListener("change", processarDados);
+    filtroAprofundamento.addEventListener("change", () => {
+      paginationState.currentPage = 1;
+      processarDados();
+    });
+    
+    filtroSerie.addEventListener("change", () => {
+      paginationState.currentPage = 1;
+      processarDados();
+    });
+    
     filtroNome.addEventListener("input", debounceProcessarDados);
 
-    // Ordenação da tabela (NOVO)
+    // Ordenação da tabela
     document.querySelectorAll('th.sortable').forEach(th => {
       th.addEventListener('click', () => {
         const column = th.dataset.sort;
         
         if (sortState.column === column) {
-          // Se já está ordenando por esta coluna, inverte a direção
           sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
         } else {
-          // Se é uma nova coluna, começa com ascendente
           sortState.column = column;
           sortState.direction = 'asc';
         }
         
+        // Manter página atual ao ordenar
         processarDados();
       });
     });
+
+    // NOVO: Event listeners para paginação
+    itemsPorPagina.addEventListener("change", () => {
+      paginationState.currentPage = 1;
+      processarDados();
+    });
+
+    btnPrimeiraPagina.addEventListener("click", () => irParaPagina(1));
+    btnPaginaAnterior.addEventListener("click", () => irParaPagina(paginationState.currentPage - 1));
+    btnProximaPagina.addEventListener("click", () => irParaPagina(paginationState.currentPage + 1));
+    btnUltimaPagina.addEventListener("click", () => irParaPagina(paginationState.totalPages));
 
     // Botões
     btnLimpar.addEventListener("click", () => {
       filtroAprofundamento.value = "";
       filtroSerie.value = "";
       filtroNome.value = "";
+      paginationState.currentPage = 1;
       processarDados();
     });
 
