@@ -561,33 +561,35 @@
       return true;
     }
 
-    // Função para fazer requisições ao Google Apps Script
+    // Função para fazer requisições ao Google Apps Script usando JSONP
     async function fazerRequisicao(action, dados = {}) {
-      if (!verificarConfiguracao()) {
-        throw new Error("URL do Google Apps Script não configurada");
-      }
-
-      const payload = { action, ...dados };
-      
-      const response = await fetch(URL_SCRIPT, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json"
+      return new Promise((resolve, reject) => {
+        if (!verificarConfiguracao()) {
+          return reject(new Error("URL do Google Apps Script não configurada"));
         }
+
+        const callbackName = 'jsonpCallback_' + Date.now() + Math.floor(Math.random() * 1000);
+        window[callbackName] = (data) => {
+          document.body.removeChild(script);
+          delete window[callbackName];
+          resolve(data);
+        };
+
+        const params = new URLSearchParams({
+          action: action,
+          callback: callbackName,
+          ...dados
+        });
+
+        const script = document.createElement('script');
+        script.src = `${URL_SCRIPT}?${params.toString()}`;
+        script.onerror = () => {
+          document.body.removeChild(script);
+          delete window[callbackName];
+          reject(new Error('Erro ao carregar o script do Google Apps Script. Verifique a URL e a conexão.'));
+        };
+        document.body.appendChild(script);
       });
-
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
-
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.error || "Erro desconhecido");
-      }
-
-      return result.data;
     }
 
     // Função para carregar inscrições
@@ -600,7 +602,7 @@
           filtroSerie: filtroSerie.value
         });
         
-        inscricoesData = dados || [];
+        inscricoesData = dados.data || [];
         aplicarFiltroNome();
         atualizarEstatisticas();
         
@@ -699,7 +701,7 @@
         `;
         
         const dados = await fazerRequisicao('getCapacidade');
-        capacidadeData = dados || [];
+        capacidadeData = dados.data || [];
         preencherCapacidade();
         
       } catch (error) {
@@ -758,7 +760,7 @@
         
         filtroAprofundamento.innerHTML = "<option value=''>Todos os aprofundamentos</option>";
         
-        dados.forEach(aprof => {
+        dados.data.forEach(aprof => {
           const option = document.createElement("option");
           option.value = aprof;
           option.textContent = aprof;
