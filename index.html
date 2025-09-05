@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100% );
       margin: 0;
       padding: 20px;
       min-height: 100vh;
@@ -29,7 +29,7 @@
     }
 
     .container::before {
-      content: '';
+      content: \'\';
       position: absolute;
       top: 0;
       left: 0;
@@ -232,17 +232,17 @@
 
   <script>
     // IMPORTANTE: Substitua esta URL pela URL do seu Google Apps Script
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx-kIqv5rH70KrGjS8xJbdxcfZCdrmW2iGmLXSY84RqyT0K9FhSEE54RI1DII5MCmb7/exec";
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby8twasW4a8QbjEBLcPMQrmkuILg-Eu6FbJ2iapq8JFmh6ZxMmtE5ZJDCsvB1vos9u2/exec";
     
-    const serieSelect = document.getElementById("serie");
+    const serieSelect = document.getElementById("serie" );
     const aprofundamentoSelect = document.getElementById("aprofundamento");
     const form = document.getElementById("inscricaoForm");
     const messageDiv = document.getElementById("message");
     const loadingDiv = document.getElementById("loading");
     const btnSubmit = document.getElementById("btnSubmit");
 
-    // Mapeamento de aprofundamentos por série
-    const aprofundamentosPorSerie = {
+    // Mapeamento de aprofundamentos por série (ainda necessário para mapear aprofundamentos para séries)
+    const aprofundamentosPorSerieLocal = {
       "1° A": [
         "Cinearte", 
         "Cultura e Diversidade na Paraíba", 
@@ -303,23 +303,52 @@
       ]
     };
 
+    // Função para buscar aprofundamentos disponíveis do Google Apps Script
+    const buscarAprofundamentosDisponiveis = async () => {
+      try {
+        // Faz uma requisição GET para a ação \'getCapacidade\' no seu GAS
+        const response = await fetch(`${URL_SCRIPT}?action=getCapacidade`);
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const result = await response.json();
+        
+        if (result.success) {
+          // Retorna apenas os nomes dos aprofundamentos disponíveis
+          return result.data.map(item => item.aprofundamento);
+        } else {
+          console.error("Erro ao buscar aprofundamentos do GAS:", result.error);
+          return [];
+        }
+      } catch (error) {
+        console.error("Erro de conexão ao buscar aprofundamentos:", error);
+        return [];
+      }
+    };
+
     // Função para carregar os aprofundamentos de acordo com a série selecionada
-    const carregarAprofundamentos = () => {
+    const carregarAprofundamentos = async () => {
       const serie = serieSelect.value;
       
       // Limpar opções anteriores
-      aprofundamentoSelect.innerHTML = "<option value=''>Selecione o Aprofundamento</option>";
+      aprofundamentoSelect.innerHTML = "<option value=\'\'>Selecione o Aprofundamento</option>";
       
-      // Carregar novas opções com base na série selecionada
-      if (serie && aprofundamentosPorSerie[serie]) {
-        aprofundamentosPorSerie[serie].forEach((item) => {
-          const option = document.createElement("option");
-          option.value = item;
-          option.textContent = item;
-          aprofundamentoSelect.appendChild(option);
+      if (serie) {
+        const aprofundamentosDisponiveisGAS = await buscarAprofundamentosDisponiveis();
+        
+        const aprofundamentosDaSerie = aprofundamentosPorSerieLocal[serie] || [];
+
+        aprofundamentosDaSerie.forEach((item) => {
+          // Adiciona a opção apenas se ela estiver na lista de aprofundamentos disponíveis do GAS
+          if (aprofundamentosDisponiveisGAS.includes(item)) {
+            const option = document.createElement("option");
+            option.value = item;
+            option.textContent = item;
+            aprofundamentoSelect.appendChild(option);
+          }
         });
       } else {
-        aprofundamentoSelect.innerHTML = "<option value=''>Primeiro selecione sua série</option>";
+        aprofundamentoSelect.innerHTML = "<option value=\'\'>Primeiro selecione sua série</option>";
       }
     };
 
@@ -327,23 +356,23 @@
     const mostrarMensagem = (texto, tipo) => {
       messageDiv.textContent = texto;
       messageDiv.className = `message ${tipo}`;
-      messageDiv.style.display = 'block';
+      messageDiv.style.display = \'block\';
       
       // Auto-hide success messages after 5 seconds
-      if (tipo === 'success') {
+      if (tipo === \'success\') {
         setTimeout(() => {
-          messageDiv.style.display = 'none';
+          messageDiv.style.display = \'none\';
         }, 5000);
       }
     };
 
     // Função para mostrar/esconder loading
     const mostrarLoading = (mostrar) => {
-      loadingDiv.style.display = mostrar ? 'block' : 'none';
+      loadingDiv.style.display = mostrar ? \'block\' : \'none\';
       btnSubmit.disabled = mostrar;
       
       if (mostrar) {
-        messageDiv.style.display = 'none';
+        messageDiv.style.display = \'none\';
       }
     };
 
@@ -396,7 +425,7 @@
         if (result.success) {
           mostrarMensagem("✅ Inscrição realizada com sucesso! Você receberá mais informações em breve.", "success");
           form.reset();
-          carregarAprofundamentos(); // Reset aprofundamento options
+          // Não chame carregarAprofundamentos() aqui, pois já será chamado no submit do formulário
         } else {
           mostrarMensagem(`❌ ${result.error || "Erro ao processar inscrição. Tente novamente."}`, "error");
         }
@@ -410,7 +439,10 @@
 
     // Event Listeners
     serieSelect.addEventListener("change", carregarAprofundamentos);
-    form.addEventListener("submit", enviarFormulario);
+    form.addEventListener("submit", async (event) => {
+      await enviarFormulario(event);
+      await carregarAprofundamentos(); // Recarrega as opções após o envio do formulário
+    });
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", () => {
@@ -419,4 +451,3 @@
   </script>
 </body>
 </html>
-
